@@ -437,7 +437,7 @@ ScientificNotationResults = StringField(
     )
 )
 AutoPrintStickers = StringField(
-    'AutoPrintStickesr',
+    'AutoPrintStickers',
     schemata="Stickers",
     vocabulary=STICKER_AUTO_OPTIONS,
     widget=SelectionWidget(
