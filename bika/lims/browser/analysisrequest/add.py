@@ -422,8 +422,8 @@ class ajaxAnalysisRequestSubmit():
                 and new_ars:
             return json.dumps({
                 'success': message,
-                'labels': new_ars,
-                'labelsize': self.context.bika_setup.getAutoLabelSize()
+                'stickers': new_ars,
+                'stickertemplate': self.context.bika_setup.getAutoStickerTemplate()
             })
         else:
             return json.dumps({'success': message})

@@ -3,6 +3,7 @@ from AccessControl import getSecurityManager
 from Products.AdvancedQuery import MatchGlob
 from Products.AdvancedQuery import Eq
 from Products.CMFPlone.utils import _createObjectByType
+from Products.CMFPlone.utils import safe_unicode
 from bika.lims import bikaMessageFactory as _
 from bika.lims.utils import t
 from bika.lims import EditResults, EditWorksheet, ManageWorksheets
@@ -814,7 +815,7 @@ class ManageResultsView(BrowserView):
         for an in ans:
             valid = an.isInstrumentValid()
             if not valid:
-                inv = '%s (%s)' % (an.Title(), an.getInstrument().Title())
+                inv = '%s (%s)' % (safe_unicode(an.Title()), safe_unicode(an.getInstrument().Title()))
                 if inv not in invalid:
                     invalid.append(inv)
         if len(invalid) > 0:

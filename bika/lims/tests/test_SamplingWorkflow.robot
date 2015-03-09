@@ -18,6 +18,8 @@ Suite Teardown   Close All Browsers
 
 Sampler login
 # /samples List should contain all to_be_sampled samples
+    Log in                            test_labmanager         test_labmanager
+    Wait until page contains          You are now logged in
     Enable Sampling Workflow
     ${ar_id}=                         Add an AR
 

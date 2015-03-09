@@ -167,10 +167,10 @@ class WorksheetFolderListingView(BikaListingView):
             'QC': {'title': _('QC'),
                    'sortable':False,
                    'toggle': False},
-            'QCNum': {'title': _('QC Number'),
+            'QCTotals': {'title': _('QC Samples(Analyses)'),
                    'sortable':False,
                    'toggle': False},
-            'RoutineNum': {'title': _('Routine Number'),
+            'RoutineTotals': {'title': _('Routine Samples(Analyses)'),
                    'sortable':False,
                    'toggle': False},
             'CreationDate': {'title': PMF('Date Created'),
@@ -197,8 +197,8 @@ class WorksheetFolderListingView(BikaListingView):
                         'SampleTypes',
                         'Instrument',
                         'QC',
-                        'QCNum',
-                        'RoutineNum',
+                        'QCTotals',
+                        'RoutineTotals',
                         'CreationDate',
                         'state_title']},
             # getAuthenticatedMember does not work in __init__
@@ -220,8 +220,8 @@ class WorksheetFolderListingView(BikaListingView):
                         'SampleTypes',
                         'Instrument',
                         'QC',
-                        'QCNum',
-                        'RoutineNum',
+                        'QCTotals',
+                        'RoutineTotals',
                         'CreationDate',
                         'state_title']},
             {'id':'open',
@@ -239,8 +239,8 @@ class WorksheetFolderListingView(BikaListingView):
                         'SampleTypes',
                         'Instrument',
                         'QC',
-                        'QCNum',
-                        'RoutineNum',
+                        'QCTotals',
+                        'RoutineTotals',
                         'CreationDate',
                         'state_title']},
             {'id':'to_be_verified',
@@ -260,8 +260,8 @@ class WorksheetFolderListingView(BikaListingView):
                         'SampleTypes',
                         'Instrument',
                         'QC',
-                        'QCNum',
-                        'RoutineNum',
+                        'QCTotals',
+                        'RoutineTotals',
                         'CreationDate',
                         'state_title']},
             {'id':'verified',
@@ -279,8 +279,8 @@ class WorksheetFolderListingView(BikaListingView):
                         'SampleTypes',
                         'Instrument',
                         'QC',
-                        'QCNum',
-                        'RoutineNum',
+                        'QCTotals',
+                        'RoutineTotals',
                         'CreationDate',
                         'state_title']},
         ]
@@ -453,13 +453,29 @@ class WorksheetFolderListingView(BikaListingView):
             items[x]['replace']['SampleTypes'] = " ".join(sampletypes)
             items[x]['QC'] = ""
             items[x]['replace']['QC'] = " ".join(blanks + controls)
-            
-            items[x]['QCNum'] = ''
-            items[x]['QCNum'] = len([a for a in obj.getAnalyses() 
-                                     if a.portal_type == 'ReferenceAnalysis' 
-                                     or a.portal_type == 'DuplicateAnalysis'])
+            items[x]['QCTotals'] = ''
 
-            items[x]['RoutineNum'] = len(obj.getAnalyses()) - items[x]['QCNum']
+            # Get all Worksheet QC Analyses
+            totalQCAnalyses = [a for a in obj.getAnalyses()
+                                   if a.portal_type == 'ReferenceAnalysis'
+                                   or a.portal_type == 'DuplicateAnalysis']
+            totalQCSamples = []
+            # Get all Worksheet QC samples
+            for analysis in totalQCAnalyses:
+                if analysis.getSample().UID() not in totalQCSamples:
+                    totalQCSamples.append(analysis.getSample().UID())
+            # Total QC Samples (Total Routine Analyses)
+            items[x]['QCTotals'] = str(len(totalQCSamples)) + '(' + str(len(totalQCAnalyses)) + ')'
+
+            totalRoutineAnalyses = [a for a in obj.getAnalyses()
+                                   if a not in totalQCAnalyses]
+            totalRoutineSamples = []
+            for analysis in totalRoutineAnalyses:
+                if analysis.getSample().UID() not in totalRoutineSamples:
+                    totalRoutineSamples.append(analysis.getSample().UID())
+
+            # Total Routine Samples (Total Routine Analyses)
+            items[x]['RoutineTotals'] = str(len(totalRoutineSamples)) + '(' + str(len(totalRoutineAnalyses)) + ')'
 
             if items[x]['review_state'] == 'open' \
                 and self.allow_edit \

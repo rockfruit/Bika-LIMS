@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from Products.Archetypes.public import DisplayList
 from bika.lims import bikaMessageFactory as _
 from bika.lims.utils import t
@@ -115,4 +117,12 @@ DECIMAL_MARKS = DisplayList((
 AR_ADD_SERVICE_SELECTORS = DisplayList((
     ('bika_listing', _('Categorised service list form')),
     ('single-select', _('Single service selection form')),
+))
+
+SCINOTATION_OPTIONS = DisplayList((
+    ('1', 'aE+b / aE-b'),
+    ('2', 'ax10^b / ax10^-b'),
+    ('3', 'ax10^b / ax10^-b (with superscript)'),
+    ('4', 'a·10^b / a·10^-b'),
+    ('5', 'a·10^b / a·10^-b (with superscript)'),
 ))

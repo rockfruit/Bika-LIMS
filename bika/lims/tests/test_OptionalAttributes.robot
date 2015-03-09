@@ -1,6 +1,5 @@
 *** Settings ***
 
-Library          BuiltIn
 Library          Selenium2Library  timeout=5  implicit_wait=0.2
 Library          String
 Resource         keywords.txt
@@ -24,7 +23,6 @@ Create AR with hidden attributes
     ${ar_id}=          Create Primary AR
     Check hidden fields on AR view ${ar_id}
     Check hidden fields on AR invoice ${ar_id}
-
 
 *** Keywords ***
 

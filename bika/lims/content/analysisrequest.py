@@ -8,6 +8,7 @@ from Products.Archetypes import atapi
 from Products.Archetypes.config import REFERENCE_CATALOG
 from Products.Archetypes.public import *
 from Products.Archetypes.references import HoldingReference
+from Products.Archetypes.Widget import RichWidget
 from Products.CMFCore import permissions
 from Products.CMFCore.permissions import View
 from Products.CMFCore.utils import getToolByName
@@ -31,6 +32,7 @@ from zope.interface import implements
 from bika.lims import bikaMessageFactory as _
 from bika.lims.utils import t, getUsers, dicts_to_dict
 
+from bika.lims.browser.fields import DateTimeField
 from bika.lims.browser.widgets import SelectionWidget as BikaSelectionWidget
 
 import sys
@@ -1446,6 +1448,43 @@ schema = BikaSchema.copy() + Schema((
             showOn=True,
         ),
     ),
+    # For comments or results interpretation
+    TextField(
+        'ResultsInterpretation',
+        searchable=True,
+        mode="rw",
+        default_content_type = 'text/html',  # Input content type for the textfield
+        default_output_type = 'text/x-html-safe',  # getResultsInterpretation returns a str with html tags
+                                                   # to conserve the txt format in the report.
+        read_permission=permissions.View,
+        write_permission=permissions.ModifyPortalContent,
+        widget=RichWidget (
+            description = _("Comments or results interpretation"),
+            label = _("Results Interpretation"),
+            size=10,
+            allow_file_upload=False,
+            default_mime_type='text/x-rst',
+            output_mime_type='text/x-html',
+            rows=3,
+            visible={'edit': 'visible',
+                     'view': 'visible',
+                     'add': 'invisible',
+                     'header_table': 'prominent',
+                     'sample_registered': {'view': 'visible', 'edit': 'visible', 'add': 'invisible'},
+                     'to_be_sampled':     {'view': 'visible', 'edit': 'visible'},
+                     'sampled':           {'view': 'visible', 'edit': 'visible'},
+                     'to_be_preserved':   {'view': 'visible', 'edit': 'visible'},
+                     'sample_due':        {'view': 'visible', 'edit': 'visible'},
+                     'sample_received':   {'view': 'visible', 'edit': 'visible'},
+                     'attachment_due':    {'view': 'visible', 'edit': 'visible'},
+                     'to_be_verified':    {'view': 'visible', 'edit': 'visible'},
+                     'verified':          {'view': 'visible', 'edit': 'visible'},
+                     'published':         {'view': 'visible', 'edit': 'invisible'},
+                     'invalid':           {'view': 'visible', 'edit': 'invisible'},
+                     },
+                render_own_label=True,
+        ),
+    ),
 )
 )
 
@@ -1463,6 +1502,7 @@ schema['title'].widget.visible = {
 }
 
 schema.moveField('Client', before='Contact')
+schema.moveField('ResultsInterpretation', pos='bottom')
 
 class AnalysisRequest(BaseFolder):
     implements(IAnalysisRequest)
@@ -1621,8 +1661,8 @@ class AnalysisRequest(BaseFolder):
             mngr_dept = managers[manager_id]['departments']
             if mngr_dept:
                 mngr_dept += ', '
-            mngr_dept += department.Title()
-            managers[manager_id]['departments'] = safe_unicode(mngr_dept)
+            mngr_dept += safe_unicode(department.Title())
+            managers[manager_id]['departments'] = mngr_dept
         mngr_keys = managers.keys()
         mngr_info = {}
         mngr_info['ids'] = mngr_keys
@@ -1750,13 +1790,13 @@ class AnalysisRequest(BaseFolder):
             invoice_batch.processForm()
 
         client_uid = self.getClientUID()
-        invoice_batch.createInvoice(client_uid, [self, ])
-
-        RESPONSE.redirect(
-            '%s/analysisrequest_invoice' % self.absolute_url())
+        # Get the created invoice
+        invoice = invoice_batch.createInvoice(client_uid, [self, ])
+        invoice.setAnalysisRequest(self)
+        # Set the created invoice in the schema
+        self.Schema()['Invoice'].set(self, invoice)
 
     security.declarePublic('printInvoice')
-
     def printInvoice(self, REQUEST=None, RESPONSE=None):
         """ print invoice
         """
@@ -1813,15 +1853,13 @@ class AnalysisRequest(BaseFolder):
     def delARAttachment(self, REQUEST=None, RESPONSE=None):
         """ delete the attachment """
         tool = getToolByName(self, REFERENCE_CATALOG)
-        if 'ARAttachment' in self.REQUEST.form:
-            attachment_uid = self.REQUEST.form['ARAttachment']
+        if 'Attachment' in self.REQUEST.form:
+            attachment_uid = self.REQUEST.form['Attachment']
             attachment = tool.lookupObject(attachment_uid)
-            parent = attachment.getRequest()
-        elif 'AnalysisAttachment' in self.REQUEST.form:
-            attachment_uid = self.REQUEST.form['AnalysisAttachment']
-            attachment = tool.lookupObject(attachment_uid)
-            parent = attachment.getAnalysis()
+            parent_r = attachment.getRequest()
+            parent_a = attachment.getAnalysis()
 
+        parent = parent_a if parent_a else parent_r
         others = parent.getAttachment()
         attachments = []
         for other in others:
@@ -1832,8 +1870,7 @@ class AnalysisRequest(BaseFolder):
         ids = [attachment.getId(), ]
         BaseFolder.manage_delObjects(client, ids, REQUEST)
 
-        RESPONSE.redirect(
-            '%s/manage_results' % self.absolute_url())
+        RESPONSE.redirect(self.REQUEST.get_header('referer'))
 
     security.declarePublic('getVerifier')
 
@@ -2015,7 +2052,6 @@ class AnalysisRequest(BaseFolder):
         sample = self.getSample()
         if sample and value:
             sample.setSamplingDate(value)
-        self.Schema()['SamplingDate'].set(self, value)
 
     security.declarePublic('getSamplingDate')
 
@@ -2023,7 +2059,6 @@ class AnalysisRequest(BaseFolder):
         sample = self.getSample()
         if sample:
             return sample.getSamplingDate()
-        return self.Schema().getField('SamplingDate').get(self)
 
     security.declarePublic('setSampler')
 

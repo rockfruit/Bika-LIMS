@@ -161,6 +161,8 @@ class ClientWorkflowAction(AnalysisRequestWorkflowAction):
             objects = AnalysisRequestWorkflowAction._get_selected_items(self)
             transitioned = {}
             not_transitioned = []
+            Preserver = str()
+            DatePreserved = str()
             for obj_uid, obj in objects.items():
                 if obj.portal_type == "AnalysisRequest":
                     ar = obj
@@ -250,10 +252,10 @@ class ClientBatchesView(BatchFolderContentsView):
         self.review_states = review_states
 
     def __call__(self):
-         self.context_actions[_('Add')] = \
-                 {'url': self.context.absolute_url() +'/createObject?type_name=Batch',
-                  'icon': self.portal.absolute_url() + '/++resource++bika.lims.images/add.png'}
-         return BatchFolderContentsView.__call__(self)
+        self.context_actions[_('Add')] = \
+                {'url': self.context.absolute_url() +'/createObject?type_name=Batch',
+                 'icon': self.portal.absolute_url() + '/++resource++bika.lims.images/add.png'}
+        return BatchFolderContentsView.__call__(self)
 
 
 class ClientAnalysisRequestsView(AnalysisRequestsView):
