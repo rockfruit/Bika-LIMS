@@ -1340,7 +1340,7 @@ function AnalysisRequestAddByCol() {
 			service_uids.push(service['UID'])
 			var poc = service['PointOfCapture']
 			// Expand category
-			$('span#services_' + poc + ' ' +
+			$('span#' + poc + ' ' +
 			  '[cat="' + service['CategoryTitle'] + '"].collapsed').click()
 			// select service
 			analysis_cb_check(arnum, service['UID'])

@@ -89,7 +89,8 @@ XXX This should use form_id </tal:comment>
                                 view.bika_listing.json_interim_fields or []"/>
 <table
     summary="Content listing"
-    tal:attributes="class python:'bika-listing-table'"
+    tal:attributes="class python:'bika-listing-table';
+                    form_id view/bika_listing/form_id"
     i18n:attributes="summary summary_content_listing;"
     tal:define="
         columns view/bika_listing/columns;

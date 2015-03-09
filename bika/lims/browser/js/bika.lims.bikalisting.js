@@ -154,16 +154,20 @@ function BikaListingTableView() {
 		$(".bika-listing-table th.collapsed")
 		  .live("click", function () {
 					var cat = $(this).attr('cat')
+					var form_id = $(this).parents("[form_id]").attr("form_id")
 					// We will replace this element with downloaded items:
-					var placeholder = $("tr[data-ajax_category='" + cat + "']");
+					var placeholder = $("tr[data-ajax_category='" + cat + "']")
 					// If ajax_categories are enabled, we need to go request items now.
 					if (ajax_categories.length > 0 && placeholder.length > 0) {
 						options['ajax_category_expand'] = 1
 						options['cat'] = cat
-						options['review_state'] = $('.review_state_selector a.selected')[0].id
+						options['form_id'] = form_id
+						if($('.review_state_selector a.selected').length > 0) {
+							options['review_state'] = $('.review_state_selector a.selected')[0].id
+						}
 						$.ajax({url: url, data: options})
 						  .done(function (data) {
-									$("tr[data-ajax_category='" + cat + "']").replaceWith(data)
+									$("[form_id='"+form_id+"'] tr[data-ajax_category='" + cat + "']").replaceWith(data)
 								});
 					}
 					else {
