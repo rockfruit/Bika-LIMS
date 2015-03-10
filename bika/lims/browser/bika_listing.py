@@ -1060,7 +1060,7 @@ class BikaListingTable(tableview.Table):
         self.this_cat_selected = cat in selected_cats
         self.this_cat_batch = []
         for item in self.batch:
-            if item['category'] == cat:
+            if item.get('category', 'None') == cat:
                 self.this_cat_batch.append(item)
         return self.render_items()
 
