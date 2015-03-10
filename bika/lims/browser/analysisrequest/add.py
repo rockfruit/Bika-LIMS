@@ -46,17 +46,20 @@ class AnalysisServicesView(ASV):
             selected_items[uid] = item
         return selected_items.values()
 
-    def __init__(self, context, request, poc, ar_count=None):
+    def __init__(self, context, request, poc, ar_count=None, category=None):
         super(AnalysisServicesView, self).__init__(context, request)
 
         self.contentFilter['getPointOfCapture'] = poc
+
+        if category:
+            self.contentFilter['getCategoryTitle'] = category
 
         self.ar_count = ar_count if ar_count else 4
 
         self.ar_add_items = []
 
         # Customise form for AR Add context
-        self.form_id = 'services_%s' % poc
+        self.form_id = poc
 
         self.filter_indexes = ['id', 'Title', 'SearchableText', 'getKeyword']
 
@@ -188,7 +191,15 @@ class AnalysisRequestAddView(AnalysisRequestViewView):
 
     def __call__(self):
         self.request.set('disable_border', 1)
-        return self.template()
+        if 'ajax_category_expand' in self.request.keys():
+            cat = self.request.get('cat')
+            asv = AnalysisServicesView(self.context,
+                                        self.request,
+                                        self.request['form_id'],
+                                        category=cat)
+            return asv()
+        else:
+            return self.template()
 
     def copy_to_new_specs(self):
         specs = {}
@@ -251,6 +262,7 @@ class AnalysisRequestAddView(AnalysisRequestViewView):
 
         s = AnalysisServicesView(self.context, self.request, poc,
                                  ar_count=ar_count)
+        s.form_id = poc
         s.folderitems()
 
         if not s.ar_add_items:
