@@ -1002,6 +1002,13 @@ class BikaListingView(BrowserView):
                 if icon:
                     return '/'.join(icon.getPhysicalPath())
 
+    def tabindex(self):
+        i = 0
+        while True:
+            i += 1
+            yield i
+
+
 class BikaListingTable(tableview.Table):
 
     render = ViewPageTemplateFile("templates/bika_listing_table.pt")
