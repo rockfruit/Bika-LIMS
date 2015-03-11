@@ -50,7 +50,9 @@ displayed when ajax requests the table. </tal:comment>
         name python:form_id+'_sort_order';
         value python:request.get(form_id+'_sort_order', 'ascending')"/>
 
-<input type="hidden" name="ajax_categories" value="1" tal:condition="view/bika_listing/ajax_categories"/>
+<input type="hidden" name="ajax_categories" value="1"
+        tal:condition="view/bika_listing/ajax_categories"
+        tal:attributes="form_id form_id"/>
 
 <tal:worksheet-cheat-1 condition="python:hasattr(view.bika_listing, 'analyst')">
     <input type="hidden"
