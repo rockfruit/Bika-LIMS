@@ -30,8 +30,10 @@ General AR Add javascript tests
 ### When Contact is selected, expand CC Contacts
 
     select from dropdown               css=#Contact-0        Rita
+    wait until page contains element   xpath=.//div[contains(@class, 'reference_multi_item')]
     xpath should match x times         .//div[contains(@class, 'reference_multi_item')]   1
     select from dropdown               css=#Contact-0        Neil
+    wait until page contains element   xpath=.//div[contains(@class, 'reference_multi_item')]
     xpath should match x times         .//div[contains(@class, 'reference_multi_item')]   2
 
 ### Check that ST<-->SP soft-restrictions are in place
@@ -63,12 +65,12 @@ General AR Add javascript tests
     # ccemails (regular text field)
     input text                         css=#CCEmails-0       asdf@example.com
     click element                      css=tr[fieldname='CCEmails'] img.copybutton
-    textfield value should be          css=#CCEmails-4m
+    textfield value should be          css=#CCEmails-4       asdf@example.com
 
     # select element
-    select from list                   css=#PreparationWorkflow-0 select
+    select from list                   css=select#PreparationWorkflow-0
     click element                      css=tr[fieldname='PreparationWorkflow'] img.copybutton
-    list selection should be           css=#PreparationWorkflow-4      Simple one-step
+    list selection should be           css=select#PreparationWorkflow-4      Simple one-step
 
     # Checkboxes
     select checkbox                    css=#ReportDryMatter-0
@@ -98,15 +100,13 @@ Prices are hidden when Show Prices is disabled
     page should not contain element    css=span.vat
     page should not contain element    css=span.total
 
-BikaListing AR Add javascript tests
-
+BikaListing AR Add javascript tests - with ajax_categories
     Enable bikalisting form
     Go to                              ${client1_factory_url}
     wait until page contains           xxx
 
 ### Select-all checkbox stuff
-
-    # click path
+    click element                      css=table[form_id='lab'] th[cat='Water Chemistry']
     select checkbox                    css=input[name='uids:list'][item_title='COD']
     xpath should match x times         .//*[@checked='checked']    6
     unselect checkbox                  css=input[name='uids:list'][item_title='COD']
@@ -125,6 +125,11 @@ BikaListing AR Add javascript tests
     # dry matter
     checkbox should be selected        css=#ReportDryMatter-0
     # services
+
+    debug    # here, first category expanded by Template, does not have selections.
+             # further categories are not expanded at  all,
+             # though if already expanded, their checkboxes are correctly selected.
+
     xpath should match x times         .//td[contains(@class, 'ar.0')]//input[@type='checkbox' and @checked]     4
     # specifications
     xpath should match x times         .//td[contains(@class, 'ar.0')]//input[@value="9"]          20
@@ -254,8 +259,8 @@ SingleService AR Add javascript tests
 
     wait until page contains           10.50
     wait until page contains           59.50
-    wait until page contains           9.27
-    wait until page contains           68.76
+    wait until page contains           8.33    # 59*100/14
+    wait until page contains           67.83
 
 ### Analysis Profiles
 
