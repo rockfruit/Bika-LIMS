@@ -165,7 +165,6 @@ function BikaListingTableView() {
 		// element is the category header TH.
 		// duplicated in bika.lims.analysisrequest.add_by_col.js
 		var d = $.Deferred()
-
 		var form_id = $(element).parents("[form_id]").attr("form_id")
 		var url = window.location.href.split('?')[0]
 		var options = {} // XXX get possible parameters from URL correctly into options?
@@ -174,6 +173,11 @@ function BikaListingTableView() {
 
 		// We will replace this element with downloaded items:
 		var placeholder = $("tr[data-ajax_category='" + cat + "']")
+
+		if($(element).hasClass("expanded")) {
+			d.resolve()
+			return d.promise()
+		}
 
 		// If ajax_categories are enabled, we need to go request items now.
 		if (ajax_categories.length > 0 && placeholder.length > 0) {
@@ -189,16 +193,17 @@ function BikaListingTableView() {
 			$.ajax({url: url, data: options})
 			  .done(function (data) {
 						$("[form_id='" + form_id + "'] tr[data-ajax_category='" + cat + "']").replaceWith(data)
+						$(element).removeClass("collapsed").addClass("expanded")
 						d.resolve()
-					});
+					})
 		}
 		else {
 			// When ajax_categories are disabled, all cat items exist as TR elements:
-			$(this).parent().nextAll("tr[cat='" + $(this).attr("cat") + "']").toggle(true)
+			$(element).parent().nextAll("tr[cat='" + $(element).attr("cat") + "']").toggle(true)
+			$(element).removeClass("collapsed").addClass("expanded")
 			d.resolve()
 		}
 		// Set expanded class on TR
-		$(this).removeClass("collapsed").addClass("expanded")
 		return d.promise()
 	}
 
