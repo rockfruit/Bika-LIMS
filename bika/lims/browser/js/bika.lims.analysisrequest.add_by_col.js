@@ -1334,17 +1334,53 @@ function AnalysisRequestAddByCol() {
 	function expand_services_bika_listing(arnum, service_data) {
 		// When the bika_listing serviceselector is in place,
 		// this function is called to select services for Profiles and Templates.
-		var service_uids = []
+		var service
 		for (var si = 0; si < service_data.length; si++) {
-			var service = service_data[si]
-			service_uids.push(service['UID'])
-			var poc = service['PointOfCapture']
 			// Expand category
-			$('span#' + poc + ' ' +
-			  '[cat="' + service['CategoryTitle'] + '"].collapsed').click()
-			// select service
-			analysis_cb_check(arnum, service['UID'])
+			service = service_data[si]
+			var cat = service['CategoryTitle']
+			var poc = service['PointOfCapture']
+			var th = $("table[form_id='" + poc + "'] th[cat='" + cat + "']")
+			category_header_expand_handler(th).done(function () {
+				// select service
+				analysis_cb_check(arnum, service['UID'])
+			})
 		}
+	}
+
+	function category_header_expand_handler(element) {
+		// element is the category header TH.
+		// Duplicated from bika.lims.bikalisting.js
+		var d = $.Deferred()
+		var form_id = $(element).parents("[form_id]").attr("form_id")
+		var url = window.location.href.split('?')[0]
+		var options = {} // XXX get possible parameters from URL correctly into options?
+		var ajax_categories = $("input[name='ajax_categories']")
+		var cat = $(element).attr('cat')
+		// We will replace this element with downloaded items:
+		var placeholder = $("tr[data-ajax_category='" + cat + "']")
+		// If ajax_categories are enabled, we need to go request items now.
+		if (ajax_categories.length > 0 && placeholder.length > 0) {
+			options['ajax_category_expand'] = 1
+			options['cat'] = cat
+			options['form_id'] = form_id
+			if ($('.review_state_selector a.selected').length > 0) {
+				options['review_state'] = $('.review_state_selector a.selected')[0].id
+			}
+			$.ajax({url: url, data: options})
+			  .done(function (data) {
+						$("[form_id='" + form_id + "'] tr[data-ajax_category='" + cat + "']").replaceWith(data)
+						d.resolve()
+					});
+		}
+		else {
+			// When ajax_categories are disabled, all cat items exist as TR elements:
+			$(this).parent().nextAll("tr[cat='" + $(this).attr("cat") + "']").toggle(true)
+			d.resolve()
+		}
+		// Set expanded class on TR
+		$(this).removeClass("collapsed").addClass("expanded")
+		return d.promise()
 	}
 
 	function uncheck_all_services(arnum) {
