@@ -717,7 +717,7 @@ class AnalysisRequestsView(BikaListingView):
         toggle_cols = self.get_toggle_cols()
         new_states = []
         for i, state in enumerate(self.review_states):
-            if state['id'] == self.review_state:
+            if state == self.review_state:
                 if 'getSampler' not in toggle_cols \
                    or 'getDateSampled' not in toggle_cols:
                     if 'hide_transitions' in state:

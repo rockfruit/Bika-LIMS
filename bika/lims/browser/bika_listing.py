@@ -296,11 +296,6 @@ class BikaListingView(BrowserView):
     # when rendering multiple bika_listing tables, form_id must be unique
     form_id = "list"
 
-    # The 'current' or default review_state when one hasn't been selected.
-    # With this setting, BikaListing instances must be careful to change it,
-    # without having valid review_state existing in self.review_states
-    review_state = 'default'
-
     # Show categorized list; categories are collapsed until required
     show_categories = False
 
@@ -368,8 +363,14 @@ class BikaListingView(BrowserView):
     # any index name not specified in self.columns[] can be added here.
     filter_indexes = ['Title', 'Description', 'SearchableText']
 
-    # review_state filter. with just one review_state, the selector won't show.
+    # The current or default review_state when one hasn't been selected.
+    # With this setting, BikaListing instances must be careful to change it,
+    # without having valid review_state existing in self.review_states
+    default_review_state = 'default'
+
+    # review_state
     #
+    # A list of dictionaries, specifying parameters for listing filter buttons.
     # - If review_state[x]['transitions'] is defined it's a list of dictionaries:
     #     [{'id':'x'}]
     # Transitions will be ordered by and restricted to, these items.
@@ -418,10 +419,54 @@ class BikaListingView(BrowserView):
         self.translate = self.context.translate
         self.show_all = False
 
+    @property
+    def review_state(self):
+        """Get workflow state of object in wf_id.
+        First try request: <form_id>_review_state
+        Then try 'default': self.default_review_state
+        :return: item from self.review_states
+        """
+        if not self.review_states:
+            logger.error("%s.review_states is undefined." % self)
+            return None
+        # get state_id from (request or default_review_states)
+        key = "%s_review_state" % self.form_id
+        state_id = self.request.get[key] if key in self.request \
+            else self.default_review_state
+        states = [r for r in self.review_states if r['id'] == state_id]
+        if not states:
+            logger.error("%s.review_states does not contains id='%s'." %
+                         (self, state_id))
+            return None
+        review_state = states[0] if states else self.review_states[0]
+        # set selected state into the request
+        self.request['%s_review_state' % self.form_id] = review_state['id']
+        return review_state
+
     def _process_request(self):
-        # Use this function from a template that is using bika_listing_table
-        # in such a way that the table_only request var will be used to
-        # in-place-update the table.
+        """Scan request for parameters and configure class attributes
+        accordingly.  Setup AdvancedQuery or catalog contentFilter.
+
+        Request parameters:
+        <form_id>_sort_on:          list items are sorted on this key
+        <form_id>_manual_sort_on:   no index - sort with python
+        <form_id>_pagesize:         number of items
+        <form_id>_pagenumber:       page number
+        <form_id>_filter:           A string, will be regex matched against
+                                    indexes in <form_id>_filter_indexes
+        <form_id>_filter_indexes:   list of index names which will be searched
+                                    for the value of <form_id>_filter
+
+        <form_id>_<index_name>:     Any index name can be used after <form_id>_.
+
+            any request variable named ${form_id}_{index_name} will pass it's
+            value to that index in self.contentFilter.
+
+            All conditions using ${form_id}_{index_name} are searched with AND.
+
+            The parameter value will be matched with regexp if a FieldIndex or
+            TextIndex.  Else, AdvancedQuery.Generic is used.
+        """
         form_id = self.form_id
         form = self.request.form
         workflow = getToolByName(self.context, 'portal_workflow')
@@ -441,14 +486,6 @@ class BikaListingView(BrowserView):
         if form_id not in self.request.get('table_only', form_id):
             return ''
 
-        ## review_state_selector - value can be specified in request
-        selected_state = self.request.get("%s_review_state" % form_id,
-                                          'default')
-        # get review_state id=selected_state
-        states = [r for r in self.review_states if r['id'] == selected_state]
-        self.review_state = states and states[0] or self.review_states[0]
-        # set selected review_state ('default'?) to request
-        self.request['review_state'] = self.review_state['id']
 
         # contentFilter is expected in every self.review_state.
         for k, v in self.review_state['contentFilter'].items():
@@ -459,8 +496,8 @@ class BikaListingView(BrowserView):
         # this is a compromise for sorting without column indexes
         self.manual_sort_on = None
         if self.sort_on \
-           and self.sort_on in self.columns.keys() \
-           and self.columns[self.sort_on].get('index', None):
+                and self.sort_on in self.columns.keys() \
+                and self.columns[self.sort_on].get('index', None):
             idx = self.columns[self.sort_on].get('index', self.sort_on)
             self.contentFilter['sort_on'] = idx
         else:
@@ -592,8 +629,7 @@ class BikaListingView(BrowserView):
                 self.columns[col]['toggle'] = False
 
     def get_toggle_cols(self):
-        states = [r for r in self.review_states if r['id'] == self.review_state]
-        self.review_state = states and states[0] or self.review_states[0]
+
         try:
             toggles = {}
             # request OR cookie OR default
@@ -849,21 +885,20 @@ class BikaListingView(BrowserView):
                 replace = {},
             )
             try:
-                self.review_state = workflow.getInfoFor(obj, 'review_state')
-                state_title = workflow.getTitleForStateOnType(
-                    self.review_state, obj.portal_type)
-                state_title = t(PMF(state_title))
+                rs = workflow.getInfoFor(obj, 'review_state')
+                st_title = workflow.getTitleForStateOnType(rs, obj.portal_type)
+                st_title = t(PMF(st_title))
             except:
-                self.review_state = 'active'
-                state_title = None
-            if self.review_state:
-                results_dict['review_state'] = self.review_state
+                rs = 'active'
+                st_title = None
+            if rs:
+                results_dict['review_state'] = rs
             for state_var, state in states.items():
-                if not state_title:
-                    state_title = workflow.getTitleForStateOnType(
+                if not st_title:
+                    st_title = workflow.getTitleForStateOnType(
                         state, obj.portal_type)
                 results_dict[state_var] = state
-            results_dict['state_title'] = state_title
+            results_dict['state_itle'] = st_title
 
             # extra classes for individual fields on this item { field_id : "css classes" }
             results_dict['class'] = {}
@@ -913,8 +948,6 @@ class BikaListingView(BrowserView):
 
         # selected review_state must be adhered to
         st_id = self.request.get('review_state')
-        self.review_state = \
-            [rs for rs in self.review_states if rs['id'] == st_id][0]
 
         # These are required to allow the template to work with this class as
         # the view.  Normally these are attributes of class BikaListingTable.
@@ -935,16 +968,6 @@ class BikaListingView(BrowserView):
             return []
 
         workflow = getToolByName(self.context, 'portal_workflow')
-
-
-        # check POST for a specified review_state selection
-        selected_state = self.request.get("%s_review_state"%self.form_id,
-                                          'default')
-        # get review_state id=selected_state
-        states = [r for r in self.review_states
-                  if r['id'] == selected_state]
-        self.review_state = states and states[0] \
-            or self.review_states[0]
 
         # get all transitions for all items.
         transitions = {}
@@ -1054,7 +1077,7 @@ class BikaListingTable(tableview.Table):
         self.form_id = bika_listing.form_id
         self.items = folderitems
 
-    def rendered_items(self, cat=None, review_state=None):
+    def rendered_items(self, cat=None):
         """
         Render the table rows of items in a particular category.
         :param cat: the category ID with which we will filter the results
@@ -1062,7 +1085,7 @@ class BikaListingTable(tableview.Table):
         :return: rendered HTML text
         """
         self.cat = cat
-        self.review_state = review_state
+
         selected_cats = self.bika_listing.selected_cats(self.batch)
         self.this_cat_selected = cat in selected_cats
         self.this_cat_batch = []

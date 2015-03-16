@@ -93,7 +93,7 @@ Table cells for each column from in review_state's column list.
 ********************</tal:comment>
 
 <tal:cell
-    tal:repeat="column view/review_state/columns">
+    tal:repeat="column view/bika_listing/review_state/columns">
 <tal:rowcolspan
     tal:condition="python: 'toggle' not in view.bika_listing.columns[column]
                         or view.bika_listing.columns[column].get('toggle', True)"
