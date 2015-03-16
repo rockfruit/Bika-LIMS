@@ -113,6 +113,8 @@ def format_uncertainty(analysis, result, decimalmark='.', sciformat=1):
     """
     try:
         result = float(result)
+    except TypeError:
+        return ""
     except ValueError:
         return ""
 
