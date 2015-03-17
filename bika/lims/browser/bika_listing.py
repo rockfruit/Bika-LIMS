@@ -315,6 +315,11 @@ class BikaListingView(BrowserView):
     # in HTML would be very slow.
     ajax_categories = False
 
+    # using the following attribute, some python class may add a CSS class
+    # to the TH elements used for the category headings.  This allows all
+    # manner of Javascript trickery.
+    cat_header_class = ''
+
     # category_index is the catalog index from each listed object.
     # it will be used to decide if an item is a member of a category.
     # This is required, if using ajax_categories.

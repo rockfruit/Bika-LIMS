@@ -54,6 +54,8 @@ function AnalysisRequestAddByCol() {
 		singleservice_deletebtn_click()
 		analysis_cb_click()
 
+		category_header_clicked()
+
 		//		sample_selected()
 
 		form_submit()
@@ -1360,6 +1362,38 @@ function AnalysisRequestAddByCol() {
 		})
 	}
 
+	function uncheck_all_services(arnum) {
+		// Can't have dry matter without any services
+		drymatter_unset(arnum)
+		// Remove checkboxes for all existing services in this column
+		var cblist = $("tr[uid] td[class*='ar\\." + arnum + "'] " +
+					   "input[type='checkbox']").filter(":checked")
+		for (var i = 0; i < cblist.length; i++) {
+			var e = cblist[i]
+			var arnum = get_arnum(e)
+			var uid = $(e).parents("[uid]").attr("uid")
+			analysis_cb_uncheck(arnum, uid)
+		}
+	}
+
+	function category_header_clicked() {
+		// expand/collapse categorised rows
+		var ajax_categories = $("input[name='ajax_categories']")
+		$(".bika-listing-table th.collapsed")
+		  .unbind()
+		  .live("click", function (event) {
+					category_header_expand_handler(this)
+				})
+		$(".bika-listing-table th.expanded")
+		  .unbind()
+		  .live("click", function () {
+			// After ajax_category expansion, collapse and expand work as they would normally.
+			$(this).parent().nextAll("tr[cat='" + $(this).attr("cat") + "']").toggle(false)
+			// Set collapsed class on TR
+			$(this).removeClass("expanded").addClass("collapsed")
+		})
+	}
+
 	function category_header_expand_handler(element) {
 		/* Deferred function to expand the category with ajax (or not!!)
 		 on first expansion.  duplicated from bika.lims.bikalisting.js, this code
@@ -1374,6 +1408,7 @@ function AnalysisRequestAddByCol() {
 		// with form_id allow multiple ajax-categorised tables in a page
 		var form_id = $(element).parents("[form_id]").attr("form_id")
 		var cat_title = $(element).attr('cat')
+		var ar_count = parseInt($("#ar_count").val(), 10)
 		// URL can be provided by bika_listing classes, with ajax_category_url attribute.
 		var url = $("input[name='ajax_categories_url']").length > 0
 		  ? $("input[name='ajax_categories_url']").val()
@@ -1394,6 +1429,7 @@ function AnalysisRequestAddByCol() {
 			// this parameter allows the receiving view to know for sure what's expected
 			options['ajax_category_expand'] = 1
 			options['cat'] = cat_title
+			options['ar_count'] = ar_count
 			options['form_id'] = form_id
 			if ($('.review_state_selector a.selected').length > 0) {
 				// review_state must be kept the same after items are loaded
@@ -1414,20 +1450,6 @@ function AnalysisRequestAddByCol() {
 			def.resolve()
 		}
 		return def
-	}
-
-	function uncheck_all_services(arnum) {
-		// Can't have dry matter without any services
-		drymatter_unset(arnum)
-		// Remove checkboxes for all existing services in this column
-		var cblist = $("tr[uid] td[class*='ar\\." + arnum + "'] " +
-					   "input[type='checkbox']").filter(":checked")
-		for (var i = 0; i < cblist.length; i++) {
-			var e = cblist[i]
-			var arnum = get_arnum(e)
-			var uid = $(e).parents("[uid]").attr("uid")
-			analysis_cb_uncheck(arnum, uid)
-		}
 	}
 
 // analysis service checkboxes /////////////////////////////////////////////

@@ -10,7 +10,7 @@ Resource         plone/app/robotframework/saucelabs.robot
 Variables        plone/app/testing/interfaces.py
 Variables        bika/lims/tests/variables.py
 Suite Setup      Start browser
-Suite Teardown   Close All Browsers
+#Suite Teardown   Close All Browsers
 
 Library          DebugLibrary
 
@@ -59,6 +59,9 @@ General AR Add javascript tests
     # contact (reference, multivalued reference, and CC Contacts)
     select from dropdown               css=#Contact-0       Rita
     click element                      css=tr[fieldname='Contact'] img.copybutton
+    # The @value condition below does not fire.  SO instead I sleep for 1 sec.
+    # wait until page contains element   xpath=.//input[@id="Contact-4" and @value="Rita Mohale"]
+    sleep       1
     textfield value should be          css=#Contact-4       Rita Mohale
     xpath should match x times         .//div[contains(@class, 'reference_multi_item')]    5
 
@@ -80,10 +83,10 @@ General AR Add javascript tests
 ### minimal AR to test AR creation with SamplingWorkflow.
     # This must be done befor the client-filter test, because we must
     # test the filtering of Samples.
-    log    minimal AR to test AR creation with SamplingWorkflow   WARN
+    # XXX  minimal AR to test AR creation with SamplingWorkflow   WARN
 
 ### sticker printout triggered when setup/labels='register'
-    log    sticker printout triggered when setup/labels='register'   WARN
+    # XXX    sticker printout triggered when setup/labels='register'   WARN
 
 
 ### Client-filter on elements must be respected.

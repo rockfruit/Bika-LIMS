@@ -54,6 +54,8 @@ class AnalysisServicesView(ASV):
         if category:
             self.contentFilter['getCategoryTitle'] = category
 
+        self.cat_header_class = "ignore_bikalisting_default_handler"
+
         self.ar_count = ar_count if ar_count else 4
 
         self.ar_add_items = []
