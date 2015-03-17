@@ -436,8 +436,7 @@ class BikaListingView(BrowserView):
             return None
         # get state_id from (request or default_review_states)
         key = "%s_review_state" % self.form_id
-        state_id = self.request.get[key] if key in self.request \
-            else self.default_review_state
+        state_id = self.request.form.get(key, self.default_review_state)
         states = [r for r in self.review_states if r['id'] == state_id]
         if not states:
             logger.error("%s.review_states does not contains id='%s'." %
@@ -1082,15 +1081,20 @@ class BikaListingTable(tableview.Table):
         self.form_id = bika_listing.form_id
         self.items = folderitems
 
-    def rendered_items(self, cat=None):
+    def rendered_items(self, cat=None, **kwargs):
         """
         Render the table rows of items in a particular category.
         :param cat: the category ID with which we will filter the results
         :param review_state: the current review_state from self.review_states
+        :param kwargs: all other keyword args are set as attributes of
+                       self and self.bika_listing, for injecting attributes
+                       that templates require.
         :return: rendered HTML text
         """
         self.cat = cat
-
+        for key,val in kwargs.items():
+            self.__setattr__(key, val)
+            self.bika_listing.__setattr__(key, val)
         selected_cats = self.bika_listing.selected_cats(self.batch)
         self.this_cat_selected = cat in selected_cats
         self.this_cat_batch = []

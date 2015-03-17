@@ -202,7 +202,7 @@ Colum Headers
                     </th>
                 </tr>
 
-                <span tal:replace="structure python:view.rendered_items(cat, review_state)"/>
+                <span tal:replace="structure python:view.rendered_items(cat)"/>
 
             </tal:show_this_category>
         </tal:cats>

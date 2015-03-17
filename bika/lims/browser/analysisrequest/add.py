@@ -56,7 +56,11 @@ class AnalysisServicesView(ASV):
 
         self.cat_header_class = "ignore_bikalisting_default_handler"
 
-        self.ar_count = ar_count if ar_count else 4
+        ar_count_default = ar_count if ar_count else 4
+        try:
+            self.ar_count = int(self.request.get('ar_count', ar_count_default))
+        except ValueError:
+            self.ar_count = ar_count_default
 
         self.ar_add_items = []
 
@@ -186,10 +190,7 @@ class AnalysisRequestAddView(AnalysisRequestViewView):
         self.DryMatterService = self.context.bika_setup.getDryMatterService()
         request.set('disable_plone.rightcolumn', 1)
         self.layout = self.request.get('layout', 'columns')
-        try:
-            self.ar_count = int(self.request['ar_count'])
-        except:
-            self.ar_count = 4
+        self.ar_count = int(self.request.get('ar_count', 4))
 
     def __call__(self):
         self.request.set('disable_border', 1)
@@ -198,7 +199,8 @@ class AnalysisRequestAddView(AnalysisRequestViewView):
             asv = AnalysisServicesView(self.context,
                                         self.request,
                                         self.request['form_id'],
-                                        category=cat)
+                                        category=cat,
+                                        ar_count=self.ar_count)
             return asv()
         else:
             return self.template()
