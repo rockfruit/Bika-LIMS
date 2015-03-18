@@ -16,11 +16,6 @@ ${ar_factory_url}  portal_factory/AnalysisRequest/Request%20new%20analyses/ar_ad
 
 *** Test Cases ***
 
-Add ARs by Row
-    Create Primary AR By Row With Template
-    Create Primary AR By Row
-    Create Mulitple Primary ARs By Row With Template
-
 Analysis Request with no samping or preservation workflow
     Log in                              test_labmanager         test_labmanager
     Wait until page contains            You are now logged in
@@ -60,9 +55,9 @@ Create Primary AR
     Wait until page contains element    css=body.portaltype-client
     Click Link                  Add
     Wait until page contains    Request new analyses
-    Select from dropdown        ar_0_Contact                Rita
-    Select from dropdown        ar_0_Template               Bore
-    Select Date                 ar_0_SamplingDate           @{time}[2]
+    Select from dropdown        css=#Contact-0                Rita
+    Select from dropdown        css=#Template-0               Bore
+    Select Date                 css=#SamplingDate-0           @{time}[2]
     Set Selenium Timeout        30
     Click Button                Save
     Set Selenium Timeout        10
@@ -76,95 +71,6 @@ Create Primary AR
     Wait until page contains    saved
     [return]                    ${ar_id}
 
-Create Primary AR By Row
-    Log in                      test_labmanager  test_labmanager
-    @{time} =                   Get Time        year month day hour min sec
-    Go to                       ${PLONEURL}/clients/client-1
-    Wait until page contains element    css=body.portaltype-client
-    Input text                  ar_count    2
-    Select from list            layout      rows
-    Click Link                  Add
-    Wait until page contains    Request new analyses
-    Select from dropdown        Contact                     Rita
-    Select Date                 ar_0_SamplingDate           @{time}[2]
-    Select from dropdown        ar_0_SampleType             Water
-    Click element               ar_0_Analyses
-    Wait until page contains    Select Analyses for AR
-    Click element               xpath=//th[@id="cat_lab_Metals"]
-    Select checkbox             xpath=//input[@title="Calcium"]
-    Click Button                Submit
-    Set Selenium Timeout        10
-    ${Analyses} =               Get value    xpath=//input[@id="ar_0_Analyses"]
-    Log                         ${Analyses}
-    Should Be Equal             ${Analyses}    Calcium
-    Click Button                Save
-    Wait until page contains    was successfully created.
-    ${ar_id} =                  Get text      //dl[contains(@class, 'portalMessage')][2]/dd
-    ${ar_id} =                  Set Variable  ${ar_id.split()[2]}
-    Go to                       http://localhost:55001/plone/clients/client-1/analysisrequests
-    Wait until page contains    ${ar_id}
-    Select checkbox             xpath=//input[@item_title="${ar_id}"]
-    Click button                xpath=//input[@value="Receive sample"]
-    Wait until page contains    saved
-    [return]                    ${ar_id}
-
-Create Mulitple Primary ARs By Row With Template
-    Log in                      test_labmanager  test_labmanager
-    @{time} =                   Get Time        year month day hour min sec
-    Go to                       ${PLONEURL}/clients/client-1
-    Wait until page contains element    css=body.portaltype-client
-    Input text                  ar_count    2
-    Select from list            layout      rows
-    Click Link                  Add
-    Wait until page contains    Request new analyses
-    Select from dropdown        Contact                     Rita
-    Select Date                 ar_0_SamplingDate           @{time}[2]
-    Select from dropdown        ar_0_Template               Bore
-    Set Selenium Timeout        10
-    ${Analyses} =               Get value    xpath=//input[@id="ar_0_Analyses"]
-    Log                         ${Analyses}
-    Should Be Equal             ${Analyses}    Calcium, Magnesium
-    Click Element               //img[contains(@class, 'TemplateCopyButton')]
-    Click Element               //img[contains(@class, 'SamplingDateCopyButton')]
-    Click Button                Save
-    Wait until page contains    were successfully created.
-    ${ar_id} =                  Get text      //dl[contains(@class, 'portalMessage')][2]/dd
-    ${ar_id_1} =                Set Variable  ${ar_id.split()[2]}
-    ${ar_id_1} =                Set Variable  ${ar_id_1.split(',')[0]}
-    ${ar_id_2} =                Set Variable  ${ar_id.split()[3]}
-    ${ar_id_2} =                Set Variable  ${ar_id_2.split(',')[0]}
-    Go to                       http://localhost:55001/plone/clients/client-1/analysisrequests
-    Wait until page contains    ${ar_id_1}
-    Page should contain         ${ar_id_2}
-
-Create Primary AR By Row With Template
-    Log in                      test_labmanager  test_labmanager
-    @{time} =                   Get Time        year month day hour min sec
-    Go to                       ${PLONEURL}/clients/client-1
-    Wait until page contains element    css=body.portaltype-client
-    Input text                  ar_count    2
-    Select from list            layout      rows
-    Click Link                  Add
-    Wait until page contains    Request new analyses
-    Select from dropdown        Contact                     Rita
-    Select Date                 ar_0_SamplingDate           @{time}[2]
-    Select from dropdown        ar_0_Template               Bore
-    Set Selenium Timeout        10
-    ${Analyses} =               Get value    xpath=//input[@id="ar_0_Analyses"]
-    Log                         ${Analyses}
-    Should Be Equal             ${Analyses}    Calcium, Magnesium
-    Click Button                Save
-    Wait until page contains    was successfully created.
-    ${ar_id} =                  Get text      //dl[contains(@class, 'portalMessage')][2]/dd
-    ${ar_id} =                  Set Variable  ${ar_id.split()[2]}
-    Go to                       http://localhost:55001/plone/clients/client-1/analysisrequests
-    Wait until page contains    ${ar_id}
-    Select checkbox             xpath=//input[@item_title="${ar_id}"]
-    Click button                xpath=//input[@value="Receive sample"]
-    Wait until page contains    saved
-    [return]                    ${ar_id}
-
-
 Create Secondary AR
     Log in                      test_labmanager  test_labmanager
     @{time} =                   Get Time        year month day hour min sec
@@ -172,9 +78,9 @@ Create Secondary AR
     Wait until page contains element    css=body.portaltype-client
     Click Link                  Add
     Wait until page contains    Request new analyses
-    Select from dropdown        ar_0_Contact                Rita
-    Select from dropdown        ar_0_Template               Bruma
-    select from dropdown        ar_0_Sample
+    Select from dropdown        css=#Contact-0                Rita
+    Select from dropdown        css=#Template-0               Bruma
+    select from dropdown        css=#Sample-0
     Set Selenium Timeout        30
     Click Button                Save
     Set Selenium Timeout        2
@@ -191,20 +97,20 @@ In a client context, only allow selecting samples from that client.
     Wait until page contains element    css=body.portaltype-client
     Click Link                  Add
     Wait until page contains    Request new analyses
-    Select from dropdown        ar_0_Contact               Johanna
-    Select from dropdown        ar_0_Template              Bore    1
+    Select from dropdown        css=#Contact-0               Johanna
+    Select from dropdown        css=#Template-0              Bore    1
     Run keyword and expect error
     ...   ValueError: Element locator 'xpath=//div[contains(@class,'cg-colItem')][1]' did not match any elements.
-    ...   Select from dropdown        ar_0_Sample
+    ...   Select from dropdown        css=#Sample-0
 
 
 Complete ar_add form with template ${template}
     Wait until page contains    Request new analyses
     @{time} =                   Get Time        year month day hour min sec
-    SelectDate                  ar_0_SamplingDate   @{time}[2]
-    Select from dropdown        ar_0_Contact       Rita
-    Select from dropdown        ar_0_Priority           High
-    Select from dropdown        ar_0_Template       ${template}
+    SelectDate                  css=#SamplingDate-0   @{time}[2]
+    Select from dropdown        css=#Contact-0       Rita
+    Select from dropdown        css=#Priority-0           High
+    Select from dropdown        css=#Template-0       ${template}
     Sleep                       5
     Click Button                Save
     Wait until page contains    created
@@ -214,10 +120,11 @@ Complete ar_add form with template ${template}
 
 Complete ar_add form Without template
     @{time} =                  Get Time        year month day hour min sec
-    SelectDate                 ar_0_SamplingDate   @{time}[2]
-    Select From Dropdown       ar_0_SampleType    Water
-    Select from dropdown       ar_0_Contact       Rita
-    Select from dropdown       ar_0_Priority           High
+    SelectDate                 css=#SamplingDate-0   @{time}[2]
+    Select From Dropdown       css=#SampleType-0    Water
+    Select from dropdown       css=#Contact-0       Rita
+    Select from dropdown       css=#Priority-0           High
+    debug
     Click Element              xpath=//th[@id='cat_lab_Water Chemistry']
     Select Checkbox            xpath=//input[@title='Moisture' and @name='ar.0.Analyses:list:ignore_empty:record']
     Click Element              xpath=//th[@id='cat_lab_Metals']

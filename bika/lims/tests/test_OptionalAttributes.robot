@@ -59,11 +59,11 @@ Create Primary AR
     Click Link                  Add
     Wait until page contains    Request new analyses
     sleep   1
-    Select Date                 ar_0_SamplingDate           @{time}[2]
+    Select Date                 css=#SamplingDate-0           @{time}[2]
     sleep   1
-    Select from dropdown        ar_0_Contact                Rita
+    Select from dropdown        css=#Contact-0                Rita
     sleep   1
-    Select from dropdown        ar_0_Template               Bore
+    Select from dropdown        css=#Template-0               Bore
     sleep   1
     Set Selenium Timeout        30
     Click Button                Save

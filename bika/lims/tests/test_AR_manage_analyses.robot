@@ -22,9 +22,9 @@ Test Manage Analyses
     Wait until page contains element  css=body.portaltype-client
     Click Link                        Add
     Wait until page contains          Request new analyses
-    select from dropdown              ar_0_Contact                Rita
-    Select from dropdown              ar_0_Template               Bore
-    Select Date                       ar_0_SamplingDate           1
+    select from dropdown              css=#Contact-0                Rita
+    Select from dropdown              css=#Template-0               Bore
+    Select Date                       css=#SamplingDate-0           1
     Set Selenium Timeout              30
     Click Button                      Save
     Wait until page contains          created

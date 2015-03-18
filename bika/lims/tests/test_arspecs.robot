@@ -27,22 +27,22 @@ Test AnalysisRequest Specifications
     Go To                               ${PLONEURL}/clients/client-1/analysisrequests
     Click Link                          Add
     Wait Until Page Contains            Request new analyses
-    Select From Dropdown                ar_0_Profile            Trace Metals
-    Select From Dropdown                ar_0_Contact            Rita
-    SelectDate                          ar_0_SamplingDate       1
+    Select From Dropdown                css=#Profile-0            Trace Metals
+    Select From Dropdown                css=#Contact-0            Rita
+    SelectDate                          css=#SamplingDate-0       1
 
     # select Barley, and check that the Lab spec is applied
-    Select from dropdown                ar_0_SampleType         Barley
+    Select from dropdown                css=#SampleType-0         Barley
     sleep                               3
-    Textfield Value Should Be           ar_0_Specification      Barley
+    Textfield Value Should Be           css=#Specification-0      Barley
     Textfield Value Should Be           css=input[class*='min'][keyword='Mg']           5
     Textfield Value Should Be           css=input[class*='max'][keyword='Mg']           11
     Textfield Value Should Be           css=input[class*='error'][keyword='Mg']         10
 
     # select Apple pulp, and check that the Client spec is applied
-    Select from dropdown                ar_0_SampleType         Apple Pulp
+    Select from dropdown                css=#SampleType-0         Apple Pulp
     sleep                               3
-    Textfield Value Should Be           ar_0_Specification      Apple Pulp
+    Textfield Value Should Be           css=#Specification-0      Apple Pulp
     Textfield Value Should Be           css=input[class*='min'][keyword='Ca']           11
     Textfield Value Should Be           css=input[class*='max'][keyword='Ca']           15
     Textfield Value Should Be           css=input[class*='error'][keyword='Ca']         9    #  lab default is 10
@@ -96,7 +96,7 @@ Test AnalysisRequest Specifications
 
     # We will now de-select Zinc, and create the AR.
     Unselect Checkbox                   css=[type='checkbox'][keyword='Zn']
-    SelectDate                          ar_0_SamplingDate       1
+    SelectDate                          css=#SamplingDate-0       1
     Set Selenium Timeout                30
     Click Button                        Save
     Wait until page contains            created
@@ -144,19 +144,19 @@ when selecting a Spec it should be set on the AR.
     go to                               ${PLONEURL}/clients/client-1/analysisrequests
     click link                          Add
     wait until page contains            Request new analyses
-    Select from dropdown                ar_0_Profile            Trace
-    Select from dropdown                ar_0_Contact            Rita
-    SelectDate                          ar_0_SamplingDate       1
-    Select from dropdown                ar_0_SampleType         Barley
+    Select from dropdown                css=#Profile-0            Trace
+    Select from dropdown                css=#Contact-0            Rita
+    SelectDate                          css=#SamplingDate-0       1
+    Select from dropdown                css=#SampleType-0         Barley
     sleep        3
     Textfield Value Should Be           css=input[class*='min'][keyword='Mg']           5       #  lab default : 5
     Textfield Value Should Be           css=input[class*='max'][keyword='Mg']           11      #  lab default : 11
     Textfield Value Should Be           css=input[class*='error'][keyword='Mg']         10      #  lab default :  10
-    Select from dropdown                ar_1_Template           Bruma Metals
-    Select from dropdown                ar_1_Contact            Rita
-    SelectDate                          ar_1_SamplingDate       1
-    Textfield Value Should Be           ar_1_SampleType         Water
-    Textfield Value Should Be           ar_1_Specification      Water
+    Select from dropdown                css=#Template-1           Bruma Metals
+    Select from dropdown                css=#Contact-1            Rita
+    SelectDate                          css=#SamplingDate-1       1
+    Textfield Value Should Be           css=#SampleType-1         Water
+    Textfield Value Should Be           css=#Specification-1      Water
     Set Selenium Timeout                30
     Click Button                        Save
     Wait until page contains            created

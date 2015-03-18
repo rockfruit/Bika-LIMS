@@ -74,10 +74,10 @@ Create an AR
     go to                       ${PLONEURL}/clients/client-1
     Wait until page contains element    css=body.portaltype-client
     click link                  link=Add
-    Select from dropdown        ar_0_Contact                Rita
-    SelectDate                  ar_0_SamplingDate           @{time}[2]
-    Select from dropdown        ar_0_SampleType             Bran
-    Input text                  ar_0_ClientSampleID         ${ClientSampleId}
+    Select from dropdown        css=#Contact-0                Rita
+    SelectDate                  css=#SamplingDate-0           @{time}[2]
+    Select from dropdown        css=#SampleType-0             Bran
+    Input text                  css=#ClientSampleID-0         ${ClientSampleId}
     Set Selenium Timeout        30
     click element               xpath=.//th[@id="cat_lab_Microbiology"]
     Select checkbox             xpath=//input[@title='${ASTitle}']

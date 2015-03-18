@@ -122,9 +122,9 @@ Simple AR Creation
     click link                  ${Client}
     Wait until page contains element    css=body.portaltype-client
     click link                  link=Add
-    Select from dropdown        ar_0_Contact                ${Contact}
-    SelectDate                  ar_0_SamplingDate           @{time}[2]
-    Select from dropdown        ar_0_SampleType             ${SampleType}
+    Select from dropdown        css=#contact-0                ${Contact}
+    SelectDate                  css=#SamplingDate-0           @{time}[2]
+    Select from dropdown        css=#SampleType-0             ${SampleType}
     Set Selenium Timeout        30
     click element               xpath=.//th[@id="cat_lab_${ASCategory}"]
     Select checkbox             xpath=//input[@title='${ASTitle}']

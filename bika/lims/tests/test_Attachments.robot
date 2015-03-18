@@ -17,10 +17,10 @@ test Attachments
     Wait until page contains element        css=body.portaltype-client
     Click Link                              Add
     Wait until page contains                Request new analyses
-    Select from dropdown                    ar_0_Contact    Rita
-    Select from dropdown                    ar_0_SampleType    Barley
+    Select from dropdown                    css=#Contact-0    Rita
+    Select from dropdown                    css=#SampleType-0    Barley
     @{time} =    Get Time                   year month day hour min sec
-    Select Date                             ar_0_SamplingDate    @{time}[2]
+    Select Date                             css=#SamplingDate-0    @{time}[2]
     Click Element                           cat_lab_Metals
     Select Checkbox                         //input[@title='Calcium']
     Click Button                            Save

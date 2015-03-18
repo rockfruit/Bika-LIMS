@@ -70,10 +70,10 @@ Create AR
     Click Link                  link=Add
     Wait until page contains    Request new analyses
     @{time} =                   Get Time        year month day hour min sec
-    Select from dropdown        ar_0_Contact       Rita
-    SelectDate                  ar_0_SamplingDate   @{time}[2]
-    Select From Dropdown        ar_0_SampleType    Water
-    Select from dropdown        ar_0_StorageLocation  ${SITE}.${UNIT}.${SHELF}
+    Select from dropdown        css=#Contact-0       Rita
+    SelectDate                  css=#SamplingDate-0   @{time}[2]
+    Select From Dropdown        css=#SampleType-0    Water
+    Select from dropdown        css=#StorageLocation-0  ${SITE}.${UNIT}.${SHELF}
     Click Element               xpath=//th[@id='cat_lab_Water Chemistry']
     Select Checkbox             xpath=//input[@title='Moisture' and @name='ar.0.Analyses:list:ignore_empty:record']
     Click Element               xpath=//th[@id='cat_lab_Metals']

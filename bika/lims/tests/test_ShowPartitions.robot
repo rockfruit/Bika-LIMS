@@ -21,20 +21,20 @@ AnalysisRequest views
     Go to  ${PLONEURL}/clients/client-1
     Click Link                       Add
     Wait Until Page Contains         Request new analyses
-    SelectDate                       ar_0_SamplingDate         1
-    Select from dropdown             ar_0_Contact              Rita
-    Select from dropdown             ar_0_Priority             High
-    Select from dropdown             ar_0_Template             Bruma
+    SelectDate                       css=#SamplingDate-0         1
+    Select from dropdown             css=#Contact-0              Rita
+    Select from dropdown             css=#Priority-0             High
+    Select from dropdown             css=#Template-0             Bruma
     Element should be visible        xpath=//em[contains(@class, 'partnr_')]
 
     Disable ShowPartitions
     Go to  ${PLONEURL}/clients/client-1
     Click Link                       Add
     Wait Until Page Contains         Request new analyses
-    SelectDate                       ar_0_SamplingDate         1
-    Select from dropdown             ar_0_Contact              Rita
-    Select from dropdown             ar_0_Priority             High
-    Select from dropdown             ar_0_Template             Bruma
+    SelectDate                       css=#SamplingDate-0         1
+    Select from dropdown             css=#Contact-0              Rita
+    Select from dropdown             css=#Priority-0             High
+    Select from dropdown             css=#Template-0             Bruma
     Element should not be visible    xpath=//em[contains(@class, 'partnr_')]
 
     Click Button  Save

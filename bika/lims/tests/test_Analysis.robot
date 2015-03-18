@@ -101,64 +101,64 @@ Test Analysis Uncertainty Precision
 
 *** Keywords ***
 
-Create AnalysisRequests
-    [Documentation]     Add and receive 10 ARs at once.
-    @{time} =                   Get Time        year month day hour min sec
-    Go to                       ${PLONEURL}/clients/client-2/portal_factory/AnalysisRequest/Request new analyses/ar_add?col_count=11
-    Wait until page contains    Request new analyses
-    Select From Dropdown        ar_0_Contact       Johanna Smith
-    Select From Dropdown        ar_1_Contact       Johanna Smith
-    Select From Dropdown        ar_2_Contact       Johanna Smith
-    Select From Dropdown        ar_3_Contact       Johanna Smith
-    Select From Dropdown        ar_4_Contact       Johanna Smith
-    Select From Dropdown        ar_5_Contact       Johanna Smith
-    Select From Dropdown        ar_6_Contact       Johanna Smith
-    Select From Dropdown        ar_7_Contact       Johanna Smith
-    Select From Dropdown        ar_8_Contact       Johanna Smith
-    Select From Dropdown        ar_9_Contact       Johanna Smith
-    Select From Dropdown        ar_10_Contact      Johanna Smith
-    Select From Dropdown        ar_0_SampleType    Water
-    Select From Dropdown        ar_1_SampleType    Water
-    Select From Dropdown        ar_2_SampleType    Water
-    Select From Dropdown        ar_3_SampleType    Water
-    Select From Dropdown        ar_4_SampleType    Water
-    Select From Dropdown        ar_5_SampleType    Water
-    Select From Dropdown        ar_6_SampleType    Water
-    Select From Dropdown        ar_7_SampleType    Water
-    Select From Dropdown        ar_8_SampleType    Water
-    Select From Dropdown        ar_9_SampleType    Water
-    Select From Dropdown        ar_10_SampleType   Water
-    SelectDate                 ar_0_SamplingDate   @{time}[2]
-    SelectDate                 ar_1_SamplingDate   @{time}[2]
-    SelectDate                 ar_2_SamplingDate   @{time}[2]
-    SelectDate                 ar_3_SamplingDate   @{time}[2]
-    SelectDate                 ar_4_SamplingDate   @{time}[2]
-    SelectDate                 ar_5_SamplingDate   @{time}[2]
-    SelectDate                 ar_6_SamplingDate   @{time}[2]
-    SelectDate                 ar_7_SamplingDate   @{time}[2]
-    SelectDate                 ar_8_SamplingDate   @{time}[2]
-    SelectDate                 ar_9_SamplingDate   @{time}[2]
-    SelectDate                 ar_10_SamplingDate   @{time}[2]
-    Click Element              xpath=//th[@id='cat_lab_Metals']
-    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.0.Analyses:list:ignore_empty:record']
-    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.1.Analyses:list:ignore_empty:record']
-    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.2.Analyses:list:ignore_empty:record']
-    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.3.Analyses:list:ignore_empty:record']
-    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.4.Analyses:list:ignore_empty:record']
-    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.5.Analyses:list:ignore_empty:record']
-    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.6.Analyses:list:ignore_empty:record']
-    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.7.Analyses:list:ignore_empty:record']
-    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.8.Analyses:list:ignore_empty:record']
-    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.9.Analyses:list:ignore_empty:record']
-    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.10.Analyses:list:ignore_empty:record']
-    Set Selenium Timeout       90
-    Click Button               Save
-    Wait until page contains   created
-    Go to                      ${PLONEURL}/clients/client-2
-    Set Selenium Timeout       10
-    Select checkbox            analysisrequests_select_all
-    Click element               receive_transition
-    Wait until page contains    saved
+#Create AnalysisRequests
+#    [Documentation]     Add and receive 10 ARs at once.
+#    @{time} =                   Get Time        year month day hour min sec
+#    Go to                       ${PLONEURL}/clients/client-2/portal_factory/AnalysisRequest/Request new analyses/ar_add?col_count=11
+#    Wait until page contains    Request new analyses
+#    Select From Dropdown        css=#SampleType-0       Johanna Smith
+#    Select From Dropdown        css=#SampleType-0       Johanna Smith
+#    Select From Dropdown        css=#SampleType-0       Johanna Smith
+#    Select From Dropdown        css=#SampleType-0       Johanna Smith
+#    Select From Dropdown        css=#SampleType-0       Johanna Smith
+#    Select From Dropdown        css=#SampleType-0       Johanna Smith
+#    Select From Dropdown        css=#SampleType-0       Johanna Smith
+#    Select From Dropdown        css=#SampleType-0       Johanna Smith
+#    Select From Dropdown        css=#SampleType-0       Johanna Smith
+#    Select From Dropdown        css=#SampleType-0       Johanna Smith
+#    Select From Dropdown        css=#SamplingDate-10      Johanna Smith
+#    Select From Dropdown        css=#SampleType-0    Water
+#    Select From Dropdown        css=#SampleType-1    Water
+#    Select From Dropdown        css=#SampleType-2    Water
+#    Select From Dropdown        css=#SampleType-3    Water
+#    Select From Dropdown        css=#SampleType-4    Water
+#    Select From Dropdown        css=#SampleType-5    Water
+#    Select From Dropdown        css=#SampleType-6    Water
+#    Select From Dropdown        css=#SampleType-7    Water
+#    Select From Dropdown        css=#SampleType-8    Water
+#    Select From Dropdown        css=#SampleType-9    Water
+#    Select From Dropdown        css=#SamplingDate-10   Water
+#    SelectDate                 css=#SamplingDate-0   @{time}[2]
+#    SelectDate                 css=#SamplingDate-1   @{time}[2]
+#    SelectDate                 css=#SamplingDate-2   @{time}[2]
+#    SelectDate                 css=#SamplingDate-3   @{time}[2]
+#    SelectDate                 css=#SamplingDate-4   @{time}[2]
+#    SelectDate                 css=#SamplingDate-5   @{time}[2]
+#    SelectDate                 css=#SamplingDate-6   @{time}[2]
+#    SelectDate                 css=#SamplingDate-7   @{time}[2]
+#    SelectDate                 css=#SamplingDate-8   @{time}[2]
+#    SelectDate                 css=#SamplingDate-9   @{time}[2]
+#    SelectDate                 css=#SamplingDate-10   @{time}[2]
+#    Click Element              xpath=//th[@id='cat_lab_Metals']
+#    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.0.Analyses:list:ignore_empty:record']
+#    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.1.Analyses:list:ignore_empty:record']
+#    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.2.Analyses:list:ignore_empty:record']
+#    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.3.Analyses:list:ignore_empty:record']
+#    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.4.Analyses:list:ignore_empty:record']
+#    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.5.Analyses:list:ignore_empty:record']
+#    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.6.Analyses:list:ignore_empty:record']
+#    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.7.Analyses:list:ignore_empty:record']
+#    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.8.Analyses:list:ignore_empty:record']
+#    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.9.Analyses:list:ignore_empty:record']
+#    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.10.Analyses:list:ignore_empty:record']
+#    Set Selenium Timeout       90
+#    Click Button               Save
+#    Wait until page contains   created
+#    Go to                      ${PLONEURL}/clients/client-2
+#    Set Selenium Timeout       10
+#    Select checkbox            analysisrequests_select_all
+#    Click element               receive_transition
+#    Wait until page contains    saved
 
 Create Worksheet With Analysis Requests
     Create Worksheet
