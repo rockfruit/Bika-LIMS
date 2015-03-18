@@ -10,7 +10,6 @@ from plone.app.testing import PLONE_FIXTURE
 from plone.app.testing import PloneSandboxLayer
 from plone.app.testing import SITE_OWNER_NAME
 from plone.testing import z2
-from plone.app.robotframework.testing import AUTOLOGIN_LIBRARY_FIXTURE
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.setuphandlers import setupPortalContent
 from Testing.makerequest import makerequest

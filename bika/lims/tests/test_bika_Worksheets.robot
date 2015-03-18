@@ -6,8 +6,6 @@ Library          String
 Resource         keywords.txt
 Library          bika.lims.testing.Keywords
 Library          DebugLibrary
-Resource         plone/app/robotframework/selenium.robot
-Resource         plone/app/robotframework/saucelabs.robot
 Variables        plone/app/testing/interfaces.py
 Variables        bika/lims/tests/variables.py
 Suite Setup      Start browser

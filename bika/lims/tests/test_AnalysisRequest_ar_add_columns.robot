@@ -5,13 +5,10 @@ Library          Selenium2Library  timeout=5  implicit_wait=0.2
 Library          String
 Resource         keywords.txt
 Library          bika.lims.testing.Keywords
-Resource         plone/app/robotframework/selenium.robot
-Resource         plone/app/robotframework/saucelabs.robot
 Variables        plone/app/testing/interfaces.py
 Variables        bika/lims/tests/variables.py
 Suite Setup      Start browser
-#Suite Teardown   Close All Browsers
-
+Suite Teardown   Close All Browsers
 Library          DebugLibrary
 
 *** Variables ***
@@ -129,17 +126,13 @@ BikaListing AR Add javascript tests - with ajax_categories
     checkbox should be selected        css=#ReportDryMatter-0
     # services
 
-    debug    # here, first category expanded by Template, does not have selections.
-             # further categories are not expanded at  all,
-             # though if already expanded, their checkboxes are correctly selected.
-
     xpath should match x times         .//td[contains(@class, 'ar.0')]//input[@type='checkbox' and @checked]     4
     # specifications
-    xpath should match x times         .//td[contains(@class, 'ar.0')]//input[@value="9"]          20
-    xpath should match x times         .//td[contains(@class, 'ar.0')]//input[@value="11"]         20
-    xpath should match x times         .//td[contains(@class, 'ar.0')]//input[@value="10"]         20
+    xpath should match x times         .//td[contains(@class, 'ar.0')]//input[@value="9"]          15
+    xpath should match x times         .//td[contains(@class, 'ar.0')]//input[@value="11"]         15
+    xpath should match x times         .//td[contains(@class, 'ar.0')]//input[@value="10"]         15
     # partnrs
-    xpath should match x times        .//td[contains(@class, 'ar.0')]//span[@class='partnr' and text()="1"]      4
+    xpath should match x times        .//td[contains(@class, 'ar.0')]//span[@class='partnr' and text()="1"]      2
 
     # A different template
     select from dropdown               css=#Template-1        Bruma
@@ -154,10 +147,10 @@ BikaListing AR Add javascript tests - with ajax_categories
 ### Price display
 
     # one of these services is calculated at 25% VAT
-    element text should be      css=td[arnum='0'] span.discount        6.00
-    element text should be      css=td[arnum='0'] span.subtotal        34.00
-    element text should be      css=td[arnum='0'] span.vat             5.70
-    element text should be      css=td[arnum='0'] span.total           39.69
+    element text should be      css=td[arnum='0'] span.discount        3.00
+    element text should be      css=td[arnum='0'] span.subtotal        17.00
+    element text should be      css=td[arnum='0'] span.vat             2.38
+    element text should be      css=td[arnum='0'] span.total           19.38
 
     element text should be      css=td[arnum='1'] span.discount        1.50
     element text should be      css=td[arnum='1'] span.subtotal        8.50

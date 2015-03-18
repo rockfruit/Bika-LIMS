@@ -2,7 +2,6 @@ from AccessControl.SecurityManagement import newSecurityManager
 from Acquisition import aq_base
 from bika.lims import logger
 from bika.lims.testing import BIKA_FUNCTIONAL_TESTING
-from plone.app.robotframework.remote import RemoteLibrary
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
