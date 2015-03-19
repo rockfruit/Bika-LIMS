@@ -674,7 +674,7 @@ class InstrumentQCFailuresViewlet(ViewletBase):
         >>> browser = layer['getBrowser'](portal, loggedIn=True, username=SITE_OWNER_NAME, password=SITE_OWNER_PASSWORD)
         >>> browser.open(portal_url)
         >>> browser.contents
-        '...are out-of-date...'
+        '...out-of-date...'
 
         """
         bsc = getToolByName(self, 'bika_setup_catalog')
