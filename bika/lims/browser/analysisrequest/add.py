@@ -88,7 +88,8 @@ class AnalysisServicesView(ASV):
 
         # Configure column layout
         to_remove = ['Category', 'Instrument', 'Unit',
-                     'Calculation', 'Keyword', 'Price']
+                     'Calculation', 'Keyword', 'Price',
+                     'state_title']
         for col_name in to_remove:
             if col_name in self.review_states[0]['columns']:
                 self.review_states[0]['columns'].remove(col_name)
