@@ -902,7 +902,7 @@ class BikaListingView(BrowserView):
                     st_title = workflow.getTitleForStateOnType(
                         state, obj.portal_type)
                 results_dict[state_var] = state
-            results_dict['state_itle'] = st_title
+            results_dict['state_title'] = st_title
 
             # extra classes for individual fields on this item { field_id : "css classes" }
             results_dict['class'] = {}
