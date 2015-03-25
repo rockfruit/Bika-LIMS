@@ -408,7 +408,7 @@ function AnalysisRequestAnalysesView() {
         $.each($("[name='uids:list']"), function(x,cb){
             var service_uid = $(cb).val();
             var row_data = $.parseJSON($("#"+service_uid+"_row_data").val());
-            if (row_data.disabled === true){
+			if (row_data != undefined && row_data.disabled === true) {
                 // disabled fields must be shadowed by hidden fields,
                 // or they don't appear in the submitted form.
                 $(cb).prop("disabled", true);
@@ -517,13 +517,23 @@ function AnalysisRequestAnalysesView() {
         }
 
         // spec fields
+		var rr = $.parseJSON($("#ResultsRange").val());
         var specfields = ["min", "max", "error"];
-        for(var i in specfields) {
-            element = $("[name='"+specfields[i]+"."+service_uid+":records']");
-            new_element = "" +
-                "<input class='listing_string_entry numeric' type='text' size='5' " +
-                "field='"+specfields[i]+"' value='"+$(element).val()+"' " +
-                "name='"+specfields[i]+"."+service_uid+":records' " +
+		var i, field, value;
+		for (i in specfields) {
+			field = specfields[i];
+			try {
+				value = rr[service_uid][field];
+			}
+			catch (e) {
+				// If the value is not defined in the AR spec, we should use a
+				// blank value; when saved the value will be stored on the AR.
+				value = '';
+			}
+			element = $("[name='" + field + "." + service_uid + ":records']");
+			new_element = "<input class='listing_string_entry numeric' type='text' size='5' " +
+				"field='" + field + "' value='" + value + "' " +
+				"name='" + field + "." + service_uid + ":records' " +
                 "uid='"+service_uid+"' autocomplete='off' style='font-size: 100%'>";
             $(element).replaceWith(new_element);
         }

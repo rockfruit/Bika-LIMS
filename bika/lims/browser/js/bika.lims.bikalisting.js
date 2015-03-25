@@ -148,17 +148,18 @@ function BikaListingTableView() {
 
 	function category_header_clicked() {
 		// expand/collapse categorised rows
-		var ajax_categories = $("input[name='ajax_categories']")
-		$(".bika-listing-table th.collapsed")
-		  .not(".ignore_bikalisting_default_handler")
-		  .live("click", function (event) {
-					category_header_expand_handler(this)
-				})
+		$(".bika-listing-table th.collapsed").live("click", function () {
+			if (!$(this).hasClass("ignore_bikalisting_default_handler")){
+				category_header_expand_handler(this)
+			}
+		})
 		$(".bika-listing-table th.expanded").live("click", function () {
-			// After ajax_category expansion, collapse and expand work as they would normally.
-			$(this).parent().nextAll("tr[cat='" + $(this).attr("cat") + "']").toggle(false)
-			// Set collapsed class on TR
-			$(this).removeClass("expanded").addClass("collapsed")
+			if (!$(this).hasClass("ignore_bikalisting_default_handler")){
+				// After ajax_category expansion, collapse and expand work as they would normally.
+				$(this).parent().nextAll("tr[cat='" + $(this).attr("cat") + "']").toggle(false)
+				// Set collapsed class on TR
+				$(this).removeClass("expanded").addClass("collapsed")
+			}
 		})
 	}
 

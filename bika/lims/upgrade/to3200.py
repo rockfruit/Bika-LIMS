@@ -20,6 +20,7 @@ def upgrade(tool):
     ### update commonly affected tools
     setup = portal.portal_setup
     setup.runImportStepFromProfile('profile-bika.lims:default', 'typeinfo')
+    setup.runImportStepFromProfile('profile-bika.lims:default', 'jsregistry')
     setup.runImportStepFromProfile('profile-bika.lims:default', 'plone.app.registry')
 
     ### Add getParentUID Client level batches (and others)
