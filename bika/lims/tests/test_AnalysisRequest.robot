@@ -18,7 +18,8 @@ ${ar_factory_url}  portal_factory/AnalysisRequest/Request%20new%20analyses/ar_ad
 
 Analysis Request with no samping or preservation workflow
     Log in                              test_labmanager         test_labmanager
-    Wait until page contains            You are now logged in
+    wait until page contains     logged in
+    Disable Print Page
     Go to                     ${PLONEURL}/clients/client-1
     Click Link                Add
     ${ar_id}=                 Complete ar_add form with template Bore
@@ -30,6 +31,7 @@ Analysis Request with no samping or preservation workflow
     Submit results with out of range tests
     Log out
     Log in                    test_labmanager1    test_labmanager1
+    wait until page contains     logged in
     Go to                     ${PLONEURL}/clients/client-1/${ar_id}/manage_results
     Add new Copper analysis to ${ar_id}
     ${ar_id} state should be sample_received
@@ -37,11 +39,15 @@ Analysis Request with no samping or preservation workflow
     Execute transition verify on items in form_id lab_analyses
     Log out
     Log in                    test_labmanager1    test_labmanager1
+    wait until page contains     logged in
     # There is no "retract" transition on verified analyses - but there should/will be.
     # Go to                     ${PLONEURL}/clients/client-1/${ar_id}/base_view
     # Execute transition retract on items in form_id lab_analyses
 
 Create two different ARs from the same sample.
+    Log in                              test_labmanager         test_labmanager
+    wait until page contains     logged in
+    Disable Print Page
     Create Primary AR
     Create Secondary AR
     In a client context, only allow selecting samples from that client.
@@ -49,7 +55,6 @@ Create two different ARs from the same sample.
 *** Keywords ***
 
 Create Primary AR
-    Log in                      test_labmanager  test_labmanager
     @{time} =                   Get Time        year month day hour min sec
     Go to                       ${PLONEURL}/clients/client-1
     Wait until page contains element    css=body.portaltype-client
@@ -73,6 +78,7 @@ Create Primary AR
 
 Create Secondary AR
     Log in                      test_labmanager  test_labmanager
+    wait until page contains     logged in
     @{time} =                   Get Time        year month day hour min sec
     Go to                       ${PLONEURL}/clients/client-1
     Wait until page contains element    css=body.portaltype-client
@@ -92,6 +98,7 @@ Create Secondary AR
 
 In a client context, only allow selecting samples from that client.
     Log in                      test_labmanager  test_labmanager
+    wait until page contains     logged in
     @{time} =                   Get Time        year month day hour min sec
     Go to                       ${PLONEURL}/clients/client-2
     Wait until page contains element    css=body.portaltype-client
@@ -124,17 +131,21 @@ Complete ar_add form Without template
     Select From Dropdown       css=#SampleType-0    Water
     Select from dropdown       css=#Contact-0       Rita
     Select from dropdown       css=#Priority-0           High
-    debug
-    Click Element              xpath=//th[@id='cat_lab_Water Chemistry']
-    Select Checkbox            xpath=//input[@title='Moisture' and @name='ar.0.Analyses:list:ignore_empty:record']
-    Click Element              xpath=//th[@id='cat_lab_Metals']
-    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.0.Analyses:list:ignore_empty:record']
-    Select Checkbox            xpath=//input[@title='Phosphorus' and @name='ar.0.Analyses:list:ignore_empty:record']
-    Click Element              xpath=//th[@id='cat_lab_Microbiology']
-    Select Checkbox            xpath=//input[@title='Clostridia' and @name='ar.0.Analyses:list:ignore_empty:record']
-    Select Checkbox            xpath=//input[@title='Ecoli' and @name='ar.0.Analyses:list:ignore_empty:record']
-    Select Checkbox            xpath=//input[@title='Enterococcus' and @name='ar.0.Analyses:list:ignore_empty:record']
-    Select Checkbox            xpath=//input[@title='Salmonella' and @name='ar.0.Analyses:list:ignore_empty:record']
+
+    click element              css=table[form_id='lab'] th[cat='Water Chemistry']
+    wait until page contains element    css=tr[title='Moisture'] td[class*='ar.0'] input[type='checkbox']
+    Select Checkbox                     css=tr[title='Moisture'] td[class*='ar.0'] input[type='checkbox']
+    click element              css=table[form_id='lab'] th[cat='Metals']
+    wait until page contains element    css=tr[title='Calcium'] td[class*='ar.0'] input[type='checkbox']
+    Select Checkbox                     css=tr[title='Calcium'] td[class*='ar.0'] input[type='checkbox']
+    Select Checkbox                     css=tr[title='Phosphorus'] td[class*='ar.0'] input[type='checkbox']
+    click element              css=table[form_id='lab'] th[cat='Microbiology']
+    wait until page contains element    css=tr[title='Clostridia'] td[class*='ar.0'] input[type='checkbox']
+    Select Checkbox                     css=tr[title='Clostridia'] td[class*='ar.0'] input[type='checkbox']
+    Select Checkbox                     css=tr[title='Ecoli'] td[class*='ar.0'] input[type='checkbox']
+    Select Checkbox                     css=tr[title='Enterococcus'] td[class*='ar.0'] input[type='checkbox']
+    Select Checkbox                     css=tr[title='Salmonella'] td[class*='ar.0'] input[type='checkbox']
+
     Set Selenium Timeout       60
     Click Button               Save
     Wait until page contains   created

@@ -101,64 +101,29 @@ Test Analysis Uncertainty Precision
 
 *** Keywords ***
 
-#Create AnalysisRequests
-#    [Documentation]     Add and receive 10 ARs at once.
-#    @{time} =                   Get Time        year month day hour min sec
-#    Go to                       ${PLONEURL}/clients/client-2/portal_factory/AnalysisRequest/Request new analyses/ar_add?col_count=11
-#    Wait until page contains    Request new analyses
-#    Select From Dropdown        css=#SampleType-0       Johanna Smith
-#    Select From Dropdown        css=#SampleType-0       Johanna Smith
-#    Select From Dropdown        css=#SampleType-0       Johanna Smith
-#    Select From Dropdown        css=#SampleType-0       Johanna Smith
-#    Select From Dropdown        css=#SampleType-0       Johanna Smith
-#    Select From Dropdown        css=#SampleType-0       Johanna Smith
-#    Select From Dropdown        css=#SampleType-0       Johanna Smith
-#    Select From Dropdown        css=#SampleType-0       Johanna Smith
-#    Select From Dropdown        css=#SampleType-0       Johanna Smith
-#    Select From Dropdown        css=#SampleType-0       Johanna Smith
-#    Select From Dropdown        css=#SamplingDate-10      Johanna Smith
-#    Select From Dropdown        css=#SampleType-0    Water
-#    Select From Dropdown        css=#SampleType-1    Water
-#    Select From Dropdown        css=#SampleType-2    Water
-#    Select From Dropdown        css=#SampleType-3    Water
-#    Select From Dropdown        css=#SampleType-4    Water
-#    Select From Dropdown        css=#SampleType-5    Water
-#    Select From Dropdown        css=#SampleType-6    Water
-#    Select From Dropdown        css=#SampleType-7    Water
-#    Select From Dropdown        css=#SampleType-8    Water
-#    Select From Dropdown        css=#SampleType-9    Water
-#    Select From Dropdown        css=#SamplingDate-10   Water
-#    SelectDate                 css=#SamplingDate-0   @{time}[2]
-#    SelectDate                 css=#SamplingDate-1   @{time}[2]
-#    SelectDate                 css=#SamplingDate-2   @{time}[2]
-#    SelectDate                 css=#SamplingDate-3   @{time}[2]
-#    SelectDate                 css=#SamplingDate-4   @{time}[2]
-#    SelectDate                 css=#SamplingDate-5   @{time}[2]
-#    SelectDate                 css=#SamplingDate-6   @{time}[2]
-#    SelectDate                 css=#SamplingDate-7   @{time}[2]
-#    SelectDate                 css=#SamplingDate-8   @{time}[2]
-#    SelectDate                 css=#SamplingDate-9   @{time}[2]
-#    SelectDate                 css=#SamplingDate-10   @{time}[2]
-#    Click Element              xpath=//th[@id='cat_lab_Metals']
-#    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.0.Analyses:list:ignore_empty:record']
-#    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.1.Analyses:list:ignore_empty:record']
-#    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.2.Analyses:list:ignore_empty:record']
-#    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.3.Analyses:list:ignore_empty:record']
-#    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.4.Analyses:list:ignore_empty:record']
-#    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.5.Analyses:list:ignore_empty:record']
-#    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.6.Analyses:list:ignore_empty:record']
-#    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.7.Analyses:list:ignore_empty:record']
-#    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.8.Analyses:list:ignore_empty:record']
-#    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.9.Analyses:list:ignore_empty:record']
-#    Select Checkbox            xpath=//input[@title='Calcium' and @name='ar.10.Analyses:list:ignore_empty:record']
-#    Set Selenium Timeout       90
-#    Click Button               Save
-#    Wait until page contains   created
-#    Go to                      ${PLONEURL}/clients/client-2
-#    Set Selenium Timeout       10
-#    Select checkbox            analysisrequests_select_all
-#    Click element               receive_transition
-#    Wait until page contains    saved
+Create Analysis Requests
+    [Documentation]     Add and receive 10 ARs at once.
+    @{time} =                           Get Time        year month day hour min sec
+    Disable Print Page
+    Go to                               ${PLONEURL}/clients/client-2/portal_factory/AnalysisRequest/Request new analyses/ar_add?ar_count=11
+    Wait until page contains            Request new analyses
+    Select From Dropdown                css=#Contact-0       Johanna Smith
+    click element                       css=tr[fieldname='Contact'] .copybutton
+    Select From Dropdown                css=#SampleType-0    Water
+    click element                       css=tr[fieldname='SampleType'] .copybutton
+    SelectDate                          css=#SamplingDate-0   @{time}[2]
+    click element                       css=tr[fieldname='SamplingDate'] .copybutton
+    click element                       css=table[form_id='lab'] th[cat='Metals']
+    wait until page contains element    css=tr[title='Calcium'] td[class*='ar.0'] input[type='checkbox']
+    select checkbox                     css=input[name='uids:list'][alt='Calcium']
+    Set Selenium Timeout                60
+    Click Button                        Save
+    Wait until page contains            created
+    Go to                               ${PLONEURL}/clients/client-2
+    Set Selenium Timeout                10
+    Select checkbox                     analysisrequests_select_all
+    Click element                       receive_transition
+    Wait until page contains            saved
 
 Create Worksheet With Analysis Requests
     Create Worksheet
@@ -188,17 +153,16 @@ Add Analyses
     Set Selenium Timeout        10
 
 Submit results and test
-    Input Text    xpath=//tr[@keyword='Ca']//input[@selector='Result_Ca'][1]          5.234
-    Input Text    xpath=//tr[@keyword='Ca']//input[@selector='Result_Ca'][2]          13.5
-    Input Text    xpath=//tr[@keyword='Ca']//input[@selector='Result_Ca'][3]          0.0077
-    Input Text    xpath=//tr[@keyword='Ca']//input[@selector='Result_Ca'][4]          0.123
-    Input Text    xpath=//tr[@keyword='Ca']//input[@selector='Result_Ca'][5]          0.00101
-    Input Text    xpath=//tr[@keyword='Ca']//input[@selector='Result_Ca'][6]          3.123
-    Input Text    xpath=//tr[@keyword='Ca']//input[@selector='Result_Ca'][7]          32092
-    Input Text    xpath=//tr[@keyword='Ca']//input[@selector='Result_Ca'][8]          456021
-    Input Text    xpath=//tr[@keyword='Ca']//input[@selector='Result_Ca'][9]          1293945
-    Input Text    xpath=//tr[@keyword='Ca']//input[@selector='Result_Ca'][10]         0.0000123
-
+    Input Text    xpath=.//tr[@keyword='Ca'][1]//input[@selector='Result_Ca']          5.234
+    Input Text    xpath=.//tr[@keyword='Ca'][2]//input[@selector='Result_Ca']          13.5
+    Input Text    xpath=.//tr[@keyword='Ca'][3]//input[@selector='Result_Ca']          0.0077
+    Input Text    xpath=.//tr[@keyword='Ca'][4]//input[@selector='Result_Ca']          0.123
+    Input Text    xpath=.//tr[@keyword='Ca'][5]//input[@selector='Result_Ca']          0.00101
+    Input Text    xpath=.//tr[@keyword='Ca'][6]//input[@selector='Result_Ca']          3.123
+    Input Text    xpath=.//tr[@keyword='Ca'][7]//input[@selector='Result_Ca']          32092
+    Input Text    xpath=.//tr[@keyword='Ca'][8]//input[@selector='Result_Ca']          456021
+    Input Text    xpath=.//tr[@keyword='Ca'][9]//input[@selector='Result_Ca']          1293945
+    Input Text    xpath=.//tr[@keyword='Ca'][10]//input[@selector='Result_Ca']         0.0000123
     Focus                       css=.analyst
     Click Element               xpath=//input[@value='Submit for verification'][1]
     Wait Until Page Contains    Changes saved.
@@ -222,22 +186,22 @@ Submit results and test
     Page should contain   0.01
     Page should contain   0.00001
     Page should contain   0.8
-    Page should contain   0.004e+04
-    Page should contain   0.0042e+05
-    Page should contain   0.00018e+06 
+    Page should contain   0.004e04
+    Page should contain   0.0042e05
+    Page should contain   0.00018e06
     Page should contain   0.2e-05
 
 Check result formatting options
-    Go to   ${PLONEURL}/bika_setup
-    Click link  Analyses
-    Wait Until Page Contains Element    ScientificNotationResults
-    Select from dropdown    ScientificNotationResults   ax10^b / ax10^-b
-    Select from dropdown    ResultsDecimalMark   Comma (,)
-    Click Button  Save
-    Wait Until Page Contains    Changes saved.
-    
-    Go to   ${PLONEURL}/worksheets/WS-001    
-    
+    Go to                                ${PLONEURL}/bika_setup
+    Click link                           Analyses
+    Wait Until Page Contains element     ScientificNotationResults
+    Select from list                     css=select#ScientificNotationResults   ax10^b / ax10^-b
+    Select from list                     ResultsDecimalMark   Comma (,)
+    Click Button                         Save
+    Wait Until Page Contains             Changes saved.
+
+    Go to                                ${PLONEURL}/worksheets/WS-001
+
     # Formatted results
     Page should contain   5,2
     Page should contain   14
@@ -245,10 +209,10 @@ Check result formatting options
     Page should contain   0,12
     Page should contain   0,00101
     Page should contain   3,1
-    Page should contain   3,2092x10^4
-    Page should contain   4,56021x10^5
-    Page should contain   1,293945x10^6
-    Page should contain   1,23000e-05
+    Page should contain   3,209x10^4
+    Page should contain   4,5602x10^5
+    Page should contain   1,29394x10^6
+    Page should contain   1,23x10^-5
 
     # Uncertainties
     Page should contain   0,2
@@ -259,5 +223,5 @@ Check result formatting options
     Page should contain   0,8
     Page should contain   0,004x10^4
     Page should contain   0,0042x10^5
-    Page should contain   0,00018x10^6 
+    Page should contain   0,00018x10^6
     Page should contain   0,2x10^-5

@@ -25,7 +25,6 @@ Log in
     sleep   0.1
     Input text                      __ac_password  ${password}
     Click Button  Log in
-    Wait until page contains        logged in
 
 Log out
     Go to                          http://localhost:55001/plone/logout
@@ -122,12 +121,14 @@ Simple AR Creation
     click link                  ${Client}
     Wait until page contains element    css=body.portaltype-client
     click link                  link=Add
-    Select from dropdown        css=#contact-0                ${Contact}
+    wait until page contains element        css=#Contact-0
+    Select from dropdown        css=#Contact-0                ${Contact}
     SelectDate                  css=#SamplingDate-0           @{time}[2]
     Select from dropdown        css=#SampleType-0             ${SampleType}
     Set Selenium Timeout        30
-    click element               xpath=.//th[@id="cat_lab_${ASCategory}"]
-    Select checkbox             xpath=//input[@title='${ASTitle}']
+    click element              css=table[form_id='lab'] th[cat='${ASCategory}']
+    wait until page contains element    css=tr[title='${ASTitle}'] td[class*='ar.0'] input[type='checkbox']
+    Select Checkbox                     css=tr[title='${ASTitle}'] td[class*='ar.0'] input[type='checkbox']
     Click Button                Save
     Wait until page contains    created
     ${ar_id} =                  Get text      //dl[contains(@class, 'portalMessage')][2]/dd

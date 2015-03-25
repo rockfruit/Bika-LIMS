@@ -67,27 +67,30 @@ Check AR Creation
     Textfield Value Should Be   StorageLocation   ${SITE}.${UNIT}.${SHELF}    Storage location field is not set correctly
 
 Create AR
-    Click Link                  link=Add
-    Wait until page contains    Request new analyses
-    @{time} =                   Get Time        year month day hour min sec
-    Select from dropdown        css=#Contact-0       Rita
-    SelectDate                  css=#SamplingDate-0   @{time}[2]
-    Select From Dropdown        css=#SampleType-0    Water
-    Select from dropdown        css=#StorageLocation-0  ${SITE}.${UNIT}.${SHELF}
-    Click Element               xpath=//th[@id='cat_lab_Water Chemistry']
-    Select Checkbox             xpath=//input[@title='Moisture' and @name='ar.0.Analyses:list:ignore_empty:record']
-    Click Element               xpath=//th[@id='cat_lab_Metals']
-    Select Checkbox             xpath=//input[@title='Calcium' and @name='ar.0.Analyses:list:ignore_empty:record']
-    Select Checkbox             xpath=//input[@title='Phosphorus' and @name='ar.0.Analyses:list:ignore_empty:record']
-    Click Element               xpath=//th[@id='cat_lab_Microbiology']
-    Select Checkbox             xpath=//input[@title='Clostridia' and @name='ar.0.Analyses:list:ignore_empty:record']
-    Select Checkbox             xpath=//input[@title='Ecoli' and @name='ar.0.Analyses:list:ignore_empty:record']
-    Select Checkbox             xpath=//input[@title='Enterococcus' and @name='ar.0.Analyses:list:ignore_empty:record']
-    Select Checkbox             xpath=//input[@title='Salmonella' and @name='ar.0.Analyses:list:ignore_empty:record']
-    Set Selenium Timeout        30
-    Click Button                Save
-    Wait until page contains    created
-    Set Selenium Timeout        10
-    ${ar_id} =                  Get text      //dl[contains(@class, 'portalMessage')][2]/dd
-    ${ar_id} =                  Set Variable  ${ar_id.split()[2]}
-    [return]                    ${ar_id}
+    Click Link                          link=Add
+    Wait until page contains            Request new analyses
+    @{time} =                           Get Time        year month day hour min sec
+    Select from dropdown                css=#Contact-0       Rita
+    SelectDate                          css=#SamplingDate-0   @{time}[2]
+    Select From Dropdown                css=#SampleType-0    Water
+    Select from dropdown                css=#StorageLocation-0  ${SITE}.${UNIT}.${SHELF}
+    click element                       css=table[form_id='lab'] th[cat='Water Chemistry']
+    wait until page contains element    css=tr[title='Moisture'] td[class*='ar.0'] input[type='checkbox']
+    select checkbox                     css=tr[title='Moisture'] td[class*='ar.0'] input[type='checkbox']
+    click element                       css=table[form_id='lab'] th[cat='Metals']
+    wait until page contains element    css=tr[title='Calcium'] td[class*='ar.0'] input[type='checkbox']
+    select checkbox                     css=tr[title='Calcium'] td[class*='ar.0'] input[type='checkbox']
+    select checkbox                     css=tr[title='Phosphorus'] td[class*='ar.0'] input[type='checkbox']
+    click element                       css=table[form_id='lab'] th[cat='Microbiology']
+    wait until page contains element    css=tr[title='Clostridia'] td[class*='ar.0'] input[type='checkbox']
+    select checkbox                     css=tr[title='Clostridia'] td[class*='ar.0'] input[type='checkbox']
+    select checkbox                     css=tr[title='Ecoli'] td[class*='ar.0'] input[type='checkbox']
+    select checkbox                     css=tr[title='Enterococcus'] td[class*='ar.0'] input[type='checkbox']
+    select checkbox                     css=tr[title='Salmonella'] td[class*='ar.0'] input[type='checkbox']
+    Set Selenium Timeout                30
+    Click Button                        Save
+    Wait until page contains            created
+    Set Selenium Timeout                10
+    ${ar_id} =                          Get text      //dl[contains(@class, 'portalMessage')][2]/dd
+    ${ar_id} =                          Set Variable  ${ar_id.split()[2]}
+    [return]                            ${ar_id}
