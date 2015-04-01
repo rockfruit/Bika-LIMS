@@ -42,7 +42,7 @@
 <genericsetup:upgradeStep
         title="Upgrade 3000"
         description="Upgrade to bika 3"
-        source="*"
+        source="1102"
         destination="3000"
         handler="bika.lims.upgrade.to3000.upgrade"
         sortkey="1"
