@@ -10,8 +10,12 @@ LIMS-1613 Analysis widget on AR Create does not find on CAS# or Synonym
 LIMS-1610 Nav tree order. Fixed before
 LIMS-1606 spinner remains visible after ajax completion
 LIMS-1599 WO ID saved as its Title
-LIMS-1591 Client WO Create should not offer Client look-up
+LIMS-1591 Client WO Create should not offer Client look-up	
 
+3.1.8 (unreleased)
+------------------
+LIMS-1696: Decimal mark conversion is not working with "<0,002" results type
+LIMS-1507: Do not cause exception on SMTPServerDisconnect when publishing AR results.
 
 3.1.7 (2015-02-26)
 ------------------
