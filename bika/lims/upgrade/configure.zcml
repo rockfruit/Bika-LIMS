@@ -535,19 +535,20 @@
         profile="bika.lims:default"/>
 
 <genericsetup:upgradeStep
-<<<<<<< HEAD
-        title="Upgrade 3.1.7 (profile 317) to 3.2 (profile 3200)"
-        description=""
-        source="317"
-        destination="3200"
-        handler="bika.lims.upgrade.to3200.upgrade"
-=======
         title="Upgrade to Bika LIMS 3.1.8"
         description=""
         source="317"
         destination="318"
         handler="bika.lims.upgrade.to318.upgrade"
->>>>>>> hotfix/3.1.8
+        sortkey="1"
+        profile="bika.lims:default"/>
+
+<genericsetup:upgradeStep
+        title="Upgrade to Bika LIMS 3.2"
+        description=""
+        source="318"
+        destination="3200"
+        handler="bika.lims.upgrade.to3200.upgrade"
         sortkey="1"
         profile="bika.lims:default"/>
 
