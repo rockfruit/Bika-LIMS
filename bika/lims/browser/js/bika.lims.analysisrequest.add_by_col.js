@@ -2128,9 +2128,6 @@ function AnalysisRequestAddByCol() {
 						}
 						else {
 							var destination = window.location.href.split("/portal_factory")[0]
-							window.bika.lims.portalMessage(_("Unspecified form error"))
-							console.log(data)
-							var destination = window.location.href.split("/portal_factory")[0]
 							window.location.replace(destination)
 						}
 					}
