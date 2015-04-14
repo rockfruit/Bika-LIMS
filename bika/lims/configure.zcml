@@ -34,9 +34,9 @@
   <include package=".search" />
   <include package=".subscribers" />
   <include package=".vocabularies" />
+  <include package=".workflow" />
 
   <include file="profiles.zcml" />
-  <include file="workflow.zcml" />
 
   <include file="idserver.zcml" />
 
