@@ -24,16 +24,19 @@ Test sampleprep_simple workflow - straight through
     ${ar_id}=                    Create AR with sampleprep_simple
     go to                        ${PLONEURL}/clients/client-1/H2O-0001-R01
 
+    # transition: Recieve.  SHould kick off the SamplePrep workflow.
     click element                css=span.state-sample_due
     click element                css=#workflow-transition-receive
-    page should contain          (Pending)
+
+    # check that the title is correctly translate
+    page should not contain      sample_prep
+    # check that no ojects remained in received state
     page should not contain      Received
+    # Primary state should be indicated with (Pending)
+    page should contain          (Pending)
 
     click element                css=span.state-sampleprep
     click element                css=#workflow-transition-complete
-
-
-
 
     Debug
 

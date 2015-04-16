@@ -55,7 +55,7 @@ def SamplePrepTransitionEventHandler(instance, event):
     then the AnalysisRequest will be sent diretly to that state.
 
     If the final state's ID is not found in the AR workflow, the AR will be
-    transitioned to 'sample_due'.
+    transitioned to 'sample_received'.
     """
     # creation doesn't have a 'transition'
     if not event.transition:
@@ -66,7 +66,7 @@ def SamplePrepTransitionEventHandler(instance, event):
         if event.new_state.id in ar_states:
             dst_state = event.new_state.id
         else:
-            dst_state = 'sample_due'
+            dst_state = 'sample_received'
         changeWorkflowState(instance, 'bika_ar_workflow', dst_state)
 
 
