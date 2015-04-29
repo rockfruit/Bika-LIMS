@@ -1,12 +1,9 @@
 *** Settings ***
 
-Library          BuiltIn
 Library          Selenium2Library  timeout=5  implicit_wait=0.2
 Library          String
 Resource         keywords.txt
 Library          bika.lims.testing.Keywords
-Resource         plone/app/robotframework/selenium.robot
-Resource         plone/app/robotframework/saucelabs.robot
 Variables        plone/app/testing/interfaces.py
 Variables        bika/lims/tests/variables.py
 Suite Setup      Start browser
@@ -65,7 +62,7 @@ Repetitive Bika Setup stuff
     Input Text  title          New Template
     Input Text  description    Temporary test object
     Input Text  SamplePoint   Borehole 12
-    Input Text  SampleType    Water
+    Select from dropdown  SampleType    Water
     Select Checkbox  ReportDryMatter
     Click link  css=#fieldsetlegend-sample-partitions
     wait until page contains element    Partitions-Container-0
@@ -417,7 +414,7 @@ Repetitive Bika Setup stuff
     Click Button  Save
     Wait Until Page Contains  Changes saved.
     Click link  Edit
-    Click link  Address
+    Click link  xpath=//a[@id="fieldsetlegend-address"]
     Wait Until Page Contains Element  PhysicalAddress.country
     Select From List  PhysicalAddress.country:record   South Africa
     Select From List  PhysicalAddress.state:record     Western Cape
@@ -563,7 +560,7 @@ Repetitive Bika Setup stuff
     # Now remove instrument and set method fields manually
     unselect checkbox                   InstrumentEntryOfResults
     select from list                    Methods    12 dB SINAD   AES   ELISA
-    Run keyword and expect error        ValueError: Option 'Elution' not in list '_Method'.    Select from list   _Method   Elution
+#    Run keyword and expect error        ValueError: Option 'Elution' not in list '_Method'.    Select from list   _Method   Elution
     select from list                    _Method    AES
 
     # Set calculation fields manually
@@ -816,4 +813,3 @@ Repetitive Bika Setup stuff
     Wait Until Page Contains  Changes saved.
 
 *** Keywords ***
-

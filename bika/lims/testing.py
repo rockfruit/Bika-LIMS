@@ -10,7 +10,6 @@ from plone.app.testing import PLONE_FIXTURE
 from plone.app.testing import PloneSandboxLayer
 from plone.app.testing import SITE_OWNER_NAME
 from plone.testing import z2
-from plone.app.robotframework.testing import AUTOLOGIN_LIBRARY_FIXTURE
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.setuphandlers import setupPortalContent
 from Testing.makerequest import makerequest
@@ -101,6 +100,10 @@ class BikaTestLayer(PloneSandboxLayer):
 
         portal.bika_setup.setShowNewReleasesInfo(False)
 
+        # Force the test browser to show the site always in 'en'
+        ltool = portal.portal_languages
+        ltool.manage_setLanguageSettings('en', ['en'], setUseCombinedLanguageCodes=False, startNeutral=True)
+
         logout()
 
 def getBrowser(portal, loggedIn=True, username=TEST_USER_NAME, password=TEST_USER_PASSWORD):
@@ -108,6 +111,7 @@ def getBrowser(portal, loggedIn=True, username=TEST_USER_NAME, password=TEST_USE
     This is done weirdly because I could not figure out how else to
     pass the browser to the doctests"""
     browser = Browser(portal)
+    browser.addHeader('Accept-Language', 'en')
     browser.handleErrors = False
     if loggedIn:
         browser.open(portal.absolute_url())

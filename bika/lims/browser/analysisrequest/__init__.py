@@ -2,6 +2,7 @@ from bika.lims.adapters.referencewidgetvocabulary import DefaultReferenceWidgetV
 from bika.lims.jsonapi import get_include_fields
 from bika.lims.jsonapi import load_brain_metadata
 from bika.lims.jsonapi import load_field_values
+from bika.lims.utils import dicts_to_dict
 from bika.lims.interfaces import IAnalysisRequest
 from bika.lims.interfaces import IFieldIcons
 from bika.lims.interfaces import IJSONReadExtender
@@ -26,6 +27,7 @@ from .view import AnalysisRequestViewView    # view first.
 from .add import AnalysisRequestAddView
 from .invoice import InvoicePrintView
 from .invoice import InvoiceView
+from invoice import InvoiceCreate
 from .log import AnalysisRequestLog
 from .manage_analyses import AnalysisRequestAnalysesView
 from .manage_results import AnalysisRequestManageResultsView
@@ -150,7 +152,6 @@ class JSONReadExtender(object):
         self.include_fields = get_include_fields(request)
         if not self.include_fields or "Analyses" in self.include_fields:
             data['Analyses'] = self.ar_analysis_values()
-        return data
 
 class mailto_link_from_contacts:
 

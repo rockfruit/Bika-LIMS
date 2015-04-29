@@ -6,8 +6,6 @@ Library          String
 Resource         keywords.txt
 Library          bika.lims.testing.Keywords
 Library          DebugLibrary
-Resource         plone/app/robotframework/selenium.robot
-Resource         plone/app/robotframework/saucelabs.robot
 Variables        plone/app/testing/interfaces.py
 Variables        bika/lims/tests/variables.py
 Suite Setup      Start browser
@@ -22,6 +20,7 @@ ${client1_factory_url}  ${PLONEURL}/clients/client-1/portal_factory/AnalysisRequ
 Worksheet with Batch field value, should show only analyses from these Batches.
     Log in                             test_labmanager           test_labmanager
 
+    Disable Print Page
     Create AnalysisRequests
 
     go to                              ${PLONEURL}/worksheets
@@ -32,16 +31,19 @@ Worksheet with Batch field value, should show only analyses from these Batches.
     click element                      css=.worksheet_add
     Set Selenium Timeout               5
     page should contain                B-001
-    xpath should match X times         .//input[@name="uids:list"]     4
+    xpath should match X times         .//input[@name="uids:list"]     2
 
 Test Worksheets
     [Documentation]   Worksheets
     ...  Groups analyses together for data entry, instrument interfacing,
     ...  and workflow transition cascades.
     Log in                              test_labmanager                test_labmanager
+
+    Disable Print Page
     Create AnalysisRequests
     Create Reference Samples
     Create Worksheet
+
     Go to                               ${PLONEURL}/worksheets/WS-001
     Select from list                    css=select.analyst             Lab Analyst 2
     Select from list                    css=select.instrument          Protein Analyser
@@ -310,14 +312,9 @@ TestResultsRange
     [Arguments]  ${locator}=
     ...          ${badResult}=
     ...          ${goodResult}=
-
-    # Log  Testing Result Range for ${locator} -:- values: ${badResult} and ${goodResult}  WARN
-
     Input Text          ${locator}  ${badResult} \t
-#    Focus               css=.analyst
     Expect exclamation
     Input Text          ${locator}  ${goodResult} \t
-#    Focus               css=.analyst
     Expect no exclamation
 
 Expect exclamation

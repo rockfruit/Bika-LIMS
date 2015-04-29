@@ -5,8 +5,6 @@ Library          Selenium2Library  timeout=5  implicit_wait=0.5
 Library          String
 Resource         keywords.txt
 Library          bika.lims.testing.Keywords
-Resource         plone/app/robotframework/selenium.robot
-Resource         plone/app/robotframework/saucelabs.robot
 Variables        plone/app/testing/interfaces.py
 Variables        bika/lims/tests/variables.py
 Suite Setup      Start browser
@@ -18,6 +16,8 @@ Suite Teardown   Close All Browsers
 
 Sampler login
 # /samples List should contain all to_be_sampled samples
+    Log in                            test_labmanager         test_labmanager
+    Wait until page contains          You are now logged in
     Enable Sampling Workflow
     ${ar_id}=                         Add an AR
 
@@ -141,10 +141,10 @@ Add an AR
     Go to                             ${PLONEURL}/clients/client-1/portal_factory/AnalysisRequest/Request%20new%20analyses/ar_add
     Wait until page contains          Request new analyses
     @{time} =                         Get Time                year month day hour min sec
-    SelectDate                        css=#ar_0_SamplingDate       @{time}[2]
-    Select From Dropdown              css=#ar_0_SampleType         Water
-    Select from dropdown              css=#ar_0_Contact            Rita
-    Select from dropdown              css=#ar_0_Priority           High
+    SelectDate                        css=#SamplingDate-0       @{time}[2]
+    Select From Dropdown              css=#SampleType-0         Water
+    Select from dropdown              css=#Contact-0            Rita
+    Select from dropdown              css=#Priority-0           High
     Click Element                     xpath=//th[@id='cat_field_Water Chemistry']
     Select Checkbox                   xpath=//input[@title='Temperature' and @name='ar.0.Analyses:list:ignore_empty:record']
     Click Element                     xpath=//th[@id='cat_lab_Water Chemistry']

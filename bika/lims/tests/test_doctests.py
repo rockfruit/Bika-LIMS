@@ -12,6 +12,7 @@ DOCTESTS = [
     'bika.lims.browser.analysisrequest.add',
     'bika.lims.browser.worksheetfolder',
     'bika.lims.browser.bika_listing',
+    'bika.lims.browser.instrument',
     'bika.lims.jsonapi.create',
     'bika.lims.jsonapi.update',
     'bika.lims.jsonapi.remove',

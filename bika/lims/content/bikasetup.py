@@ -14,6 +14,7 @@ from bika.lims.browser.widgets import DurationWidget
 from bika.lims.browser.fields import DurationField
 from plone.app.folder import folder
 from zope.interface import implements
+from plone.resource.utils import iterDirectoriesOfType, queryResourceDirectory
 import sys
 from bika.lims.locales import COUNTRIES
 
@@ -37,15 +38,10 @@ class PrefixesField(RecordsField):
     })
     security = ClassSecurityInfo()
 
-LABEL_AUTO_OPTIONS = DisplayList((
+STICKER_AUTO_OPTIONS = DisplayList((
     ('None', _('None')),
     ('register', _('Register')),
     ('receive', _('Receive')),
-))
-
-LABEL_AUTO_SIZES = DisplayList((
-    ('small', _('Small')),
-    ('normal', _('Normal')),
 ))
 
 PasswordLifetime = IntegerField(
@@ -86,7 +82,7 @@ RestrictWorksheetUsersAccess = BooleanField(
     widget=BooleanWidget(
         label=_("Allow access to worksheets only to assigned analysts"),
         description=_(
-            "If unticked, analysts will have access to all worksheets.")
+            "If unchecked, analysts will have access to all worksheets.")
     )
 )
 RestrictWorksheetManagement = BooleanField(
@@ -95,11 +91,11 @@ RestrictWorksheetManagement = BooleanField(
     default=True,
     widget=BooleanWidget(
         label=_("Only lab managers can create and manage worksheets"),
-        description=_("If unticked, analysts and lab clerks will "
+        description=_("If unchecked, analysts and lab clerks will "
                       "be able to manage Worksheets, too. If the "
                       "users have restricted access only to those "
                       "worksheets for which they are assigned, "
-                      "this option will be ticked and readonly.")
+                      "this option will be checked and readonly.")
     )
 )
 ShowNewReleasesInfo = BooleanField(
@@ -174,6 +170,17 @@ DecimalMark = StringField(
     widget=SelectionWidget(
         label=_("Default decimal mark"),
         description=_("Preferred decimal mark for reports."),
+        format='select',
+    )
+)
+ScientificNotationReport = StringField(
+    'ScientificNotationReport',
+    schemata = "Results Reports",
+    default = '1',
+    vocabulary = SCINOTATION_OPTIONS,
+    widget = SelectionWidget(
+        label=_("Default scientific notation format for reports"),
+        description =_("Preferred scientific notation format for reports"),
         format='select',
     )
 )
@@ -407,28 +414,49 @@ DefaultSampleLifetime = DurationField(
             "in the sample types setup"),
     )
 )
-AutoPrintLabels = StringField(
-    'AutoPrintLabels',
-    schemata="Labels",
-    vocabulary=LABEL_AUTO_OPTIONS,
+ResultsDecimalMark = StringField(
+    'ResultsDecimalMark',
+    schemata = "Analyses",
+    vocabulary=DECIMAL_MARKS,
+    default = ".",
+    widget = SelectionWidget(
+        label=_("Default decimal mark"),
+        description=_("Preferred decimal mark for results"),
+        format = 'select',
+    )
+)
+ScientificNotationResults = StringField(
+    'ScientificNotationResults',
+    schemata = "Analyses",
+    default = '1',
+    vocabulary = SCINOTATION_OPTIONS,
+    widget = SelectionWidget(
+        label=_("Default scientific notation format for results"),
+        description =_("Preferred scientific notation format for results"),
+        format='select',
+    )
+)
+AutoPrintStickers = StringField(
+    'AutoPrintStickers',
+    schemata="Stickers",
+    vocabulary=STICKER_AUTO_OPTIONS,
     widget=SelectionWidget(
         format='select',
-        label=_("Automatic label printing"),
+        label=_("Automatic sticker printing"),
         description=_(
             "Select 'Register' if you want labels to be automatically printed when "
             "new ARs or sample records are created. Select 'Receive' to print labels "
             "when ARs or Samples are received. Select 'None' to disable automatic printing"),
     )
 )
-AutoLabelSize = StringField(
-    'AutoLabelSize',
-    schemata="Labels",
-    vocabulary=LABEL_AUTO_SIZES,
-    widget=SelectionWidget(
-        format='select',
-        label=_("Label sizes"),
-        description=_(
-            "Select the which label to print when automatic label printing is enabled"),
+AutoStickerTemplate = StringField(
+    'AutoStickerTemplate',
+    schemata = "Stickers",
+    vocabulary = "getStickerTemplates",
+    widget = SelectionWidget(
+        format = 'select',
+        label=_("Sticker templates"),
+        description=_("Select which sticker to print when automatic sticker printing is enabled"),
     )
 )
 Prefixes = PrefixesField(
@@ -532,6 +560,7 @@ schema = BikaFolderSchema.copy() + Schema((
     #    BatchFax,
     #    SMSGatewayAddress,
     DecimalMark,
+    ScientificNotationReport,
     MinimumResults,
     IncludePreviousFromBatch,
     BatchEmail,
@@ -550,9 +579,11 @@ schema = BikaFolderSchema.copy() + Schema((
     ARAttachmentOption,
     AnalysisAttachmentOption,
     DefaultSampleLifetime,
+    ResultsDecimalMark,
+    ScientificNotationResults,
     # Labels
-    AutoPrintLabels,
-    AutoLabelSize,
+    AutoPrintStickers,
+    AutoStickerTemplate,
     # ID Server
     Prefixes,
     YearInPrefix,
@@ -579,6 +610,17 @@ class BikaSetup(folder.ATFolder):
             return True
         else:
             return False
+
+    def getStickerTemplates(self):
+        """ get the sticker templates """
+        out = []
+        for stickers_resource in iterDirectoriesOfType('stickers'):
+            prefix = stickers_resource.__name__
+            stickers = [stk for stk in stickers_resource.listDirectory() if stk.endswith('.pt')]
+            for sticker in stickers:
+                name ='%s:%s' %(prefix,sticker)
+                out.append([name, name])
+        return DisplayList(out)
 
     def getARAttachmentsPermitted(self):
         """ are AR attachments permitted """

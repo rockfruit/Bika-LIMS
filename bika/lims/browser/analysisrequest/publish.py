@@ -1,6 +1,7 @@
 from smtplib import SMTPServerDisconnected, SMTPRecipientsRefused
 from bika.lims import bikaMessageFactory as _, t
-from bika.lims.utils import to_utf8, formatDecimalMark
+from bika.lims.utils import to_utf8, formatDecimalMark, format_supsub
+from bika.lims.utils.analysis import format_uncertainty
 from bika.lims import logger
 from bika.lims.browser import BrowserView
 from bika.lims.config import POINTS_OF_CAPTURE
@@ -20,6 +21,7 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from plone.resource.utils import iterDirectoriesOfType, queryResourceDirectory
 from zope.component import getAdapters
 import glob, os, sys, traceback
+import urllib2
 import App
 import Globals
 
@@ -29,6 +31,7 @@ class AnalysisRequestPublishView(BrowserView):
     _current_ar_index = 0
     _DEFAULT_TEMPLATE = 'default.pt'
     _publish = False
+    _images = {}
 
     def __init__(self, context, request, publish=False):
         super(AnalysisRequestPublishView, self).__init__(context, request)
@@ -75,8 +78,8 @@ class AnalysisRequestPublishView(BrowserView):
             templates = [tpl for tpl in templates_resource.listDirectory() if tpl.endswith('.pt')]
             for template in templates:
                 out.append({
-                    'id': '{}:{}'.format(prefix, template),
-                    'title': '{} ({})'.format(template[:-3], prefix),
+                    'id': '{0}:{1}'.format(prefix, template),
+                    'title': '{0} ({1})'.format(template[:-3], prefix),
                 })
         return out
 
@@ -139,7 +142,7 @@ class AnalysisRequestPublishView(BrowserView):
         if template.find(':') >= 0:
             prefix, template = template.split(':')
             resource = queryResourceDirectory('reports', prefix)
-            css = '{}.css'.format(template[:-3])
+            css = '{0}.css'.format(template[:-3])
             if css in resource.listDirectory():
                 content = resource.readFile(css)
         else:
@@ -172,7 +175,7 @@ class AnalysisRequestPublishView(BrowserView):
                 'remarks': ar.getRemarks(),
                 'member_discount': ar.getMemberDiscount(),
                 'date_sampled': self.ulocalized_time(ar.getDateSampled(), long_format=1),
-                'date_published': self.ulocalized_time(ar.getDatePublished(), long_format=1),
+                'date_published': self.ulocalized_time(DateTime(), long_format=1),
                 'invoiced': ar.getInvoiced(),
                 'late': ar.getLate(),
                 'subtotal': ar.getSubtotal(),
@@ -184,7 +187,8 @@ class AnalysisRequestPublishView(BrowserView):
                 'footer': to_utf8(self.context.bika_setup.getResultFooter()),
                 'prepublish': False,
                 'child_analysisrequest': None,
-                'parent_analysisrequest': None}
+                'parent_analysisrequest': None,
+                'resultsinterpretation':ar.getResultsInterpretation()}
 
         # Sub-objects
         excludearuids.append(ar.UID())
@@ -439,11 +443,13 @@ class AnalysisRequestPublishView(BrowserView):
                   'id': analysis.id,
                   'title': analysis.Title(),
                   'keyword': keyword,
+                  'scientific_name': service.getScientificName(),
                   'accredited': service.getAccredited(),
                   'point_of_capture': to_utf8(POINTS_OF_CAPTURE.getValue(service.getPointOfCapture())),
                   'category': to_utf8(service.getCategoryTitle()),
                   'result': analysis.getResult(),
                   'unit': to_utf8(service.getUnit()),
+                  'formatted_unit': format_supsub(to_utf8(service.getUnit())),
                   'capture_date': analysis.getResultCaptureDate(),
                   'request_id': analysis.aq_parent.getId(),
                   'formatted_result': '',
@@ -491,7 +497,8 @@ class AnalysisRequestPublishView(BrowserView):
                     if specs else {}
 
         andict['specs'] = specs
-        andict['formatted_result'] = analysis.getFormattedResult(specs, decimalmark)
+        scinot = self.context.bika_setup.getScientificNotationReport()
+        andict['formatted_result'] = analysis.getFormattedResult(specs=specs, sciformat=int(scinot), decimalmark=decimalmark)
 
         fs = ''
         if specs.get('min', None) and specs.get('max', None):
@@ -501,7 +508,7 @@ class AnalysisRequestPublishView(BrowserView):
         elif specs.get('max', None):
             fs = '< %s' % specs['max']
         andict['formatted_specs'] = formatDecimalMark(fs, decimalmark)
-        andict['formatted_uncertainty'] = formatDecimalMark(str(analysis.getUncertainty()), decimalmark)
+        andict['formatted_uncertainty'] = format_uncertainty(analysis, analysis.getResult(), decimalmark=decimalmark, sciformat=int(scinot))
 
         # Out of range?
         if specs:
@@ -575,6 +582,22 @@ class AnalysisRequestPublishView(BrowserView):
 
         return managers
 
+
+    def renderImage(self, attachment):
+        af = attachment.getAttachmentFile()
+        filename = af.filename
+        fileurl = attachment.absolute_url() + "/at_download/AttachmentFile"
+        # WeasyPrint default's URL fetcher seems that doesn't support urls
+        # like at_download/AttachmentFile (without mime, header, etc.).
+        # Need to copy the image to the temp file and replace occurences
+        # in the HTML report later
+        outfilename = Globals.INSTANCE_HOME + '/var/' + filename
+        outfile = open(outfilename, 'wb')
+        outfile.write(str(af.data))
+        outfile.close()
+        self._images[fileurl] = "file://"+outfilename
+        return attachment.absolute_url() + "/at_download/AttachmentFile"
+
     def publishFromPOST(self):
         html = self.request.form.get('html')
         style = self.request.form.get('style')
@@ -610,7 +633,7 @@ class AnalysisRequestPublishView(BrowserView):
 
         # Create the pdf report (will always be attached to the AR)
         pdf_outfile = join(out_path, out_fn + ".pdf") if out_path else None
-        pdf_report = createPdf(results_html, pdf_outfile)
+        pdf_report = createPdf(htmlreport=results_html, outfile=pdf_outfile, images=self._images)
 
         recipients = []
         contact = ar.getContact()
@@ -674,9 +697,7 @@ class AnalysisRequestPublishView(BrowserView):
                     host = getToolByName(ar, 'MailHost')
                     host.send(mime_msg.as_string(), immediate=True)
                 except SMTPServerDisconnected as msg:
-                    pass
-                    if not debug_mode:
-                        raise SMTPServerDisconnected(msg)
+                    logger.warn("SMTPServerDisconnected: %s." % msg)
                 except SMTPRecipientsRefused as msg:
                     raise WorkflowException(str(msg))
 

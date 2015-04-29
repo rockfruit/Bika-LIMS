@@ -2,7 +2,6 @@ from AccessControl.SecurityManagement import newSecurityManager
 from Acquisition import aq_base
 from bika.lims import logger
 from bika.lims.testing import BIKA_FUNCTIONAL_TESTING
-from plone.app.robotframework.remote import RemoteLibrary
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -49,6 +48,8 @@ class BikaTestCase(unittest.TestCase):
         sm.unregisterUtility(provided=IMailHost)
         sm.registerUtility(mailhost, provided=IMailHost)
         self.portal.email_from_address = 'test@example.com'
+        ltool = self.portal.portal_languages
+        ltool.setLanguageBindings()
 
     def beforeTearDown(self):
         self.portal.MailHost = self.portal._original_MailHost
@@ -101,6 +102,7 @@ class BikaFunctionalTestCase(Functional, BikaTestCase):
     def getBrowser(self, loggedIn=True):
         """ instantiate and return a testbrowser for convenience """
         browser = Browser(self.portal)
+        browser.addHeader('Accept-Language', 'en-US')
         browser.handleErrors = False
         if loggedIn:
             browser.open(self.portal.absolute_url())

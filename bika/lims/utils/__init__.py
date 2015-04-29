@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from time import time
 from AccessControl import ModuleSecurityInfo, allow_module
 from bika.lims import logger
@@ -179,10 +181,13 @@ def formatDecimalMark(value, decimalmark='.'):
         thousand mark.
     """
     rawval = value
-    if decimalmark == ',':
-        rawval = rawval.replace('.', '[comma]')
-        rawval = rawval.replace(',', '.')
-        rawval = rawval.replace('[comma]', ',')
+    try:
+        if decimalmark == ',':
+            rawval = rawval.replace('.', '[comma]')
+            rawval = rawval.replace(',', '.')
+            rawval = rawval.replace('[comma]', ',')
+    except:
+        pass
     return rawval
 
 
@@ -341,7 +346,7 @@ def isnumber(s):
         return False
 
 
-def createPdf(htmlreport, outfile=None, css=None):
+def createPdf(htmlreport, outfile=None, css=None, images={}):
     debug_mode = App.config.getConfiguration().debug_mode
     # XXX css must be a local file - urllib fails under robotframework tests.
     css_def = ''
@@ -360,6 +365,12 @@ def createPdf(htmlreport, outfile=None, css=None):
     if not outfile:
         outfile = Globals.INSTANCE_HOME + "/var/" + tmpID() + ".pdf"
 
+    # WeasyPrint default's URL fetcher seems that doesn't support urls
+    # like at_download/AttachmentFile (without mime, header, etc.).
+    # Need to copy them to the temp file and replace occurences in the
+    # HTML report
+    for (key, val) in images.items():
+        htmlreport = htmlreport.replace(key, val)
     from weasyprint import HTML, CSS
     import os
     if css:
@@ -376,7 +387,7 @@ def createPdf(htmlreport, outfile=None, css=None):
     return open(outfile, 'r').read();
 
 def attachPdf(mimemultipart, pdfreport, filename=None):
-    part = MIMEBase('application', "application/pdf")
+    part = MIMEBase('application', "pdf")
     part.add_header('Content-Disposition',
                     'attachment; filename="%s.pdf"' % (filename or tmpID()))
     part.set_payload(pdfreport)
@@ -449,3 +460,66 @@ def dicts_to_dict(dictionaries, key_subfieldname):
     for d in dictionaries:
         result[d[key_subfieldname]] = d
     return result
+
+def format_supsub(text):
+    """
+    Mainly used for Analysis Service's unit. Transform the text adding
+    sub and super html scripts:
+    For super-scripts, use ^ char
+    For sub-scripts, use _ char
+    The expression "cm^2" will be translated to "cm²" and the
+    expression "b_(n-1)" will be translated to "b n-1".
+    The expression "n_(fibras)/cm^3" will be translated as
+    "n fibras / cm³"
+    :param text: text to be formatted
+    """
+    out = []
+    subsup = []
+    clauses = []
+    insubsup = True
+    for c in text:
+        if c == '(':
+            if insubsup == False:
+                out.append(c)
+                clauses.append(')')
+            else:
+                clauses.append('')
+
+        elif c == ')':
+            if len(clauses) > 0:
+                out.append(clauses.pop())
+                if len(subsup) > 0:
+                    out.append(subsup.pop())
+
+        elif c == '^':
+            subsup.append('</sup>')
+            out.append('<sup>')
+            insubsup = True
+            continue
+
+        elif c == '_':
+            subsup.append('</sub>')
+            out.append('<sub>')
+            insubsup = True
+            continue
+
+        elif c == ' ':
+            if insubsup == True:
+                out.append(subsup.pop())
+            else:
+                out.append(c)
+        elif c in ['+','-']:
+            if len(clauses) == 0 and len(subsup) > 0:
+                out.append(subsup.pop())
+            out.append(c)
+        else:
+            out.append(c)
+
+        insubsup = False
+
+    while True:
+        if len(subsup) == 0:
+            break;
+        out.append(subsup.pop())
+
+    return ''.join(out)

@@ -46,17 +46,26 @@ class AnalysisServicesView(ASV):
             selected_items[uid] = item
         return selected_items.values()
 
-    def __init__(self, context, request, poc, ar_count=None):
+    def __init__(self, context, request, poc, ar_count=None, category=None):
         super(AnalysisServicesView, self).__init__(context, request)
 
         self.contentFilter['getPointOfCapture'] = poc
 
-        self.ar_count = ar_count if ar_count else 4
+        if category:
+            self.contentFilter['getCategoryTitle'] = category
+
+        self.cat_header_class = "ignore_bikalisting_default_handler"
+
+        ar_count_default = ar_count if ar_count else 4
+        try:
+            self.ar_count = int(self.request.get('ar_count', ar_count_default))
+        except ValueError:
+            self.ar_count = ar_count_default
 
         self.ar_add_items = []
 
         # Customise form for AR Add context
-        self.form_id = 'services_%s' % poc
+        self.form_id = poc
 
         self.filter_indexes = ['id', 'Title', 'SearchableText', 'getKeyword']
 
@@ -181,14 +190,20 @@ class AnalysisRequestAddView(AnalysisRequestViewView):
         self.DryMatterService = self.context.bika_setup.getDryMatterService()
         request.set('disable_plone.rightcolumn', 1)
         self.layout = self.request.get('layout', 'columns')
-        try:
-            self.ar_count = int(self.request['ar_count'])
-        except:
-            self.ar_count = 4
+        self.ar_count = int(self.request.get('ar_count', 4))
 
     def __call__(self):
         self.request.set('disable_border', 1)
-        return self.template()
+        if 'ajax_category_expand' in self.request.keys():
+            cat = self.request.get('cat')
+            asv = AnalysisServicesView(self.context,
+                                        self.request,
+                                        self.request['form_id'],
+                                        category=cat,
+                                        ar_count=self.ar_count)
+            return asv()
+        else:
+            return self.template()
 
     def copy_to_new_specs(self):
         specs = {}
@@ -251,6 +266,7 @@ class AnalysisRequestAddView(AnalysisRequestViewView):
 
         s = AnalysisServicesView(self.context, self.request, poc,
                                  ar_count=ar_count)
+        s.form_id = poc
         s.folderitems()
 
         if not s.ar_add_items:
@@ -418,12 +434,12 @@ class ajaxAnalysisRequestSubmit():
         self.context.plone_utils.addPortalMessage(message, 'info')
         # Automatic label printing won't print "register" labels for Secondary. ARs
         new_ars = [ar for ar in ARs if ar[-2:] == '01']
-        if 'register' in self.context.bika_setup.getAutoPrintLabels() \
+        if 'register' in self.context.bika_setup.getAutoPrintStickers() \
                 and new_ars:
             return json.dumps({
                 'success': message,
-                'labels': new_ars,
-                'labelsize': self.context.bika_setup.getAutoLabelSize()
+                'stickers': new_ars,
+                'stickertemplate': self.context.bika_setup.getAutoStickerTemplate()
             })
         else:
             return json.dumps({'success': message})

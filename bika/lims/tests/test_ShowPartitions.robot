@@ -5,8 +5,6 @@ Library          Selenium2Library  timeout=5  implicit_wait=0.2
 Library          String
 Resource         keywords.txt
 Library          bika.lims.testing.Keywords
-Resource         plone/app/robotframework/selenium.robot
-Resource         plone/app/robotframework/saucelabs.robot
 Variables        plone/app/testing/interfaces.py
 Variables        bika/lims/tests/variables.py
 Suite Setup      Start browser
@@ -23,20 +21,20 @@ AnalysisRequest views
     Go to  ${PLONEURL}/clients/client-1
     Click Link                       Add
     Wait Until Page Contains         Request new analyses
-    SelectDate                       ar_0_SamplingDate         1
-    Select from dropdown             ar_0_Contact              Rita
-    Select from dropdown             ar_0_Priority             High
-    Select from dropdown             ar_0_Template             Bruma
+    SelectDate                       css=#SamplingDate-0         1
+    Select from dropdown             css=#Contact-0              Rita
+    Select from dropdown             css=#Priority-0             High
+    Select from dropdown             css=#Template-0             Bruma
     Element should be visible        xpath=//em[contains(@class, 'partnr_')]
 
     Disable ShowPartitions
     Go to  ${PLONEURL}/clients/client-1
     Click Link                       Add
     Wait Until Page Contains         Request new analyses
-    SelectDate                       ar_0_SamplingDate         1
-    Select from dropdown             ar_0_Contact              Rita
-    Select from dropdown             ar_0_Priority             High
-    Select from dropdown             ar_0_Template             Bruma
+    SelectDate                       css=#SamplingDate-0         1
+    Select from dropdown             css=#Contact-0              Rita
+    Select from dropdown             css=#Priority-0             High
+    Select from dropdown             css=#Template-0             Bruma
     Element should not be visible    xpath=//em[contains(@class, 'partnr_')]
 
     Click Button  Save
@@ -106,6 +104,6 @@ Receive AR
     Go to                        http://localhost:55001/plone/clients/client-1/analysisrequests
     Wait until page contains     ${ar_id}
     Select checkbox              xpath=//input[@item_title="${ar_id}"]
-    Click button                 xpath=//input[@value="Receive sample"]
+    Click button                 xpath=//input[@id="receive_transition"]
     Wait until page contains     saved
 

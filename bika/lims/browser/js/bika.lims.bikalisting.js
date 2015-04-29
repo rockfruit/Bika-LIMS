@@ -148,38 +148,72 @@ function BikaListingTableView() {
 
 	function category_header_clicked() {
 		// expand/collapse categorised rows
-		var url = window.location.href.split('?')[0]
-		var options = {} // XXX get possible parameters from URL correctly into options?
-		var ajax_categories = $("input[name='ajax_categories']")
-		$(".bika-listing-table th.collapsed")
-		  .live("click", function () {
-					var cat = $(this).attr('cat')
-					// We will replace this element with downloaded items:
-					var placeholder = $("tr[data-ajax_category='" + cat + "']");
-					// If ajax_categories are enabled, we need to go request items now.
-					if (ajax_categories.length > 0 && placeholder.length > 0) {
-						options['ajax_category_expand'] = 1
-						options['cat'] = cat
-						options['review_state'] = $('.review_state_selector a.selected')[0].id
-						$.ajax({url: url, data: options})
-						  .done(function (data) {
-									$("tr[data-ajax_category='" + cat + "']").replaceWith(data)
-								});
-					}
-					else {
-						// When ajax_categories are disabled, all cat items exist as TR elements:
-						$(this).parent().nextAll("tr[cat='" + $(this).attr("cat") + "']").toggle(true)
-					}
-					// Set expanded class on TR
-					$(this).removeClass("collapsed").addClass("expanded")
-				}
-		)
-		$(".bika-listing-table th.expanded").live("click", function () {
-			// After ajax_category expansion, collapse and expand work as they would normally.
-			$(this).parent().nextAll("tr[cat='" + $(this).attr("cat") + "']").toggle(false)
-			// Set collapsed class on TR
-			$(this).removeClass("expanded").addClass("collapsed")
+		$(".bika-listing-table th.collapsed").live("click", function () {
+			if (!$(this).hasClass("ignore_bikalisting_default_handler")){
+				category_header_expand_handler(this)
+			}
 		})
+		$(".bika-listing-table th.expanded").live("click", function () {
+			if (!$(this).hasClass("ignore_bikalisting_default_handler")){
+				// After ajax_category expansion, collapse and expand work as they would normally.
+				$(this).parent().nextAll("tr[cat='" + $(this).attr("cat") + "']").toggle(false)
+				// Set collapsed class on TR
+				$(this).removeClass("expanded").addClass("collapsed")
+			}
+		})
+	}
+
+	function category_header_expand_handler(element) {
+		// element is the category header TH.
+		// duplicated in bika.lims.analysisrequest.add_by_col.js
+		var def = $.Deferred()
+		// with form_id allow multiple ajax-categorised tables in a page
+		var form_id = $(element).parents("[form_id]").attr("form_id")
+		var cat_title = $(element).attr('cat')
+		// URL can be provided by bika_listing classes, with ajax_category_url attribute.
+		var url = $("input[name='ajax_categories_url']").length > 0
+		  ? $("input[name='ajax_categories_url']").val()
+		  : window.location.href.split('?')[0]
+		// We will replace this element with downloaded items:
+		var placeholder = $("tr[data-ajax_category='" + cat_title + "']")
+
+		// If it's already been expanded, ignore
+		if ($(element).hasClass("expanded")) {
+			def.resolve()
+			return def.promise()
+		}
+
+		// If ajax_categories are enabled, we need to go request items now.
+		var ajax_categories_enabled = $("input[name='ajax_categories']")
+		if (ajax_categories_enabled.length > 0 && placeholder.length > 0) {
+			var options = {}
+			options['ajax_category_expand'] = 1
+			options['cat'] = cat_title
+			options['form_id'] = form_id
+			url = $("input[name='ajax_categories_url']").length > 0
+			  ? $("input[name='ajax_categories_url']").val()
+			  : url
+			if ($('.review_state_selector a.selected').length > 0) {
+				// review_state must be kept the same after items are loaded
+				// (TODO does this work?)
+				options['review_state'] = $('.review_state_selector a.selected')[0].id
+			}
+			$.ajax({url: url, data: options})
+			  .done(function (data) {
+						$("[form_id='" + form_id + "'] tr[data-ajax_category='" + cat_title + "']")
+						  .replaceWith(data)
+						$(element).removeClass("collapsed").addClass("expanded")
+						def.resolve()
+					})
+		}
+		else {
+			// When ajax_categories are disabled, all cat items exist as TR elements:
+			$(element).parent().nextAll("tr[cat='" + $(element).attr("cat") + "']").toggle(true)
+			$(element).removeClass("collapsed").addClass("expanded")
+			def.resolve()
+		}
+		// Set expanded class on TR
+		return def.promise()
 	}
 
 	function filter_search_keypress() {

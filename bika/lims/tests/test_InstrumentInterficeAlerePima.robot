@@ -4,8 +4,6 @@ Library          Selenium2Library  timeout=5  implicit_wait=0.2
 Library          String
 Resource         keywords.txt
 Library          bika.lims.testing.Keywords
-Resource         plone/app/robotframework/selenium.robot
-Resource         plone/app/robotframework/saucelabs.robot
 Variables        plone/app/testing/interfaces.py
 Variables        bika/lims/tests/variables.py
 Suite Setup      Start browser
@@ -27,6 +25,8 @@ Import a slk Beads file
     [Documentation]  Firts we have to create the AS to match the
     ...              analysis in the file. Then we have to create the AR
     ...              and tranistion it. Finally qe can import the results.
+    Log in                              test_labmanager         test_labmanager
+    Wait until page contains            You are now logged in
     ${PATH_TO_TEST} =           run keyword   resource_filename
     Create Analysis Service  ${ASId1}  ${ASTitle1}
     ${ar_id}=                Create an AR  ${ASTitle1}  ${ClientSampleId1}
@@ -39,6 +39,8 @@ Import a slk CD4 file
     [Documentation]  Firts we have to create the AS to match the
     ...              analysis in the file. Then we have to create the AR
     ...              and tranistion it. Finally qe can import the results.
+    Log in                              test_labmanager         test_labmanager
+    Wait until page contains            You are now logged in
     ${PATH_TO_TEST} =           run keyword   resource_filename
     Create Analysis Service  ${ASId2}  ${ASTitle2}
     ${ar_id}=                Create an AR  ${ASTitle2}  ${ClientSampleId2}
@@ -49,12 +51,6 @@ Import a slk CD4 file
 
 
 *** Keywords ***
-
-Start browser
-    Open browser                        ${PLONEURL}/login_form  chrome
-    Log in                              test_labmanager         test_labmanager
-    Wait until page contains            You are now logged in
-    Set selenium speed                  ${SELENIUM_SPEED}
 
 Create Analysis Service
    [Documentation]  Create an AS using the ID ASId
@@ -78,10 +74,10 @@ Create an AR
     go to                       ${PLONEURL}/clients/client-1
     Wait until page contains element    css=body.portaltype-client
     click link                  link=Add
-    Select from dropdown        ar_0_Contact                Rita
-    SelectDate                  ar_0_SamplingDate           @{time}[2]
-    Select from dropdown        ar_0_SampleType             Bran
-    Input text                  ar_0_ClientSampleID         ${ClientSampleId}
+    Select from dropdown        css=#Contact-0                Rita
+    SelectDate                  css=#SamplingDate-0           @{time}[2]
+    Select from dropdown        css=#SampleType-0             Bran
+    Input text                  css=#ClientSampleID-0         ${ClientSampleId}
     Set Selenium Timeout        30
     click element               xpath=.//th[@id="cat_lab_Microbiology"]
     Select checkbox             xpath=//input[@title='${ASTitle}']

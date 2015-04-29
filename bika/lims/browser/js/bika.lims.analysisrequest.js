@@ -14,6 +14,7 @@ function AnalysisRequestView() {
         $("#workflow-transition-publish").click(workflow_transition_publish);
         $("#workflow-transition-republish").click(workflow_transition_republish);
         $("#workflow-transition-receive").click(workflow_transition_receive);
+        $("#workflow-transition-retract_ar").click(workflow_transition_retract_ar);
 
     }
 
@@ -74,6 +75,19 @@ function AnalysisRequestView() {
             .replace("/view", "") + "/workflow_action?" + requeststring;
         window.location.href = href;
     }
+
+    function workflow_transition_retract_ar(event) {
+        event.preventDefault();
+        var requestdata = {};
+        requestdata.workflow_action = "retract_ar";
+        var requeststring = $.param(requestdata);
+        var href = window.location.href.split("?")[0]
+            .replace("/base_view", "")
+            .replace("/manage_results", "")
+            .replace("/workflow_action", "")
+            .replace("/view", "") + "/workflow_action?" + requeststring;
+        window.location.href = href;
+    }
 }
 
 /**
@@ -88,6 +102,9 @@ function AnalysisRequestViewView() {
      */
     that.load = function() {
 
+        resultsinterpretation_move_below();
+        filter_CCContacts();
+        set_autosave_input();
         if (document.location.href.search('/clients/') >= 0
             && $("#archetypes-fieldname-SamplePoint #SamplePoint").length > 0) {
 
@@ -101,8 +118,9 @@ function AnalysisRequestViewView() {
                     if (data['ClientUID'] != '') {
                         var spelement = $("#archetypes-fieldname-SamplePoint #SamplePoint");
                         var base_query=$.parseJSON($(spelement).attr("base_query"));
-                                base_query["getClientUID"] = data['ClientUID'];
-                                $(spelement).attr("base_query", $.toJSON(base_query));
+                        var setup_uid = $("#bika_setup").attr("bika_samplepoints");
+                        base_query["getClientUID"] = [data['ClientUID'], setup_uid];
+                        $(spelement).attr("base_query", $.toJSON(base_query));
                         var options = $.parseJSON($(spelement).attr("combogrid_options"));
                         options.url = window.location.href.split("/ar")[0] + "/" + options.url;
                         options.url = options.url + "?_authenticator=" + $("input[name='_authenticator']").val();
@@ -121,6 +139,215 @@ function AnalysisRequestViewView() {
             });
         }
 
+    }
+
+    function resultsinterpretation_move_below(){
+        //Remove non needed buttons from richwidget, timeout is needed because that widget is rendered quite late.
+        setTimeout(function() {
+            $("#archetypes-fieldname-ResultsInterpretation .fieldTextFormat").remove();
+            $("#ResultsInterpretation_image").remove();
+            $("#ResultsInterpretation_code").remove();
+        }, 2000);
+        //Move the widget to the bottom of the page
+        elem = $("#archetypes-fieldname-ResultsInterpretation").closest("td").closest("tr");
+        label = elem.children()[0];
+        box= elem.children()[1];
+        box = $(box).children();
+        $("#archetypes-fieldname-Remarks").before(box);
+        $("#archetypes-fieldname-ResultsInterpretation").before("<label id='label_resultsinterpretation'></label>");
+        $("#label_resultsinterpretation").prepend(label);
+    }
+
+    function filter_CCContacts(){
+        /**
+         * Filter the CCContacts dropdown list by the current client.
+         */
+        if ($('#CCContact').length > 0) {
+            var element = $('#CCContact');
+            var clientUID = getClientUID();
+            filter_by_client(element, "getParentUID", clientUID);
+        }
+    }
+
+    function getClientUID(){
+        /**
+         * Return the AR client's UID.
+         */
+        var clientid =  window.location.href.split("clients")[1].split("/")[1];
+        // ajax petition to obtain the current client info
+        var clientuid = "";
+        $.ajax({
+            url: window.portal_url + "/clients/" + clientid + "/getClientInfo",
+            type: 'POST',
+            async: false,
+            data: {'_authenticator': $('input[name="_authenticator"]').val()},
+            dataType: "json",
+            success: function(data, textStatus, $XHR){
+                if (data['ClientUID'] != '') {
+                    clientuid = data['ClientUID'] != '' ? data['ClientUID'] : null;
+                }
+            }
+        });
+        return clientuid;
+    }
+
+    function filter_by_client(element, filterkey, filtervalue) {
+        /**
+         * Filter the dropdown's results (called element) by current client contacts.
+         */
+        // Get the base_query data in array format
+        var base_query= $.parseJSON($(element).attr("base_query"));
+        base_query[filterkey] = filtervalue;
+        $(element).attr("base_query", $.toJSON(base_query));
+        var options = $.parseJSON($(element).attr("combogrid_options"));
+        $(element).attr("base_query", $.toJSON(base_query));
+        $(element).attr("combogrid_options", $.toJSON(options));
+        referencewidget_lookups($(element));
+    }
+
+    function set_autosave_input() {
+        /**
+         * Set an event for each input field in the AR header. After write something in the input field and
+         * focus out it, the event automatically saves the change.
+         */
+        $("table.header_table input").not('[attr="referencewidget"').not('[type="hidden"]').each(function(i){
+            // Save input fields
+            $(this).change(function () {
+                var pointer = this;
+                build_typical_save_request(pointer);
+            });
+        });
+        $("table.header_table select").not('[type="hidden"]').each(function(i) {
+            // Save select fields
+            $(this).change(function () {
+                var pointer = this;
+                build_typical_save_request(pointer);
+            });
+        });
+        $("table.header_table input.referencewidget").not('[type="hidden"]').not('[id="CCContact"]').each(function(i) {
+            // Save referencewidget inputs.
+            $(this).bind("selected", (function() {
+                var requestdata={};
+                var pointer = this;
+                var fieldvalue, fieldname;
+                setTimeout(function() {
+                        fieldname = $(pointer).closest('div[id^="archetypes-fieldname-"]').attr('data-fieldname');
+                        fieldvalue = $(pointer).attr('uid');
+                        // To search by uid, we should follow this array template:
+                        // { SamplePoint = "uid:TheValueOfuid1|uid:TheValueOfuid2..." }
+                        // This is the way how jsonapi/__init__.py/resolve_request_lookup() works.
+                        requestdata[fieldname] = 'uid:' + fieldvalue;
+                        save_elements(requestdata);
+                    },
+                    500);
+            }));
+        });
+        $("table.header_table input#CCContact.referencewidget").not('[type="hidden"]').each(function(i) {
+            // CCContact works different.
+            $(this).bind("selected", (function() {
+                var pointer = this;
+                var fieldvalue, fieldname, requestdata = {};
+                setTimeout(function() {
+                        // To search by uid, we should follow this array template:
+                        // { SamplePoint = "uid:TheValueOfuid1|uid:TheValueOfuid2..." }
+                        // This is the way how jsonapi/__init__.py/resolve_request_lookup() works.
+                        fieldname = $(pointer).closest('div[id^="archetypes-fieldname-"]').attr('data-fieldname');
+                        fieldvalue = parse_CCClist();
+                        requestdata[fieldname] = fieldvalue;
+                        save_elements(requestdata);
+                    },
+                    500);
+            }));
+        });
+        $('img[fieldname="CCContact"]').each(function() {
+            // If a delete cross is clicked on CCContact-listing, we should update the saved list.
+            var fieldvalue, requestdata = {}, fieldname;
+            $(this).click(function() {
+                fieldname = $(this).attr('fieldname');
+                setTimeout(function() {
+                    fieldvalue = parse_CCClist();
+                    requestdata[fieldname] = fieldvalue;
+                    save_elements(requestdata);
+                });
+            });
+        });
+    }
+
+    function build_typical_save_request(pointer) {
+        /**
+         * Build an array with the data to be saved for the typical data fields.
+         * @pointer is the object which has been modified and we want to save its new data.
+         */
+        var fieldvalue, fieldname, requestdata={};
+        // Checkbox
+        if ( $(pointer).attr('type') == "checkbox" ) {
+            // Checkboxes name is located in its parent div, but its value is located inside the input.
+            fieldvalue = $(pointer).prop('checked');
+            fieldname = $(pointer).closest('div[id^="archetypes-fieldname-"]').attr('data-fieldname');
+        }
+        // Other input
+        else {
+            fieldvalue = $(pointer).val();
+            fieldname = $(pointer).closest('div[id^="archetypes-fieldname-"]').attr('data-fieldname');
+        }
+        requestdata[fieldname] = fieldvalue;
+        save_elements(requestdata);
+    }
+
+    function save_elements(requestdata) {
+        /**
+         * Given a dict with a fieldname and a fieldvalue, save this data via ajax petition.
+         * @requestdata should has the format  {fieldname=fieldvalue} ->  { ReportDryMatter=false}.
+         */
+        var url = window.location.href.replace('/base_view', '');
+        var obj_path = url.replace(window.portal_url, '');
+        // Staff for the notification
+        var element,name = $.map(requestdata, function(element,index) {return element, index});
+        name = $.trim($('[data-fieldname="' + name + '"]').closest('td').prev().text());
+        var ar = $.trim($('.documentFirstHeading').text());
+        var anch =  "<a href='"+ url + "'>" + ar + "</a>";
+        // Needed fot the ajax petition
+        requestdata['obj_path']= obj_path;
+        $.ajax({
+            type: "POST",
+            url: window.portal_url+"/@@API/update",
+            data: requestdata
+        })
+        .done(function(data) {
+            //success alert
+            if (data != null && data['success'] == true) {
+                bika.lims.SiteView.notificationPanel(anch + ': ' + name + ' updated successfully', "succeed");
+            } else {
+                bika.lims.SiteView.notificationPanel('Error while updating ' + name + ' for '+ anch, "error");
+                var msg = '[bika.lims.analysisrequest.js] Error while updating ' + name + ' for '+ ar;
+                console.warn(msg);
+                window.bika.lims.error(msg);
+            }
+        })
+        .fail(function(){
+            //error
+            bika.lims.SiteView.notificationPanel('Error while updating ' + name + ' for '+ anch, "error");
+            var msg = '[bika.lims.analysisrequest.js] Error while updating ' + name + ' for '+ ar;
+            console.warn(msg);
+            window.bika.lims.error(msg);
+        });
+    }
+
+    function parse_CCClist() {
+        /**
+         * It parses the CCContact-listing, where are located the CCContacts, and build the fieldvalue list.
+         * @return: the builed field value -> "uid:TheValueOfuid1|uid:TheValueOfuid2..."
+         */
+        var fieldvalue = '';
+        $('#CCContact-listing').children('.reference_multi_item').each(function (ii) {
+            if (fieldvalue.length < 1) {
+                fieldvalue = 'uid:' + $(this).attr('uid');
+            }
+            else {
+                fieldvalue = fieldvalue + '|uid:' + $(this).attr('uid');
+            }
+        });
+        return fieldvalue;
     }
 }
 
@@ -181,7 +408,7 @@ function AnalysisRequestAnalysesView() {
         $.each($("[name='uids:list']"), function(x,cb){
             var service_uid = $(cb).val();
             var row_data = $.parseJSON($("#"+service_uid+"_row_data").val());
-            if (row_data.disabled === true){
+			if (row_data != undefined && row_data.disabled === true) {
                 // disabled fields must be shadowed by hidden fields,
                 // or they don't appear in the submitted form.
                 $(cb).prop("disabled", true);
@@ -290,13 +517,23 @@ function AnalysisRequestAnalysesView() {
         }
 
         // spec fields
+		var rr = $.parseJSON($("#ResultsRange").val());
         var specfields = ["min", "max", "error"];
-        for(var i in specfields) {
-            element = $("[name='"+specfields[i]+"."+service_uid+":records']");
-            new_element = "" +
-                "<input class='listing_string_entry numeric' type='text' size='5' " +
-                "field='"+specfields[i]+"' value='"+$(element).val()+"' " +
-                "name='"+specfields[i]+"."+service_uid+":records' " +
+		var i, field, value;
+		for (i in specfields) {
+			field = specfields[i];
+			try {
+				value = rr[service_uid][field];
+			}
+			catch (e) {
+				// If the value is not defined in the AR spec, we should use a
+				// blank value; when saved the value will be stored on the AR.
+				value = '';
+			}
+			element = $("[name='" + field + "." + service_uid + ":records']");
+			new_element = "<input class='listing_string_entry numeric' type='text' size='5' " +
+				"field='" + field + "' value='" + value + "' " +
+				"name='" + field + "." + service_uid + ":records' " +
                 "uid='"+service_uid+"' autocomplete='off' style='font-size: 100%'>";
             $(element).replaceWith(new_element);
         }

@@ -34,9 +34,9 @@
   <include package=".search" />
   <include package=".subscribers" />
   <include package=".vocabularies" />
+  <include package=".workflow" />
 
   <include file="profiles.zcml" />
-  <include file="workflow.zcml" />
 
   <include file="idserver.zcml" />
 
@@ -83,5 +83,10 @@
            Products.DCWorkflow.interfaces.IAfterTransitionEvent"
       handler="bika.lims.workflow.AfterTransitionEventHandler"
     />
+
+  <browser:resource
+      file="skins/bika/logo.png"
+      name="bika-lims-logo.png"
+      />
 
 </configure>

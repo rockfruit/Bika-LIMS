@@ -54,6 +54,8 @@ function AnalysisRequestAddByCol() {
 		singleservice_deletebtn_click()
 		analysis_cb_click()
 
+		category_header_clicked()
+
 		//		sample_selected()
 
 		form_submit()
@@ -1334,17 +1336,30 @@ function AnalysisRequestAddByCol() {
 	function expand_services_bika_listing(arnum, service_data) {
 		// When the bika_listing serviceselector is in place,
 		// this function is called to select services for Profiles and Templates.
-		var service_uids = []
+		var services = []
+		var defs = []
+		var expanded_categories = []
 		for (var si = 0; si < service_data.length; si++) {
-			var service = service_data[si]
-			service_uids.push(service['UID'])
-			var poc = service['PointOfCapture']
 			// Expand category
-			$('span#services_' + poc + ' ' +
-			  '[cat="' + service['CategoryTitle'] + '"].collapsed').click()
-			// select service
-			analysis_cb_check(arnum, service['UID'])
+			var service = service_data[si]
+			services.push(service)
+			var th = $("table[form_id='" + service['PointOfCapture'] + "'] " +
+					   "th[cat='" + service['CategoryTitle'] + "']")
+			if(expanded_categories.indexOf(th) < 0) {
+				console.log("expand handler on " + service['CategoryTitle'] + "/" + service['PointOfCapture'])
+				expanded_categories.push(th)
+				var def = $.Deferred()
+				def = category_header_expand_handler(th)
+				defs.push(def)
+			}
 		}
+		// Call $.when with all deferreds
+		$.when.apply(null, defs).then(function () {
+			// select services
+			for (var si = 0; si < services.length; si++) {
+				analysis_cb_check(arnum, services[si]['UID'])
+			}
+		})
 	}
 
 	function uncheck_all_services(arnum) {
@@ -1359,6 +1374,82 @@ function AnalysisRequestAddByCol() {
 			var uid = $(e).parents("[uid]").attr("uid")
 			analysis_cb_uncheck(arnum, uid)
 		}
+	}
+
+	function category_header_clicked() {
+		// expand/collapse categorised rows
+		var ajax_categories = $("input[name='ajax_categories']")
+		$(".bika-listing-table th.collapsed")
+		  .unbind()
+		  .live("click", function (event) {
+					category_header_expand_handler(this)
+				})
+		$(".bika-listing-table th.expanded")
+		  .unbind()
+		  .live("click", function () {
+			// After ajax_category expansion, collapse and expand work as they would normally.
+			$(this).parent().nextAll("tr[cat='" + $(this).attr("cat") + "']").toggle(false)
+			// Set collapsed class on TR
+			$(this).removeClass("expanded").addClass("collapsed")
+		})
+	}
+
+	function category_header_expand_handler(element) {
+		/* Deferred function to expand the category with ajax (or not!!)
+		 on first expansion.  duplicated from bika.lims.bikalisting.js, this code
+		 fires when categories are expanded automatically (eg, when profiles or templates require
+		 that the category contents are visible for selection)
+
+		 Also, this code returns deferred objects, not their promises.
+
+		 :param: element - The category header TH element which normally receives 'click' event
+		 */
+		var def = $.Deferred()
+		// with form_id allow multiple ajax-categorised tables in a page
+		var form_id = $(element).parents("[form_id]").attr("form_id")
+		var cat_title = $(element).attr('cat')
+		var ar_count = parseInt($("#ar_count").val(), 10)
+		// URL can be provided by bika_listing classes, with ajax_category_url attribute.
+		var url = $("input[name='ajax_categories_url']").length > 0
+		  ? $("input[name='ajax_categories_url']").val()
+		  : window.location.href.split('?')[0]
+		// We will replace this element with downloaded items:
+		var placeholder = $("tr[data-ajax_category='" + cat_title + "']")
+
+		// If it's already been expanded, ignore
+		if ($(element).hasClass("expanded")) {
+			def.resolve()
+			return def
+		}
+
+		// If ajax_categories are enabled, we need to go request items now.
+		var ajax_categories_enabled = $("input[name='ajax_categories']")
+		if (ajax_categories_enabled.length > 0 && placeholder.length > 0) {
+			var options = {}
+			// this parameter allows the receiving view to know for sure what's expected
+			options['ajax_category_expand'] = 1
+			options['cat'] = cat_title
+			options['ar_count'] = ar_count
+			options['form_id'] = form_id
+			if ($('.review_state_selector a.selected').length > 0) {
+				// review_state must be kept the same after items are loaded
+				// (TODO does this work?)
+				options['review_state'] = $('.review_state_selector a.selected')[0].id
+			}
+			$.ajax({url: url, data: options})
+			  .done(function (data) {
+						$("[form_id='" + form_id + "'] tr[data-ajax_category='" + cat_title + "']").replaceWith(data)
+						$(element).removeClass("collapsed").addClass("expanded")
+						def.resolve()
+					})
+		}
+		else {
+			// When ajax_categories are disabled, all cat items exist as TR elements:
+			$(element).parent().nextAll("tr[cat='" + cat_title + "']").toggle(true)
+			$(element).removeClass("collapsed").addClass("expanded")
+			def.resolve()
+		}
+		return def
 	}
 
 // analysis service checkboxes /////////////////////////////////////////////
@@ -2036,9 +2127,6 @@ function AnalysisRequestAddByCol() {
 							window.location.replace(destination + q)
 						}
 						else {
-							var destination = window.location.href.split("/portal_factory")[0]
-							window.bika.lims.portalMessage(_("Unspecified form error"))
-							console.log(data)
 							var destination = window.location.href.split("/portal_factory")[0]
 							window.location.replace(destination)
 						}

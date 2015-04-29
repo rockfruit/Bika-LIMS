@@ -6,8 +6,6 @@ Library          String
 Library          DebugLibrary
 Resource         keywords.txt
 Library          bika.lims.testing.Keywords
-Resource         plone/app/robotframework/selenium.robot
-Resource         plone/app/robotframework/saucelabs.robot
 Variables        plone/app/testing/interfaces.py
 Variables        bika/lims/tests/variables.py
 Suite Setup      Start browser
@@ -207,7 +205,7 @@ Receive AR
     Go to                        http://localhost:55001/plone/batches/B-001/analysisrequests
     Wait until page contains     ${ar_id}
     Select checkbox              xpath=//input[@item_title="${ar_id}"]
-    Click button                 xpath=//input[@value="Receive sample"]
+    Click button                 xpath=//input[@id="receive_transition"]
     Wait until page contains     saved
 
 Submit AR

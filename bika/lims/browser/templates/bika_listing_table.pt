@@ -50,7 +50,9 @@ displayed when ajax requests the table. </tal:comment>
         name python:form_id+'_sort_order';
         value python:request.get(form_id+'_sort_order', 'ascending')"/>
 
-<input type="hidden" name="ajax_categories" value="1" tal:condition="view/bika_listing/ajax_categories"/>
+<input type="hidden" name="ajax_categories" value="1"
+        tal:condition="view/bika_listing/ajax_categories"
+        tal:attributes="form_id form_id"/>
 
 <tal:worksheet-cheat-1 condition="python:hasattr(view.bika_listing, 'analyst')">
     <input type="hidden"
@@ -89,7 +91,8 @@ XXX This should use form_id </tal:comment>
                                 view.bika_listing.json_interim_fields or []"/>
 <table
     summary="Content listing"
-    tal:attributes="class python:'bika-listing-table'"
+    tal:attributes="class python:'bika-listing-table';
+                    form_id view/bika_listing/form_id"
     i18n:attributes="summary summary_content_listing;"
     tal:define="
         columns view/bika_listing/columns;
@@ -126,7 +129,6 @@ filter search
                 <tal:filters_enabled
                     tal:define="term python:request.get(form_id+'_filter', '');"
                     tal:condition="python:hasattr(view.bika_listing, 'filter_indexes') and view.bika_listing.filter_indexes">
-
                     <span class="filter-search-button">&nbsp;</span>
                     <input
                         class="filter-search-input" autocomplete="off"
@@ -195,12 +197,12 @@ Colum Headers
                     <th style="text-align:left;"
                         tal:attributes="colspan nr_cols;
                                         cat cat;
-                                        class python:(cat in selected_cats) and 'cat_header expanded' or 'cat_header collapsed'"
+                                        class python:'cat_header expanded %s'%view.bika_listing.cat_header_class if cat in selected_cats else 'cat_header collapsed %s'%view.bika_listing.cat_header_class"
                         tal:content="structure cat">
                     </th>
                 </tr>
 
-                <span tal:replace="structure python:view.rendered_items(cat, review_state)"/>
+                <span tal:replace="structure python:view.rendered_items(cat)"/>
 
             </tal:show_this_category>
         </tal:cats>

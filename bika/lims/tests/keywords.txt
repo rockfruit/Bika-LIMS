@@ -18,19 +18,13 @@ Start browser
 
 Log in
     [Arguments]  ${userid}  ${password}
-
     Go to                          http://localhost:55001/plone/login_form
-
-    # cheeky but I want, so sneaked in here
     Maximize Browser Window
-
-    Page should contain element     __ac_name
-    Page should contain element     __ac_password
-    Page should contain button      Log in
+    sleep   0.1
     Input text                      __ac_name      ${userid}
+    sleep   0.1
     Input text                      __ac_password  ${password}
     Click Button  Log in
-    sleep     3
 
 Log out
     Go to                          http://localhost:55001/plone/logout
@@ -41,21 +35,20 @@ Select from dropdown
     [Arguments]        ${locator}
     ...                ${search_text}=
     ...                ${item_number}=1
-    Input text         ${locator}  ${search_text}
-    sleep    1
-    Click Element      xpath=//div[contains(@class,'cg-colItem')][${item_number}]
-    sleep    1
-
+    wait until page contains element    ${locator}
+    Input text                          ${locator}   ${search_text}
+    wait until page contains element    xpath=.//div[contains(@class,'cg-colItem')][${item_number}]
+    sleep           .5
+    Click Element                       xpath=.//div[contains(@class,'cg-colItem')][${item_number}]
 
 SelectDate
     [Arguments]  ${Element}=
     ...          ${Date}=
     ${Date} =            Convert To Integer    ${Date}
     ${Date} =            Convert To String     ${Date}
-    sleep                0.5
     Click Element  ${Element}
     Wait Until Page Contains Element  ui-datepicker-div
-    sleep                0.5
+    sleep                1
     Click Link  ${Date}
 
 
@@ -64,24 +57,31 @@ SelectPrevMonthDate
     ...          ${Date}=
     Click Element        ${Element}
     Wait Until Page Contains Element  ui-datepicker-div
+    sleep                1
     Click Element        xpath=//div[@id='ui-datepicker-div']//a[@title='Prev']
-    sleep                0.5
     ${Date} =            Convert To Integer    ${Date}
     ${Date} =            Convert To String     ${Date}
+    sleep                1
     Click Link           ${Date}
-    sleep                0.5
 
 SelectNextMonthDate
     [Arguments]  ${Element}=
     ...          ${Date}=
     Click Element        ${Element}
     Wait Until Page Contains Element  ui-datepicker-div
+    sleep                1
     Click Element        xpath=//div[@id='ui-datepicker-div']//a[@title='Next']
-    sleep                0.5
     ${Date} =            Convert To Integer    ${Date}
     ${Date} =            Convert To String     ${Date}
+    sleep                1
     Click Link           ${Date}
-    sleep                0.5
+
+Execute transition ${transition} on item ${ar_id} in ARList
+    [Documentation]  Tranistion the specific ar from an AR List.
+    Select checkbox     xpath=//input[@item_title="${ar_id}"]
+    Set Selenium Timeout        30
+    Click Element       ${transition}_transition
+    Set Selenium Timeout        10
 
 Execute transition ${transition} on item ${ar_id} in ARList
     [Documentation]  Tranistion the specific ar from an AR List.
@@ -98,7 +98,8 @@ Execute transition ${transition} on items in form_id ${form_id}
     Set Selenium Timeout        10
 
 Execute transition ${transition} inside ClientARView/ManageResults
-    [Documentation]  Tranistion the element using the right label
+    [Documentation]  Transition the element using the right label
+    ...              tranistion could be-> sample, receive, verify, publish
     Click Element  css=a[title="Change the state of this item"]
     Click Element  workflow-transition-${transition}
 
@@ -108,5 +109,60 @@ Shleep
     Log  Sleeping ${amount}: ${comment}  WARN
     sleep  ${amount}
 
+Simple AR Creation
+    [Documentation]  Create a. simple AR
+    [Arguments]  ${Client}
+    ...          ${Contact}
+    ...          ${SampleType}
+    ...          ${ASCategory}
+    ...          ${ASTitle}
+    @{time} =                   Get Time        year month day hour min sec
+    go to                       ${PLONEURL}/clients/
+    click link                  ${Client}
+    Wait until page contains element    css=body.portaltype-client
+    click link                  link=Add
+    wait until page contains element        css=#Contact-0
+    Select from dropdown        css=#Contact-0                ${Contact}
+    SelectDate                  css=#SamplingDate-0           @{time}[2]
+    Select from dropdown        css=#SampleType-0             ${SampleType}
+    Set Selenium Timeout        30
+    click element              css=table[form_id='lab'] th[cat='${ASCategory}']
+    wait until page contains element    css=tr[title='${ASTitle}'] td[class*='ar.0'] input[type='checkbox']
+    Select Checkbox                     css=tr[title='${ASTitle}'] td[class*='ar.0'] input[type='checkbox']
+    Click Button                Save
+    Wait until page contains    created
+    ${ar_id} =                  Get text      //dl[contains(@class, 'portalMessage')][2]/dd
+    ${ar_id} =                  Set Variable  ${ar_id.split()[2]}
+    [Return]                    ${ar_id}
+
+Create a contact
+    [Documentation]  Function to create a contact from a client.
+    [Arguments]  ${Client}
+    ...          ${FirstName}
+    ...          ${Surname}
+    Go to             ${PLONEURL}/clients/
+    click link                  ${Client}
+    Wait until page contains element    css=body.portaltype-client
+    click link                  link=Contacts
+    click link                  link=Add
+    Input text                  Firstname  ${FirstName}
+    Input text                  Surname    ${Surname}
+    Click Button                Save
+    Wait until page contains    Changes saved
+
+Enable Sampling Workflow
+    Go to               ${PLONEURL}/bika_setup/edit
+    Click Link          id=fieldsetlegend-analyses
+    Select Checkbox     id=SamplingWorkflowEnabled
+    Click Button        Save
+    Wait until page contains    Changes saved.
+
 Wait For Ajax
     Wait for Condition   return window.jQuery.active == 0;
+
+Disable Print Page
+    [Documentation]  Disable the print page after create an AR.
+    Go to            ${PLONEURL}/bika_setup/edit
+    click element    fieldsetlegend-stickers
+    Select from list   AutoPrintStickers  None
+    Click Button                Save

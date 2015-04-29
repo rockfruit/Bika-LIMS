@@ -16,6 +16,9 @@ from bika.lims.utils import isActive
 from bika.lims.utils import tmpID
 from bika.lims.workflow import doActionFor
 from DateTime import DateTime
+from string import Template
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from email.Utils import formataddr
 from Products.Archetypes.config import REFERENCE_CATALOG
 from Products.Archetypes.event import ObjectInitializedEvent
@@ -52,7 +55,7 @@ def SamplePrepTransitionEventHandler(instance, event):
     then the AnalysisRequest will be sent diretly to that state.
 
     If the final state's ID is not found in the AR workflow, the AR will be
-    transitioned to 'sample_due'.
+    transitioned to 'sample_received'.
     """
     # creation doesn't have a 'transition'
     if not event.transition:
@@ -63,7 +66,7 @@ def SamplePrepTransitionEventHandler(instance, event):
         if event.new_state.id in ar_states:
             dst_state = event.new_state.id
         else:
-            dst_state = 'sample_due'
+            dst_state = 'sample_received'
         changeWorkflowState(instance, 'bika_ar_workflow', dst_state)
 
 
@@ -268,10 +271,10 @@ class AnalysisRequestWorkflowAction(WorkflowAction):
         items = [self.context,] if came_from == 'workflow_action' \
                 else self._get_selected_items().values()
         trans, dest = self.submitTransition(action, came_from, items)
-        if trans and 'receive' in self.context.bika_setup.getAutoPrintLabels():
+        if trans and 'receive' in self.context.bika_setup.getAutoPrintStickers():
             transitioned = [item.id for item in items]
-            size = self.context.bika_setup.getAutoLabelSize()
-            q = "/sticker?size=%s&items=" % size
+            tmpl = self.context.bika_setup.getAutoStickerTemplate()
+            q = "/sticker?template=%s&items=" % tmpl
             q += ",".join(transitioned)
             self.request.response.redirect(self.context.absolute_url() + q)
         elif trans:
@@ -507,17 +510,16 @@ class AnalysisRequestWorkflowAction(WorkflowAction):
                          + ar.getRemarks().split("===")[1].strip()
                          + "<br/><br/>") \
                     or ''
-
-        body = _("Some errors have been detected in the results report "
-                 "published from the Analysis Request ${request_link}. The Analysis "
-                 "Request ${new_request_link} has been created automatically and the "
-                 "previous has been invalidated.<br/>The possible mistake "
-                 "has been picked up and is under investigation.<br/><br/>"
-                 "${remarks}${lab_address}",
-                 mapping={"request_link":aranchor,
-                          "new_request_link":naranchor,
-                          "remarks": addremarks,
-                          "lab_address": lab_address})
+        sub_d = dict(request_link=aranchor,
+                     new_request_link=naranchor,
+                     remarks=addremarks,
+                     lab_address=lab_address)
+        body = Template("Some errors have been detected in the results report "
+                        "published from the Analysis Request $request_link. The Analysis "
+                        "Request $new_request_link has been created automatically and the "
+                        "previous has been invalidated.<br/>The possible mistake "
+                        "has been picked up and is under investigation.<br/><br/>"
+                        "$remarks $lab_address").safe_substitute(sub_d)
         msg_txt = MIMEText(safe_unicode(body).encode('utf-8'),
                            _subtype='html')
         mime_msg.preamble = 'This is a multi-part MIME message.'

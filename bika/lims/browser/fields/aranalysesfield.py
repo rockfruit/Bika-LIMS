@@ -116,6 +116,7 @@ class ARAnalysesField(ObjectField):
                     s_in_rr = True
             if not s_in_rr:
                 rr.append(s)
+        instance.setResultsRange(rr)
 
         new_analyses = []
         proxies = bsc(UID=service_uids)
@@ -145,7 +146,7 @@ class ARAnalysesField(ObjectField):
                 interim_fields.append(v)
 
             # create the analysis if it doesn't exist
-            if hasattr(instance, keyword):
+            if shasattr(instance, keyword):
                 analysis = instance._getOb(keyword)
             else:
                 analysis = create_analysis(

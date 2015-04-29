@@ -41,6 +41,14 @@ class AnalysisRequestAnalysesView(BikaListingView):
         self.show_select_all_checkbox = False
         self.pagesize = 0
 
+        self.categories = []
+        self.do_cats = self.context.bika_setup.getCategoriseAnalysisServices()
+        if self.do_cats:
+            self.show_categories = True
+            self.expand_all_categories = False
+            self.ajax_categories = True
+            self.category_index = 'getCategoryTitle'
+
         self.columns = {
             'Title': {'title': _('Service'),
                       'index': 'sortable_title',
@@ -109,9 +117,16 @@ class AnalysisRequestAnalysesView(BikaListingView):
         rr = self.context.getResultsRange()
         for r in rr:
             keyword = r['keyword']
-            service_uid = bsc(portal_type='AnalysisService',
-                              getKeyword=keyword)[0].UID
-            rr_dict_by_service_uid[service_uid] = r
+            try:
+                service_uid = bsc(portal_type='AnalysisService',
+                                  getKeyword=keyword)[0].UID
+                rr_dict_by_service_uid[service_uid] = r
+            except IndexError:
+                from bika.lims import logger
+                error = "No Analysis Service found for Keyword '%s'. "\
+                        "Related: LIMS-1614"
+                logger.exception(error, keyword)
+
         return json.dumps(rr_dict_by_service_uid)
 
     def get_spec_from_ar(self, ar, keyword):
@@ -122,14 +137,9 @@ class AnalysisRequestAnalysesView(BikaListingView):
         return empty
 
     def folderitems(self):
-        self.categories = []
-
         analyses = self.context.getAnalyses(full_objects=True)
         self.analyses = dict([(a.getServiceUID(), a) for a in analyses])
         self.selected = self.analyses.keys()
-        self.show_categories = \
-            self.context.bika_setup.getCategoriseAnalysisServices()
-        self.expand_all_categories = False
 
         wf = getToolByName(self.context, 'portal_workflow')
         mtool = getToolByName(self.context, 'portal_membership')
@@ -138,7 +148,6 @@ class AnalysisRequestAnalysesView(BikaListingView):
                                                 self.context)
 
         items = BikaListingView.folderitems(self)
-        analyses = self.context.getAnalyses(full_objects=True)
 
         parts = self.context.getSample().objectValues('SamplePartition')
         partitions = [{'ResultValue': o.Title(),

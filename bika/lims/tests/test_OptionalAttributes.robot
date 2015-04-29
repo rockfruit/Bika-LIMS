@@ -1,12 +1,9 @@
 *** Settings ***
 
-Library          BuiltIn
 Library          Selenium2Library  timeout=5  implicit_wait=0.2
 Library          String
 Resource         keywords.txt
 Library          bika.lims.testing.Keywords
-Resource         plone/app/robotframework/selenium.robot
-Resource         plone/app/robotframework/saucelabs.robot
 Variables        plone/app/testing/interfaces.py
 Variables        bika/lims/tests/variables.py
 Suite Setup      Start browser
@@ -24,7 +21,6 @@ Create AR with hidden attributes
     ${ar_id}=          Create Primary AR
     Check hidden fields on AR view ${ar_id}
     Check hidden fields on AR invoice ${ar_id}
-
 
 *** Keywords ***
 
@@ -63,11 +59,11 @@ Create Primary AR
     Click Link                  Add
     Wait until page contains    Request new analyses
     sleep   1
-    Select Date                 ar_0_SamplingDate           @{time}[2]
+    Select Date                 css=#SamplingDate-0           @{time}[2]
     sleep   1
-    Select from dropdown        ar_0_Contact                Rita
+    Select from dropdown        css=#Contact-0                Rita
     sleep   1
-    Select from dropdown        ar_0_Template               Bore
+    Select from dropdown        css=#Template-0               Bore
     sleep   1
     Set Selenium Timeout        30
     Click Button                Save

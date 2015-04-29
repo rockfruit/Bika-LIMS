@@ -5,13 +5,15 @@
 <tal:items tal:condition="view/this_cat_selected"
            tal:repeat="item view/this_cat_batch">
     <tr tal:define="keyword python:item.has_key('Keyword') and item['Keyword'] or '';
+                    portal context/@@plone_portal_state/portal;
                     suid python:item.get('service_uid','');
                     tmpstyle python:view.context.bika_setup.getEnableAnalysisRemarks() and 'border-bottom:0 !important;;' or '';
                     global rowspan python:{};
                     global rowspan_max python:{};
                     global colspan python:1;
-                    global colspan_max python:1"
-        tal:attributes="style tmpstyle;
+                    global colspan_max python:1;
+                    tabindex view/tabindex;"
+            tal:attributes="style tmpstyle;
                         cat python:item.get('category', 'None');
                         class item/table_row_class;
                         id string:folder-contents-item-${item/uid};
@@ -91,7 +93,7 @@ Table cells for each column from in review_state's column list.
 ********************</tal:comment>
 
 <tal:cell
-    tal:repeat="column view/review_state/columns">
+    tal:repeat="column view/bika_listing/review_state/columns">
 <tal:rowcolspan
     tal:condition="python: 'toggle' not in view.bika_listing.columns[column]
                         or view.bika_listing.columns[column].get('toggle', True)"

@@ -13,16 +13,20 @@
 			$(this).parent().remove();
 		});
 
-		$(".ArchetypesReferenceWidget").bind("change blur", function(){
+    $(".ArchetypesReferenceWidget").bind("selected blur change", function(){
 			var e = $(this).children("input.referencewidget");
 			if (e.val() == '') {
 				fieldName = $(e).attr("name").split(":")[0];
 				$(e).attr("uid", "");
 				$("input[name^='"+fieldName+"_uid']").val("");
+                $("div[name='"+fieldName+"-listing']").empty();
 			}
 		});
-
-	});
+		save_UID_check();
+		check_UID_check();
+		load_addbutton_overlays();
+		load_editbutton_overlays();
+    });
 
 }(jQuery));
 
@@ -130,3 +134,178 @@ function referencewidget_lookups(elements){
 		$(element).attr("search_query", "{}");
 	}
 }
+
+function save_UID_check(){
+    //Save the selected uid's item to avoid introduce non-listed
+    //values inside the widget.
+    $(".ArchetypesReferenceWidget").bind("selected", function(){
+        var uid = $(this).children("input.referencewidget").attr("uid");
+        var val = $(this).children("input.referencewidget").val();
+        $(this).children("input.referencewidget").attr("uid_check",uid);
+        $(this).children("input.referencewidget").attr("val_check",val);
+    });
+}
+
+function check_UID_check(){
+    //Remove the necessary values to submit if the introduced data is
+    //not correct.
+    $(".ArchetypesReferenceWidget").children("input.referencewidget").bind("blur", function(){
+        var chk = $(this).attr("uid_check");
+        var val_chk = $(this).attr("val_check");
+        var value = $(this).val();
+        //When is the first time you click on
+        if ((chk == undefined || chk == false) && (value != "") && $(this).attr("uid")){
+            $(this).attr("uid_check", $(this).attr("uid"));
+            $(this).attr("val_check",value);
+        }
+        //Write a non existent selection
+        else if ((chk == undefined || chk == false) && (value != "")){
+            $(this).attr('uid','');
+            $(this).attr('value','');
+        }
+        //UID is diferent from the checkUID, preventive option, maybe
+        //never will be accomplished
+        else if ($(this).attr("value") && (chk != undefined || chk != false) && (chk != $(this).attr("uid"))){
+            $(this).attr('uid',chk);
+            $(this).attr('value',val_chk);
+        }
+        //Modified the value by hand and wrong, it restores the
+        //previous option.
+        else if ((val_chk != value) && value != ''){
+            $(this).attr('uid',chk);
+            $(this).attr('value',val_chk);
+        }
+    });
+}
+
+function apply_button_overlay(button) {
+    /**
+     * Given an element (button), this function sets its overlay options.
+     * The overlay options to be applied are retrieved from the button's
+     * data_overlay attribute.
+     * Further info about jQuery overlay:
+     * http://jquerytools.github.io/documentation/overlay/
+     */
+    // Obtain overlay options from html button attributes.
+    var options = $.parseJSON($(button).attr('data_overlay'));
+    options['subtype'] = 'ajax';
+    var config = {};
+
+    // overlay.OnLoad javascript snippet
+    config['onLoad'] = function() {
+        var triggerid = "[rel='#"+this.getTrigger().attr('id')+"']";
+        // If there are defined some jsControllers, they'll be reloaded every time the overlay is loaded.
+        var jscontrollers = $(triggerid).attr('data_jscontrollers');
+        jscontrollers = $.parseJSON(jscontrollers);
+        if (jscontrollers.length > 0) {
+            window.bika.lims.loadControllers(false, jscontrollers);
+        }
+        // Check personalized onLoad functionalities.
+        var handler = $(triggerid).attr('data_overlay_handler');
+        if (handler != '') {
+            var fn = window[handler];
+            if (typeof fn === "function") {
+                handler = new fn();
+                if (typeof handler.onLoad === "function") {
+                    handler.onLoad(this);
+                }
+            }
+        }
+    };
+
+    // overlay.OnBeforeClose javascript snippet
+    config['onBeforeClose'] = function() {
+        var triggerid = "[rel='#"+this.getTrigger().attr('id')+"']";
+        var handler = $(triggerid).attr('data_overlay_handler');
+        if (handler != '') {
+            var fn = window[handler];
+            if (typeof fn === "function") {
+                handler = new fn();
+                if (typeof handler.onBeforeClose === "function") {
+                    handler.onBeforeClose(this);
+                    // Done, exit
+                    return true;
+                }
+            }
+        }
+        var retfields = $.parseJSON($(triggerid).attr('data_returnfields'));
+        if (retfields.length > 0) {
+            // Default behaviour.
+            // Set the value from the returnfields to the input
+            // and select the first option.
+            // This might be improved by finding a way to get the
+            // uid of the object created/edited and assign directly
+            // the value to the underlaying referencewidget
+            var retvals = [];
+            $.each(retfields, function(index, value){
+                var retval = $('div.overlay #'+value).val();
+                if (retval != '') { retvals.push(retval); }
+            });
+            if (retvals.length > 0) {
+                retvals = retvals.join(' ');
+                $(triggerid).prev('input').val(retvals).focus();
+                setTimeout(function() {
+                    $('.cg-DivItem').first().click();
+                }, 500);
+            }
+        }
+        return true;
+    };
+    options['config'] = config;
+    $(button).prepOverlay(options);
+}
+
+function load_addbutton_overlays() {
+    /**
+     * Add the overlay conditions for the AddButton.
+     */
+    $('a.referencewidget-add-button').each(function(i) {
+        apply_button_overlay('#' + $(this).attr('id'));
+    });
+}
+
+function load_editbutton_overlay(button) {
+    /**
+     * Given an element (button), show/hide the element depending on its trigger UID.
+     * No UID -> No object selected -> Noting to edit -> hide edit
+     * Yes UID -> Object selected -> Something to edit -> show edit.
+     */
+    var element = '#' + $(button).attr('data_fieldid');
+    var uid = $(element).attr('uid');
+    // No UID found -> Hide Edit button
+    if (!uid || uid == '') {
+        $(button).hide();
+    } else {
+        // UID found -> Show Edit button & update href attribute
+        $(button).show();
+        // Get object's id
+        var request_data = {
+            catalog_name: "uid_catalog",
+            UID: uid
+        };
+        window.bika.lims.jsonapi_read(request_data, function (data) {
+            var root_href = $(button).attr('data_baseurl');
+            var id = data.objects[0].id;
+            $(button).attr('href', root_href + "/" + id + '/edit');
+            apply_button_overlay(button);
+        });
+    }
+}
+
+function load_editbutton_overlays() {
+    /**
+     * Add the overlay conditions for the EditButton.
+     */
+    $('a.referencewidget-edit-button').each(function(i) {
+        var button = '#' + $(this).attr('id');
+        var fieldid = '#' + $(this).attr('data_fieldid');
+
+        $(fieldid).bind("selected blur paste", function () {
+            var button = '#' + $(this).siblings('a.referencewidget-edit-button').attr('id');
+            load_editbutton_overlay(button);
+        });
+
+        load_editbutton_overlay(button);
+    });
+}
+
