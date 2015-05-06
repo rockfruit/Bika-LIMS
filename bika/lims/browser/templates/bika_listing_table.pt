@@ -236,7 +236,9 @@ Workflow Actions
                             id python:action['id']+'_transition';
                             transition action/id;
                             value action/title;
-                            url python:action.get('url', '');"/>
+                            url python:action.get('url', '');
+                            workflow_transition python:'yes' if 'workflow_transition' in action else 'no';
+                            style python:'display:none';"/>
                 </span>
             </span>
         </td>

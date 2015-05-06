@@ -870,6 +870,7 @@ class BikaListingView(BrowserView):
                 # a list of lookups for single-value-select fields
                 choices = {},
                 state_class = state_class,
+                valid_transitions = self.get_valid_transitions(obj),
                 relative_url = relative_url,
                 view_url = url,
                 table_row_class = "",
@@ -962,6 +963,17 @@ class BikaListingView(BrowserView):
         data = self.render_items()
         return data
 
+    def get_valid_transitions(self, obj):
+        """Return valid transition IDs across all workflows.
+        This is used by bika_listing.js, to restrict the action
+        buttons to only those which apply to the selected items.
+        LIMS-1759 Disable state change buttons in lists when not applicable
+        """
+        transitions = []
+        for transition in self.portal_workflow.getTransitionsFor(obj):
+            transitions.append(transition['id'])
+        return transitions
+
     def get_workflow_actions(self):
         """ Compile a list of possible workflow transitions for items
             in this Table.
@@ -979,6 +991,11 @@ class BikaListingView(BrowserView):
         for obj in [i.get('obj', '') for i in self.items]:
             obj = hasattr(obj, 'getObject') and obj.getObject() or obj
             for it in workflow.getTransitionsFor(obj):
+                # To differentiate from manually inserted actions below,
+                # we set 'workflow_transition' key.  These actions are
+                # hidden, by default, until a selection is made.
+                # LIMS-1759 Disable state change buttons in lists when not applicable
+                it['workflow_transition'] = True
                 transitions[it['id']] = it
 
         # the list is restricted to and ordered by these transitions.

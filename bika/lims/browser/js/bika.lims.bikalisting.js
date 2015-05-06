@@ -9,6 +9,7 @@ function BikaListingTableView() {
 	that.load = function () {
 
 		column_header_clicked()
+		select_one_clicked()
 		select_all_clicked()
 		manage_select_all_state()
 		listing_string_input_keypress()
@@ -73,6 +74,43 @@ function BikaListingTableView() {
 		})
 	}
 
+	function show_or_hide_transition_buttons() {
+		// Get all transitions for all items, into all_valid_transitions
+		var all_valid_transitions = [] // array of arrays
+		var checked = $("input[name='uids:list']:checked")
+		for(var i=0; i<checked.length; i++){
+			all_valid_transitions.push($(checked[i]).attr("data-valid_transitions").split(","))
+		}
+		// intersect values from all arrays in all_valid_transitions
+		var valid_transitions = all_valid_transitions.shift().filter(function (v) {
+		    return all_valid_transitions.every(function (a) {
+		        return a.indexOf(v) !== -1;
+		    })
+		})
+		// Hide all buttons except the ones listed as valid.
+		$.each($("input[workflow_transition='yes']"), function (i, e) {
+			if($.inArray($(e).attr('transition'), valid_transitions) == -1){
+				$(e).hide()
+			}
+			else {
+				$(e).show()
+			}
+		})
+		// if any checkboxes are checked, then all "custom" action buttons are shown.
+		// This means any action button that is not linked to a workflow transition.
+		if(checked.length>0){
+			$("input[workflow_transition='no']").show()
+		} else {
+			$("input[workflow_transition='no']").hide()
+		}
+	}
+
+	function select_one_clicked() {
+		$("input[name='uids:list']").live("click", function () {
+			show_or_hide_transition_buttons();
+		})
+	}
+
 	function select_all_clicked() {
 		// select all (on this page at least)
 		$("input[id*='select_all']").live("click", function () {
@@ -83,6 +121,7 @@ function BikaListingTableView() {
 			else {
 				$(checkboxes).filter("input:checkbox:checked").prop("checked", false)
 			}
+			show_or_hide_transition_buttons();
 		})
 	}
 
