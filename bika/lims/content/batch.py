@@ -141,7 +141,7 @@ CCEmails = StringField(
     required=0,
     widget=LinesWidget(
         label=_("CC Emails"),
-        description=_("Add furher email addresses to be copied"),
+        description=_("Add further email addresses to be copied"),
     )
 )
 
