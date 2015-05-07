@@ -78,6 +78,10 @@ function BikaListingTableView() {
 		// Get all transitions for all items, into all_valid_transitions
 		var all_valid_transitions = [] // array of arrays
 		var checked = $("input[name='uids:list']:checked")
+		if (checked.length == 0){
+			$("input[workflow_transition]").hide()
+			return
+		}
 		for(var i=0; i<checked.length; i++){
 			all_valid_transitions.push($(checked[i]).attr("data-valid_transitions").split(","))
 		}
