@@ -29,47 +29,6 @@ import zope.event
 from zope.interface import implementer
 
 
-@implementer(IWorkflowChain)
-def AnalysisRequestWorkflowChain(ob, wftool):
-    """Responsible for inserting the optional sampling preparation workflow
-    into the workflow chain for AnalysisRequest instances.
-
-    This is only done if the AR is in 'sample_prep' state.
-    """
-    # use catalog to retrieve review_state: getInfoFor causes recursion loop
-    chain = list(ToolWorkflowChain(ob, wftool))
-    bc = getToolByName(ob, 'bika_catalog')
-    proxies = bc(UID=ob.UID())
-    if not proxies or proxies[0].review_state != 'sample_prep':
-        return chain
-    sampleprep_workflow = ob.getPreparationWorkflow()
-    if sampleprep_workflow:
-        chain.append(sampleprep_workflow)
-    return tuple(chain)
-
-def SamplePrepTransitionEventHandler(instance, event):
-    """Sample preparation is considered complete when the sampleprep workflow
-    reaches a state which has no exit transitions.
-
-    If this state's ID is the same as any AnalysisRequest primary workflow ID,
-    then the AnalysisRequest will be sent diretly to that state.
-
-    If the final state's ID is not found in the AR workflow, the AR will be
-    transitioned to 'sample_received'.
-    """
-    # creation doesn't have a 'transition'
-    if not event.transition:
-        return
-    if not event.new_state.getTransitions():
-        wftool = getToolByName(instance, 'portal_workflow')
-        ar_states = wftool.getWorkflowById('bika_ar_workflow').states.keys()
-        if event.new_state.id in ar_states:
-            dst_state = event.new_state.id
-        else:
-            dst_state = 'sample_received'
-        changeWorkflowState(instance, 'bika_ar_workflow', dst_state)
-
-
 class AnalysisRequestWorkflowAction(WorkflowAction):
 
     """Workflow actions taken in AnalysisRequest context.

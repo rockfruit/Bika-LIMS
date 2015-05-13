@@ -2,12 +2,12 @@
 """
 from AccessControl import ClassSecurityInfo
 from Products.CMFCore.WorkflowCore import WorkflowException
-from bika.lims import bikaMessageFactory as _
+from bika.lims import bikaMessageFactory as _, logger
 from bika.lims.utils import t, getUsers
 from bika.lims.browser.widgets.datetimewidget import DateTimeWidget
 from bika.lims.config import PROJECTNAME
 from bika.lims.content.bikaschema import BikaSchema
-from bika.lims.interfaces import ISample
+from bika.lims.interfaces import ISample, ISamplePrepWorkflow
 from bika.lims.permissions import SampleSample
 from bika.lims.workflow import doActionFor, isBasicTransitionAllowed
 from bika.lims.workflow import skip
@@ -616,7 +616,7 @@ schema['title'].required = False
 
 
 class Sample(BaseFolder, HistoryAwareMixin):
-    implements(ISample)
+    implements(ISample, ISamplePrepWorkflow)
     security = ClassSecurityInfo()
     displayContentsTab = False
     schema = schema
@@ -965,30 +965,39 @@ class Sample(BaseFolder, HistoryAwareMixin):
         return False
 
     def guard_sample_prep_complete_transition(self):
-        """ This relies on user created workflow, a very dodgy steed.
-        """
-        return False
-        wftool = getToolByName(self, 'portal_workflow')
-        # get sampleprep workflow name - allow transition if error.
-        sampleprep_wf_name = self.getPreparationWorkflow()
-        if not sampleprep_wf_name:
-            return True
-        # get sampleprep_review state: allow transition if error.
-        try:
-            sampleprep_review_state = wftool.getInfoFor(self, 'sampleprep_review_state')
-        except WorkflowException:
-            return True
-        if not sampleprep_review_state:
-            return True
+        """ This relies on user created workflow.  This function must
+        defend against user errors.
 
-        # get sampleprep_workflow object - error = allow transition
+        AR and Analysis guards refer to this one.
+
+        - If error is encountered, do not permit object to proceed.  Break
+          this rule carelessly and you may see recursive automatic workflows.
+
+        - If sampleprep workflow is badly configured, primary review_state
+          can get stuck in "sample_prep" forever.
+
+        """
+        wftool = getToolByName(self, 'portal_workflow')
+
         try:
-            wftool.getWorkflowById(sampleprep_wf_name)
-        except WorkflowException:
-            return True
+            # get sampleprep workflow object.
+            sp_wf_name = self.getPreparationWorkflow()
+            sp_wf = wftool.getWorkflowById(sp_wf_name)
+            # get sampleprep_review state.
+            sp_review_state = wftool.getInfoFor(self, 'sampleprep_review_state')
+            assert sp_review_state
+        except WorkflowException as e:
+            logger.warn("guard_sample_prep_complete_transition: "
+                        "WorkflowException %s" % e)
+            return False
+        except AssertionError:
+            logger.warn("'%s': cannot get 'sampleprep_review_state'" %
+                        sampleprep_wf_name)
+            return False
 
         # get state from workflow - error = allow transition
         # get possible exit transitions for state: error = allow transition
+        transitions = sp_wf
         if len(transitions) > 0:
             return False
         return True

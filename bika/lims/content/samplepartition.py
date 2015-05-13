@@ -2,7 +2,7 @@ from AccessControl import ClassSecurityInfo
 from bika.lims.browser.fields import DurationField
 from bika.lims.config import PROJECTNAME
 from bika.lims.content.bikaschema import BikaSchema
-from bika.lims.interfaces import ISamplePartition
+from bika.lims.interfaces import ISamplePartition, ISamplePrepWorkflow
 from bika.lims.workflow import doActionFor, isBasicTransitionAllowed
 from bika.lims.workflow import skip
 from DateTime import DateTime
@@ -56,7 +56,7 @@ schema['title'].required = False
 
 
 class SamplePartition(BaseContent, HistoryAwareMixin):
-    implements(ISamplePartition)
+    implements(ISamplePartition, ISamplePrepWorkflow)
     security = ClassSecurityInfo()
     displayContentsTab = False
     schema = schema
@@ -114,11 +114,12 @@ class SamplePartition(BaseContent, HistoryAwareMixin):
         return dis_date
 
     def guard_sample_prep_transition(self):
-        if not isBasicTransitionAllowed(self):
-            return False
-        if self.aq_parent and self.aq_parent.getPreparationWorkflow():
-            return True
-        return False
+        sample = self.aq_parent
+        return sample.guard_sample_prep_transition()
+
+    def guard_sample_prep_complete_transition(self):
+        sample = self.aq_parent
+        return sample.guard_sample_prep_complete_transition()
 
     def workflow_script_preserve(self):
         workflow = getToolByName(self, 'portal_workflow')

@@ -28,9 +28,9 @@ from bika.lims.browser.widgets import DurationWidget
 from bika.lims.browser.widgets import RecordsWidget as BikaRecordsWidget
 from bika.lims.config import PROJECTNAME
 from bika.lims.content.bikaschema import BikaSchema
-from bika.lims.interfaces import IAnalysis, IDuplicateAnalysis, IReferenceAnalysis, \
-    IRoutineAnalysis
-from bika.lims.interfaces import IReferenceSample
+from bika.lims.interfaces import IAnalysis, IDuplicateAnalysis, \
+    IReferenceAnalysis, IRoutineAnalysis, IReferenceSample, ISamplePrepWorkflow
+
 from bika.lims.utils import changeWorkflowState, formatDecimalMark
 from bika.lims.workflow import skip
 from bika.lims.workflow import doActionFor
@@ -179,7 +179,7 @@ schema = BikaSchema.copy() + Schema((
 
 
 class Analysis(BaseContent):
-    implements(IAnalysis)
+    implements(IAnalysis, ISamplePrepWorkflow)
     security = ClassSecurityInfo()
     displayContentsTab = False
     schema = schema
@@ -737,6 +737,14 @@ class Analysis(BaseContent):
         if mtool.checkPermission(Unassign, ws):
             return True
         return False
+
+    def guard_sample_prep_transition(self):
+        sample = self.aq_parent.getSample()
+        return sample.guard_sample_prep_transition()
+
+    def guard_sample_prep_complete_transition(self):
+        sample = self.aq_parent.getSample()
+        return sample.guard_sample_prep_complete_transition()
 
     def workflow_script_receive(self):
         workflow = getToolByName(self, "portal_workflow")
