@@ -95,14 +95,19 @@ class ClientFolderContentsView(BikaListingView):
                   'active': ['active', ],
                   'inactive': ['inactive', ],
                   'all': ['active', 'inactive']}
-        clients = [cl for cl in self.context.objectValues("Client") \
-                   if (mtool.checkPermission(ManageAnalysisRequests, cl) and \
-                       wf.getInfoFor(cl, 'inactive_state') in states[state])]
+        searchTerm = self.request.get('%s_filter'%self.form_id).lower()
+        clients = [cl for cl in self.context.objectValues("Client")
+                   if (mtool.checkPermission(ManageAnalysisRequests, cl) and
+                       wf.getInfoFor(cl, 'inactive_state') in states[state]) and
+                    cl.Title().lower().find(searchTerm) > -1]
         clients.sort(lambda x, y: cmp(x.Title().lower(), y.Title().lower()))
         return clients
 
     def folderitems(self):
-        self.filter_indexes = None
+        # This is a special case; normally, filter_indexes is a list of indexes,
+        # but we define our own contentsMethod, so a boolean will do, to enable
+        # the listing form search field
+        self.filter_indexes = True
         self.contentsMethod = self.getClientList
         items = BikaListingView.folderitems(self)
         registry = getUtility(IRegistry)
