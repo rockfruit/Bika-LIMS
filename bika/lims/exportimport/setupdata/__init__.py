@@ -825,7 +825,8 @@ class Batch_Labels(WorksheetImporter):
         for row in self.get_rows(3):
             if row['title']:
                 obj = _createObjectByType("BatchLabel", folder, tmpID())
-                obj.edit(title=row['title'])
+                obj.edit(title=row['title'],
+                         description=row.get('description', ''))
                 obj.unmarkCreationFlag()
                 renameAfterCreation(obj)
 
