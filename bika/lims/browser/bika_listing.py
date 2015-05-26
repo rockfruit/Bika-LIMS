@@ -233,166 +233,6 @@ class BikaListingView(BrowserView):
     template = ViewPageTemplateFile("templates/bika_listing.pt")
     render_items = ViewPageTemplateFile("templates/bika_listing_table_items.pt")
 
-    # If the view is rendered with control of it's own main_template etc,
-    # then it will use this for the title/description.  This gives each
-    # view a way to set this easily.
-    title = ""
-    description = ""
-
-    # The name of the catalog which will, by default, be searched for results
-    # matching self.contentFilter
-    catalog = "portal_catalog"
-
-    # This is the list of query parameters passed to the catalog.
-    # It's just a default set.  This can be modified by Python, or by the
-    # contentFilter key in self.review_states.
-    contentFilter = {}
-
-    # This is an override and a switch, but it does not guarantee allow_edit.
-    # This can be used to turn it off, regardless of settings in place by
-    # individual items/fields, but if it is turned on, ultimate control
-    # is still given to the individual items/fields.
-    allow_edit = True
-
-    # We use the context_actions to show a list of buttons above the list
-    # The "Add" button is usually inserted here.
-    context_actions = {}
-
-    # Display the left-most column for selecting all/individual items
-    # If this is disabled, then you can't transition items from this view,
-    # instead you will have to visit each item, and transition it inline.
-    show_select_column = False
-
-    # This comes from default Plone; I'm not sure it works still.
-    show_select_row = False
-
-    # Toggle display of the checkbox which selects all rows
-    show_select_all_checkbox = True
-
-    # This is the column used to hold the handles used to manually re-order
-    # items in the list
-    show_sort_column = False
-
-    # Workflow action buttons (and anything hacked into that list of actions)
-    # will not be displayed if this is False
-    show_workflow_action_buttons = True
-
-    # Column toggles are displayed when right-clicking on the column headers.
-    # Set this to false to disallow setting column toggles for some reason.
-    show_column_toggles = True
-
-    # setting pagesize to 0 specifically disables the batch size dropdown.
-    pagesize = 25
-
-    # On first load, pagenumber=1 probably makes the most sense.
-    pagenumber = 1
-
-    # select checkbox is normally called uids:list
-    # if table_only is set then the context form tag might require
-    # these to have a different name=FieldName:list.
-    # This is a cheat and we can ignore it.
-    select_checkbox_name = "uids"
-
-    # when rendering multiple bika_listing tables, form_id must be unique
-    form_id = "list"
-
-    # Show categorized list; categories are collapsed until required
-    show_categories = False
-
-    # These are the possible categories.  If self.show_categories is True,
-    # These are the categories which will be rendered.  Any items without
-    # a 'category' key/value will be shown in a special "None" category.
-    categories = []
-
-    # By default every category will be expanded.  Careful with this, if there
-    # is a possibility that the list could get very large.
-    expand_all_categories = False
-
-    # With this setting, we allow categories to be simple empty place-holders.
-    # When activated, the category data will be fetched from the server,
-    # and complted inline.  This is useful for list which will have many
-    # thousands of entries in many categories, where loading the entire list
-    # in HTML would be very slow.
-    ajax_categories = False
-
-    # using the following attribute, some python class may add a CSS class
-    # to the TH elements used for the category headings.  This allows all
-    # manner of Javascript trickery.
-    cat_header_class = ''
-
-    # category_index is the catalog index from each listed object.
-    # it will be used to decide if an item is a member of a category.
-    # This is required, if using ajax_categories.
-    category_index = None
-
-    # A list of fields, and the icons that should be shown in them.
-    field_icons = {}
-
-    show_table_footer = True
-
-    # Column definitions:
-    #
-    # The keys of the columns dictionary must all exist in all
-    # items returned by subclassing view's .folderitems method.
-    #
-    # Blank entries are inserted in the default folderitems for
-    # all entries without values.
-    #
-    # Possible column dictionary keys are:
-    # - allow_edit
-    #   This field is made editable.
-    #   Interim fields are always editable
-    # - type
-    #   "string" is the default.
-    #   "boolean" a checkbox is rendered
-    #   "date" A text field is rendered, with a jquery DatePicker attached.
-    #   "choices" renders a dropdown.  The vocabulary data must be placed in
-    #             item['choices'][column_id].  it's a list of dictionaries:
-    #             [{'ResultValue':x}, {'ResultText',x}].
-    # - index
-    #   The name of the catalog index for the column.  Allows full-table
-    #            sorting.
-    # - sortable: if False, adds nosort class to this column.
-    # - toggle: enable/disable column toggle ability.
-    # - input_class: CSS class applied to input widget in edit mode
-    # - input_width: size attribute applied to input widget in edit mode
-    columns = {
-           'obj_type': {'title': _('Type')},
-           'id': {'title': _('ID')},
-           'title_or_id': {'title': _('Title')},
-           'modified': {'title': _('Last modified')},
-           'state_title': {'title': _('State')},
-    }
-
-    # Additional indexes to be searched
-    # any index name not specified in self.columns[] can be added here.
-    filter_indexes = ['Title', 'Description', 'SearchableText']
-
-    # The current or default review_state when one hasn't been selected.
-    # With this setting, BikaListing instances must be careful to change it,
-    # without having valid review_state existing in self.review_states
-    default_review_state = 'default'
-
-    # review_state
-    #
-    # A list of dictionaries, specifying parameters for listing filter buttons.
-    # - If review_state[x]['transitions'] is defined it's a list of dictionaries:
-    #     [{'id':'x'}]
-    # Transitions will be ordered by and restricted to, these items.
-    #
-    # - If review_state[x]['custom_actions'] is defined. it's a list of dict:
-    #     [{'id':'x'}]
-    # These transitions will be forced into the list of workflow actions.
-    # They will need to be handled manually in the appropriate WorkflowAction
-    # subclass.
-    review_states = [
-        {'id':'default',
-         'contentFilter':{},
-         'title': _('All'),
-         'columns':['obj_type', 'title_or_id', 'modified', 'state_title']
-         },
-    ]
-
     def __init__(self, context, request, **kwargs):
         super(BikaListingView, self).__init__(context, request)
 
@@ -402,6 +242,166 @@ class BikaListingView(BrowserView):
         #  - Last, our own context Physical Path is used.
         phpath = "/".join(context.getPhysicalPath())
         path = context.getPath() if hasattr(context, 'getPath') else phpath
+
+        # If the view is rendered with control of it's own main_template etc,
+        # then it will use this for the title/description.  This gives each
+        # view a way to set this easily.
+        self.title = ""
+        self.description = ""
+
+        # The name of the catalog which will, by default, be searched for results
+        # matching self.contentFilter
+        self.catalog = "portal_catalog"
+
+        # This is the list of query parameters passed to the catalog.
+        # It's just a default set.  This can be modified by Python, or by the
+        # contentFilter key in self.review_states.
+        self.contentFilter = {}
+
+        # This is an override and a switch, but it does not guarantee allow_edit.
+        # This can be used to turn it off, regardless of settings in place by
+        # individual items/fields, but if it is turned on, ultimate control
+        # is still given to the individual items/fields.
+        self.allow_edit = True
+
+        # We use the context_actions to show a list of buttons above the list
+        # The "Add" button is usually inserted here.
+        self.context_actions = {}
+
+        # Display the left-most column for selecting all/individual items
+        # If this is disabled, then you can't transition items from this view,
+        # instead you will have to visit each item, and transition it inline.
+        self.show_select_column = False
+
+        # This comes from default Plone; I'm not sure it works still.
+        self.show_select_row = False
+
+        # Toggle display of the checkbox which selects all rows
+        self.show_select_all_checkbox = True
+
+        # This is the column used to hold the handles used to manually re-order
+        # items in the list
+        self.show_sort_column = False
+
+        # Workflow action buttons (and anything hacked into that list of actions)
+        # will not be displayed if this is False
+        self.show_workflow_action_buttons = True
+
+        # Column toggles are displayed when right-clicking on the column headers.
+        # Set this to false to disallow setting column toggles for some reason.
+        self.show_column_toggles = True
+
+        # setting pagesize to 0 specifically disables the batch size dropdown.
+        self.pagesize = 25
+
+        # On first load, pagenumber=1 probably makes the most sense.
+        self.pagenumber = 1
+
+        # select checkbox is normally called uids:list
+        # if table_only is set then the context form tag might require
+        # these to have a different name=FieldName:list.
+        # This is a cheat and we can ignore it.
+        self.select_checkbox_name = "uids"
+
+        # when rendering multiple bika_listing tables, form_id must be unique
+        self.form_id = "list"
+
+        # Show categorized list; categories are collapsed until required
+        self.show_categories = False
+
+        # These are the possible categories.  If self.show_categories is True,
+        # These are the categories which will be rendered.  Any items without
+        # a 'category' key/value will be shown in a special "None" category.
+        self.categories = []
+
+        # By default every category will be expanded.  Careful with this, if there
+        # is a possibility that the list could get very large.
+        self.expand_all_categories = False
+
+        # With this setting, we allow categories to be simple empty place-holders.
+        # When activated, the category data will be fetched from the server,
+        # and complted inline.  This is useful for list which will have many
+        # thousands of entries in many categories, where loading the entire list
+        # in HTML would be very slow.
+        self.ajax_categories = False
+
+        # using the following attribute, some python class may add a CSS class
+        # to the TH elements used for the category headings.  This allows all
+        # manner of Javascript trickery.
+        self.cat_header_class = ''
+
+        # category_index is the catalog index from each listed object.
+        # it will be used to decide if an item is a member of a category.
+        # This is required, if using ajax_categories.
+        self.category_index = None
+
+        # A list of fields, and the icons that should be shown in them.
+        self.field_icons = {}
+
+        self.show_table_footer = True
+
+        # Column definitions:
+        #
+        # The keys of the columns dictionary must all exist in all
+        # items returned by subclassing view's .folderitems method.
+        #
+        # Blank entries are inserted in the default folderitems for
+        # all entries without values.
+        #
+        # Possible column dictionary keys are:
+        # - allow_edit
+        #   This field is made editable.
+        #   Interim fields are always editable
+        # - type
+        #   "string" is the default.
+        #   "boolean" a checkbox is rendered
+        #   "date" A text field is rendered, with a jquery DatePicker attached.
+        #   "choices" renders a dropdown.  The vocabulary data must be placed in
+        #             item['choices'][column_id].  it's a list of dictionaries:
+        #             [{'ResultValue':x}, {'ResultText',x}].
+        # - index
+        #   The name of the catalog index for the column.  Allows full-table
+        #            sorting.
+        # - sortable: if False, adds nosort class to this column.
+        # - toggle: enable/disable column toggle ability.
+        # - input_class: CSS class applied to input widget in edit mode
+        # - input_width: size attribute applied to input widget in edit mode
+        self.columns = {
+               'obj_type': {'title': _('Type')},
+               'id': {'title': _('ID')},
+               'title_or_id': {'title': _('Title')},
+               'modified': {'title': _('Last modified')},
+               'state_title': {'title': _('State')},
+        }
+
+        # Additional indexes to be searched
+        # any index name not specified in self.columns[] can be added here.
+        self.filter_indexes = ['Title', 'Description', 'SearchableText']
+
+        # The current or default review_state when one hasn't been selected.
+        # With this setting, BikaListing instances must be careful to change it,
+        # without having valid review_state existing in self.review_states
+        self.default_review_state = 'default'
+
+        # review_state
+        #
+        # A list of dictionaries, specifying parameters for listing filter buttons.
+        # - If review_state[x]['transitions'] is defined it's a list of dictionaries:
+        #     [{'id':'x'}]
+        # Transitions will be ordered by and restricted to, these items.
+        #
+        # - If review_state[x]['custom_actions'] is defined. it's a list of dict:
+        #     [{'id':'x'}]
+        # These transitions will be forced into the list of workflow actions.
+        # They will need to be handled manually in the appropriate WorkflowAction
+        # subclass.
+        self.review_states = [
+            {'id':'default',
+             'contentFilter':{},
+             'title': _('All'),
+             'columns':['obj_type', 'title_or_id', 'modified', 'state_title']
+             },
+        ]
 
         if hasattr(self, 'contentFilter'):
             if not 'path' in self.contentFilter:
