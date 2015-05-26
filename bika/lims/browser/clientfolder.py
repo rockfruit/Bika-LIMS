@@ -95,11 +95,13 @@ class ClientFolderContentsView(BikaListingView):
                   'active': ['active', ],
                   'inactive': ['inactive', ],
                   'all': ['active', 'inactive']}
-        searchTerm = self.request.get('%s_filter'%self.form_id).lower()
         clients = [cl for cl in self.context.objectValues("Client")
                    if (mtool.checkPermission(ManageAnalysisRequests, cl) and
-                       wf.getInfoFor(cl, 'inactive_state') in states[state]) and
-                    cl.Title().lower().find(searchTerm) > -1]
+                       wf.getInfoFor(cl, 'inactive_state') in states[state])]
+        if '%s_filter'%self.form_id in self.request:
+            searchTerm = self.request.get('%s_filter'%self.form_id).lower()
+            clients = [cl for cl in clients
+                       if cl.Title().lower().find(searchTerm) > -1]
         clients.sort(lambda x, y: cmp(x.Title().lower(), y.Title().lower()))
         return clients
 
