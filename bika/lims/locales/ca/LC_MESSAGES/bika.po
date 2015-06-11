@@ -911,7 +911,7 @@ msgid "Batch Labels"
 msgstr "Etiquetes per a lots"
 
 # File: bika.lims/bika/lims/content/batch.py, line: 108
-msgid "Batch labels"
+msgid "Batch Labels"
 msgstr "Etiquetes per a lots"
 
 # File: bika.lims/bika/lims/browser/batchfolder.py, line: 27

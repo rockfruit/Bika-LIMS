@@ -931,8 +931,8 @@ msgid "Batch Labels"
 msgstr "Batchetiketten"
 
 # File: bika.lims/bika/lims/content/batch.py, line: 108
-msgid "Batch labels"
-msgstr "Batch labels"
+msgid "Batch Labels"
+msgstr "Batch Labels"
 
 # File: bika.lims/bika/lims/browser/batchfolder.py, line: 27
 msgid "Batches"

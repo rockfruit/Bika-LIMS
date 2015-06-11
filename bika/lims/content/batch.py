@@ -402,7 +402,7 @@ BatchLabels = LinesField(
     vocabulary="BatchLabelVocabulary",
     accessor="getLabelNames",
     widget=MultiSelectionWidget(
-        label=_("Batch labels"),
+        label=_("Batch Labels"),
         description=_("The lab's own label for the batch"),
         format="checkbox",
     )

@@ -913,7 +913,7 @@ msgid "Batch Labels"
 msgstr "Groep etiket"
 
 # File: bika.lims/bika/lims/content/batch.py, line: 108
-msgid "Batch labels"
+msgid "Batch Labels"
 msgstr "Groep etkette"
 
 # File: bika.lims/bika/lims/browser/batchfolder.py, line: 27
