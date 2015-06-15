@@ -144,7 +144,6 @@ function AnalysisRequestAddByCol() {
 		$("#singleservice").parents("[uid]").attr("uid", "new")
 		$("#singleservice").parents("[keyword]").attr("keyword", "")
 		$("#singleservice").parents("[title]").attr("title", "")
-		$("input[type='checkbox']").removeAttr("checked")
 		$(".min,.max,.error").val("")
 
 		// filter fields based on the selected Client
