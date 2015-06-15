@@ -1226,7 +1226,7 @@ function AnalysisRequestAddByCol() {
 		var keyword = new_keyword || $("#singleservice").attr("keyword")
 		var title = new_title || $("#singleservice").attr("title")
 		var price = new_price || $("#singleservice").attr("price")
-		var vatamount = new_vatamount || $("#singleservice").attr("vatamount")
+		var vat_percentage = new_vatamount || $("#singleservice").attr("vat_percentage")
 
 		// If this service already exists, abort
 		var existing = $("tr[uid='" + uid + "']")
@@ -1243,7 +1243,7 @@ function AnalysisRequestAddByCol() {
 		$(tr).attr("keyword", keyword)
 		$(tr).attr("title", title)
 		$(tr).attr("price", price)
-		$(tr).attr("vatamount", vatamount)
+		$(tr).attr("vat_percentage", vat_percentage)
 
 		// select_all
 		$(tr).find("input[name='uids:list']").attr('value', uid)
@@ -1947,36 +1947,38 @@ function AnalysisRequestAddByCol() {
 		}
 	}
 
-	function recalc_prices(arnum) {
-		var price
-		var subtotal = 0.00
-		var discount_amount = 0.00
-		var vat = 0.00
-		var total = 0.00
-		var discount_pcnt = parseFloat($("#bika_setup").attr("MemberDiscount"), 10)
-		var checked = $("tr[uid] td[class*='ar\\." + arnum + "'] input[type='checkbox']:checked")
-		for (var i = 0; i < checked.length; i++) {
-			var cb = checked[i]
-			var form_price = parseFloat($(cb).parents("[price]").attr("price"), 10)
-			var vatamount = parseFloat($(cb).parents("[vatamount]").attr("vatamount"), 10)
-			if ($(cb).prop("checked") && !$(cb).prop("disabled")) {
-				if (discount_pcnt) {
-					price = form_price - ((form_price / 100) * discount_pcnt)
-				}
-				else {
-					price = form_price
-				}
-				subtotal += price
-				discount_amount += ((form_price / 100) * discount_pcnt)
-				vat += ((price / 100) * vatamount)
-				total += price + ((price / 100) * vatamount)
-			}
-		}
-		$("td[arnum='" + arnum + "'] span.price.discount").html(discount_amount.toFixed(2))
-		$("td[arnum='" + arnum + "'] span.price.subtotal").html(subtotal.toFixed(2))
-		$("td[arnum='" + arnum + "'] span.price.vat").html(vat.toFixed(2))
-		$("td[arnum='" + arnum + "'] span.price.total").html(total.toFixed(2))
-	}
+    function recalc_prices(arnum) {
+        var price = 0.00
+        var subtotal = 0.00
+        var discount_amount = 0.00
+        var vat_amount = 0.00
+        var total = 0.00
+        var discount_pcnt = parseFloat($("#bika_setup").attr("MemberDiscount"), 10)
+        var checked = $("tr[uid] td[class*='ar\\." + arnum + "'] input[type='checkbox']:checked")
+        for (var i = 0; i < checked.length; i++) {
+            var cb = checked[i]
+            var form_price = parseFloat($(cb).parents("[price]").attr("price"), 10)
+            var vat_percentage = parseFloat($(cb).parents("[vat_percentage]").attr("vat_percentage"), 10)
+            if (!form_price || !vat_percentage){
+                continue
+            }
+            if ($(cb).prop("checked") && !$(cb).prop("disabled")) {
+                if(discount_pcnt){
+                    price = form_price - ((form_price / 100) * discount_pcnt)
+                    discount_amount += ((form_price / 100) * discount_pcnt)
+                } else {
+                    price = form_price
+                }
+                subtotal += price
+                vat_amount += ((price / 100) * vat_percentage)
+            }
+        }
+        total = (subtotal + vat_amount)
+        $("td[arnum='" + arnum + "'] span.price.discount").html(discount_amount.toFixed(2))
+        $("td[arnum='" + arnum + "'] span.price.subtotal").html(subtotal.toFixed(2))
+        $("td[arnum='" + arnum + "'] span.price.vat").html(vat_amount.toFixed(2))
+        $("td[arnum='" + arnum + "'] span.price.total").html(total.toFixed(2))
+    }
 
 	function set_state_from_form_values() {
 		var nr_ars = parseInt($("#ar_count").val(), 10)
