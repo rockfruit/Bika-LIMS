@@ -2052,6 +2052,7 @@ class AnalysisRequest(BaseFolder):
         sample = self.getSample()
         if sample and value:
             sample.setSamplingDate(value)
+        self.Schema().getField('SamplingDate').set(self, value)
 
     security.declarePublic('getSamplingDate')
 
@@ -2059,6 +2060,7 @@ class AnalysisRequest(BaseFolder):
         sample = self.getSample()
         if sample:
             return sample.getSamplingDate()
+        self.Schema().getField('SamplingDate').get(self)
 
     security.declarePublic('setSampler')
 
