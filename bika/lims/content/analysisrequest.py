@@ -2068,7 +2068,7 @@ class AnalysisRequest(BaseFolder):
         sample = self.getSample()
         if sample and value:
             sample.setSampler(value)
-        self.Schema()['Sampler'].set(self, value)
+        return self.Schema()['Sampler'].set(self, value)
 
     security.declarePublic('getSampler')
 
@@ -2084,7 +2084,7 @@ class AnalysisRequest(BaseFolder):
         sample = self.getSample()
         if sample and value:
             sample.setDateSampled(value)
-        self.Schema()['DateSampled'].set(self, value)
+        return self.Schema()['DateSampled'].set(self, value)
 
     security.declarePublic('getDateSampled')
 
@@ -2100,7 +2100,7 @@ class AnalysisRequest(BaseFolder):
         sample = self.getSample()
         if sample and value:
             sample.setSamplePoint(value)
-        self.Schema()['SamplePoint'].set(self, value)
+        return self.Schema()['SamplePoint'].set(self, value)
 
     security.declarePublic('getSamplepoint')
 
@@ -2116,7 +2116,7 @@ class AnalysisRequest(BaseFolder):
         sample = self.getSample()
         if sample and value:
             sample.setSampleType(value)
-        self.Schema()['SampleType'].set(self, value)
+        return self.Schema()['SampleType'].set(self, value)
 
     security.declarePublic('getSampleType')
 
@@ -2132,7 +2132,7 @@ class AnalysisRequest(BaseFolder):
         sample = self.getSample()
         if sample and value:
             sample.setSampleMatrix(value)
-        self.Schema()['SampleMatrix'].set(self, value)
+        return self.Schema()['SampleMatrix'].set(self, value)
 
     security.declarePublic('getSampleMatrix')
 
@@ -2148,7 +2148,7 @@ class AnalysisRequest(BaseFolder):
         sample = self.getSample()
         if sample and value:
             sample.setClientReference(value)
-        self.Schema()['ClientReference'].set(self, value)
+        return self.Schema()['ClientReference'].set(self, value)
 
     security.declarePublic('getClientReference')
 
@@ -2164,7 +2164,7 @@ class AnalysisRequest(BaseFolder):
         sample = self.getSample()
         if sample and value:
             sample.setClientSampleID(value)
-        self.Schema()['ClientSampleID'].set(self, value)
+        return self.Schema()['ClientSampleID'].set(self, value)
 
     security.declarePublic('getClientSampleID')
 
@@ -2180,7 +2180,7 @@ class AnalysisRequest(BaseFolder):
         sample = self.getSample()
         if sample and value:
             sample.setSamplingDeviation(value)
-        self.Schema()['SamplingDeviation'].set(self, value)
+        return self.Schema()['SamplingDeviation'].set(self, value)
 
     security.declarePublic('getSamplingDeviation')
 
@@ -2196,7 +2196,7 @@ class AnalysisRequest(BaseFolder):
         sample = self.getSample()
         if sample and value:
             sample.setSampleCondition(value)
-        self.Schema()['SampleCondition'].set(self, value)
+        return self.Schema()['SampleCondition'].set(self, value)
 
     security.declarePublic('getSampleCondition')
 
@@ -2212,7 +2212,7 @@ class AnalysisRequest(BaseFolder):
         sample = self.getSample()
         if sample and value:
             sample.setComposite(value)
-        self.Schema()['Composite'].set(self, value)
+        return self.Schema()['Composite'].set(self, value)
 
     security.declarePublic('getComposite')
 
@@ -2228,7 +2228,7 @@ class AnalysisRequest(BaseFolder):
         sample = self.getSample()
         if sample and value:
             sample.setStorageLocation(value)
-        self.Schema()['StorageLocation'].set(self, value)
+        return self.Schema()['StorageLocation'].set(self, value)
 
     security.declarePublic('getStorageLocation')
 
@@ -2244,7 +2244,7 @@ class AnalysisRequest(BaseFolder):
         sample = self.getSample()
         if sample and value:
             sample.setAdHoc(value)
-        self.Schema()['AdHoc'].set(self, value)
+        return self.Schema()['AdHoc'].set(self, value)
 
     security.declarePublic('getAdHoc')
 
