@@ -934,21 +934,21 @@ class Storage_Locations(WorksheetImporter):
         bsc = getToolByName(self.context, 'bika_setup_catalog')
         pc = getToolByName(self.context, 'portal_catalog')
         for row in self.get_rows(3):
-            if not row['Address']:
+            if not row.get('Address', False):
                 continue
 
             obj = _createObjectByType("StorageLocation", setup_folder, tmpID())
             obj.edit(
                 title=row['Address'],
-                SiteTitle=row['SiteTitle'],
-                SiteCode=row['SiteCode'],
-                SiteDescription=row['SiteDescription'],
-                LocationTitle=row['LocationTitle'],
-                LocationCode=row['LocationCode'],
-                LocationDescription=row['LocationDescription'],
-                LocationType=row['LocationType'],
-                ShelfTitle=row['ShelfTitle'],
-                ShelfCode=row['ShelfCode'],
+                SiteTitle=row.get('SiteTitle', ''),
+                SiteCode=row.get('SiteCode', ''),
+                SiteDescription=row.get('SiteDescription', ''),
+                LocationTitle=row.get('LocationTitle', ''),
+                LocationCode=row.get('LocationCode', ''),
+                LocationDescription=row.get('LocationDescription', ''),
+                LocationType=row.get('LocationType', ''),
+                ShelfTitle=row.get('ShelfTitle', ''),
+                ShelfCode=row.get('ShelfCode', ''),
                 ShelfDescription=row['ShelfDescription'],
             )
             obj.unmarkCreationFlag()
