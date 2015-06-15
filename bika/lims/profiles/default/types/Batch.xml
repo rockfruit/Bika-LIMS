@@ -48,7 +48,7 @@
          url_expr="string:${object_url}/analysisrequests"
          i18n:attributes="title"
          i18n:domain="plone"
-         visible="True">
+         visible="False">
   <permission value="View"/>
  </action>
 
