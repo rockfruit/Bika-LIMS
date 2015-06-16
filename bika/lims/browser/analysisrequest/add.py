@@ -389,7 +389,11 @@ class ajaxAnalysisRequestSubmit():
             for fieldname in required:
                 if fieldname + '_hidden' in state:
                     required.remove(fieldname)
-            missing = [f for f in required if not state.get(f, '')]
+            # The remainder of required fields are processed normally
+            missing = []
+            for f in required:
+                if not state.get(f, None):
+                    missing.append(t(_(f)))
             # If there are required fields missing, flag an error
             if missing:
                 msg = t(_('${arnum}: Required fields have no values: '
