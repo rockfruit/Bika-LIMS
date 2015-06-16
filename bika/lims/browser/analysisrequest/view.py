@@ -68,17 +68,19 @@ class AnalysisRequestViewView(BrowserView):
         self.tables = {}
         for poc in POINTS_OF_CAPTURE:
             if self.context.getAnalyses(getPointOfCapture=poc):
-                t = self.createAnalysesView(ar,
-                                 self.request,
-                                 getPointOfCapture=poc,
-                                 show_categories=self.context.bika_setup.getCategoriseAnalysisServices())
-                t.allow_edit = True
-                t.form_id = "%s_analyses" % poc
+                t = self.createAnalysesView(
+                    ar,
+                    self.request,
+                    getPointOfCapture=poc,
+                    show_categories=self.context.bika_setup.getCategoriseAnalysisServices(),
+                    allow_edit=True,
+                    form_id="%s_analyses" % poc,
+                    show_workflow_action_buttons=True,
+                    show_select_column=True)
+
                 t.review_states[0]['transitions'] = [{'id': 'submit'},
                                                      {'id': 'retract'},
                                                      {'id': 'verify'}]
-                t.show_workflow_action_buttons = True
-                t.show_select_column = True
                 if getSecurityManager().checkPermission(EditFieldResults, self.context) \
                    and poc == 'field':
                     t.review_states[0]['columns'].remove('DueDate')

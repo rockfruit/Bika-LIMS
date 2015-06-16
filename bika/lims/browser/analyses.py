@@ -47,12 +47,15 @@ class AnalysesView(BikaListingView):
         self.show_column_toggles = False
         self.pagesize = 0
         self.form_id = 'analyses_form'
+        self.show_categories = context.bika_setup.getCategoriseAnalysisServices()
+        self.expand_all_categories = True
 
         self.portal = getToolByName(context, 'portal_url').getPortalObject()
         self.portal_url = self.portal.absolute_url()
 
-        self.show_categories = context.bika_setup.getCategoriseAnalysisServices()
-        self.expand_all_categories = True
+        # shortcut to allow caller to override defaults during this __init__
+        for k,v in kwargs.items():
+            setattr(self, k, v)
 
         request.set('disable_plone.rightcolumn', 1);
 
