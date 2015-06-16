@@ -160,6 +160,7 @@ function BikaListingTableView() {
 			uid = $(this).attr("uid")
 			if (!($("#" + form_id + "_cb_" + uid).prop("checked"))) {
 				$("#" + form_id + "_cb_" + uid).prop("checked", true)
+                show_or_hide_transition_buttons()
 			}
 		})
 	}
@@ -172,6 +173,7 @@ function BikaListingTableView() {
 			// check the item's checkbox
 			if (!($("#" + form_id + "_cb_" + uid).prop("checked"))) {
 				$("#" + form_id + "_cb_" + uid).prop("checked", true)
+                show_or_hide_transition_buttons()
 			}
 		})
 	}
