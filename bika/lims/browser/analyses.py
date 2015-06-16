@@ -34,10 +34,12 @@ class AnalysesView(BikaListingView):
     """
 
     def __init__(self, context, request, **kwargs):
+        super(AnalysesView, self).__init__(context, request)
         self.catalog = "bika_analysis_catalog"
         self.contentFilter = dict(kwargs)
         self.contentFilter['portal_type'] = 'Analysis'
         self.contentFilter['sort_on'] = 'sortable_title'
+        self.contentFilter['getRequestID'] = self.context.getId()
         self.context_actions = {}
         self.show_sort_column = False
         self.show_select_row = False
@@ -48,6 +50,9 @@ class AnalysesView(BikaListingView):
 
         self.portal = getToolByName(context, 'portal_url').getPortalObject()
         self.portal_url = self.portal.absolute_url()
+
+        self.show_categories = context.bika_setup.getCategoriseAnalysisServices()
+        self.expand_all_categories = True
 
         request.set('disable_plone.rightcolumn', 1);
 
@@ -129,10 +134,6 @@ class AnalysesView(BikaListingView):
         if not context.bika_setup.getShowPartitions():
             self.review_states[0]['columns'].remove('Partition')
 
-        super(AnalysesView, self).__init__(context,
-                                           request,
-                                           show_categories=context.bika_setup.getCategoriseAnalysisServices(),
-                                           expand_all_categories=True)
 
     def get_analysis_spec(self, analysis):
         keyword = analysis.getService().getKeyword()
