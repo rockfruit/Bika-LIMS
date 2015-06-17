@@ -23,11 +23,13 @@ def strptime(context, value):
         try:
             val = _strptime(value, fmtstr)
         except ValueError:
+            logger.info("Cannot find date format %s in bika domain" % fmt)
             continue
         try:
             val = DateTime(*list(val)[:-6])
         except DateTimeError:
-            val = ""
+            logger.warning("DateTimeError: DateTime(%s)" %
+                           ",".join(list(val)[:-6]))
         if val.timezoneNaive():
             # Use local timezone for tz naive strings
             # see http://dev.plone.org/plone/ticket/10141
