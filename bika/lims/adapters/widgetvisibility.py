@@ -166,7 +166,7 @@ class ARClientFieldWidgetVisibility(object):
         return state
 
 class ClientBatchesFieldWidgetVisibility(object):
-    """hides clients related fields in non client batches
+    """hides clients related fields in non client (/batches/*) batches
     """
     implements(IATWidgetVisibility)
 
@@ -184,7 +184,10 @@ class ClientBatchesFieldWidgetVisibility(object):
                              'Contact',
                              'CCContact',
                              'CCEmails',
-                             'InvoiceContact']:
+                             'InvoiceContact',
+                             'ClientOrderNumber',
+                             'ClientReference',
+                             'ReturnSampleToClient']:
                 return 'invisible'
         return state
 
