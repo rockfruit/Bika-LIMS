@@ -96,7 +96,7 @@ class AnalysisServicesView(ASV):
         # Add columns for each AR
         for arnum in range(self.ar_count):
             column = {
-                'title': _('AR ${ar_number}', mapping={'ar_number': arnum}),
+                'title': _('AR ${ar_number}', mapping={'ar_number': arnum+1}),
                 'sortable': False,
                 'type': 'boolean',
             }
@@ -398,7 +398,7 @@ class ajaxAnalysisRequestSubmit():
             if missing:
                 msg = t(_('${arnum}: Required fields have no values: '
                           '${field_names}',
-                          mapping={'arnum': arnum,
+                          mapping={'arnum': arnum + 1,
                                    'field_names': ', '.join(missing)}))
                 ajax_form_error(self.errors, arnum=arnum, msg=msg)
                 continue
