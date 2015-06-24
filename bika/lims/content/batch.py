@@ -135,11 +135,14 @@ CCContact = ReferenceField(
                  ],
     ),
 )
-CCEmails = StringField(
+CCEmails = LinesField(
     'CCEmails',
     searchable=True,
     required=0,
     widget=LinesWidget(
+        rows=5,
+        cols=20,
+        style="width:25ex;font-size:85%;",
         label=_("CC Emails"),
         description=_("Add further email addresses to be copied"),
     )

@@ -121,7 +121,8 @@ function AnalysisRequestAddByCol() {
 				}
 			}
 			if ($(div).hasClass('ArchetypesStringWidget')
-			  || $(div).hasClass('ArchetypesDateTimeWidget')) {
+              || $(div).hasClass('ArchetypesDateTimeWidget')
+              || $(div).hasClass('ArchetypesLinesWidget')) {
 				e = $(div).find('[type="text"]')[0]
 				$(e).attr('id', $(e).attr('id') + '-' + arnum)
 				$(e).attr('name', $(e).attr('name') + '-' + arnum)

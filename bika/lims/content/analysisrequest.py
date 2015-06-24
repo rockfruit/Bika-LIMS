@@ -176,14 +176,17 @@ schema = BikaSchema.copy() + Schema((
                      ],
         ),
     ),
-    StringField(
+    LinesField(
         'CCEmails',
         mode="rw",
         read_permission=permissions.View,
-        write_permission=EditARContact,
+        #write_permission=EditARContact,
         acquire=True,
-        widget=StringWidget(
+        widget=LinesWidget(
             label=_('CC Emails'),
+            rows=2,
+            cols=20,
+            style="width:25ex;font-size:85%;",
             visible={'edit': 'visible',
                      'view': 'visible',
                      'add': 'edit',
@@ -200,7 +203,6 @@ schema = BikaSchema.copy() + Schema((
                      'invalid':           {'view': 'visible', 'edit': 'invisible'},
                      },
             render_own_label=True,
-            size=20,
         ),
     ),
     ReferenceField(
