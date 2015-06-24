@@ -2005,9 +2005,20 @@ function AnalysisRequestAddByCol() {
 			   function (i, e) {
 				   var arnum = $(e).parents("[arnum]").attr("arnum")
 				   var fieldname = $(e).parents("[fieldname]").attr("fieldname")
-				   var value = $(e).attr("uid")
-					 ? $(e).attr("uid")
-					 : $(e).val()
+                   // get the element containing the uid; referencewidget will contain a
+                   // single uid, multivalued referencewidget will contain a comma separated
+                   // list of uids.  Multivalued referencewidget will always have blank e.uid
+                   // attribute!
+                   var raw_uid = $(e).siblings("[id$='_uid']").val()
+                   if(raw_uid){
+                       var value = raw_uid.search(",") > -1
+                           ? raw_uid.split(",")
+                           : raw_uid
+                   } else {
+                       var value = $(e).attr("uid")
+                         ? $(e).attr("uid")
+                         : $(e).val()
+                   }
 				   state_set(arnum, fieldname, value)
 			   })
 		// checkboxes inside ar_add_widget table.
@@ -2026,6 +2037,15 @@ function AnalysisRequestAddByCol() {
 				   var value = $(e).val()
 				   state_set(arnum, fieldname, value)
 			   })
+        // lineswidget (CCEmails)
+        $.each($("textarea"),
+               function (i, e) {
+                   var arnum = get_arnum(e)
+                   var fieldname = $(e).parents("[fieldname]").attr("fieldname")
+                   var value = $(e).val()
+                   state_set(arnum, fieldname, value.split("\n"))
+               }
+        )
 		// services
 		var uid, arnum, services
 		for (arnum = 0; arnum < nr_ars; arnum++) {
