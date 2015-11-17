@@ -41,6 +41,11 @@
     />
 
   <utility
+    component="bika.lims.vocabularies.MethodVocabularyFactory"
+    name="bika.lims.vocabularies.Methods"
+    />
+
+  <utility
     component="bika.lims.vocabularies.SamplePointVocabularyFactory"
     name="bika.lims.vocabularies.SamplePoints"
     />

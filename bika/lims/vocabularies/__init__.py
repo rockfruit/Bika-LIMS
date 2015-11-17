@@ -161,6 +161,15 @@ class StorageLocationVocabulary(BikaContentVocabulary):
 
 StorageLocationVocabularyFactory = StorageLocationVocabulary()
 
+class MethodVocabulary(BikaContentVocabulary):
+
+    def __init__(self):
+        BikaContentVocabulary.__init__(self,
+                                       ['methods', ],
+                                       ['Method', ])
+
+MethodVocabularyFactory = MethodVocabulary()
+
 class SamplePointVocabulary(BikaContentVocabulary):
 
     def __init__(self):
@@ -246,7 +255,6 @@ class UserVocabulary(object):
         return SimpleVocabulary(items)
 
 UserVocabularyFactory = UserVocabulary()
-
 
 ClientVocabularyFactory = ClientVocabulary()
 
