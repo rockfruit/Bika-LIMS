@@ -217,9 +217,6 @@
   <type type_id="OrderFolder">
   </type>
 
-  <type type_id="Query"/>
-  <type type_id="QueryFolder"/>
-
   <type type_id="Report">
    <bound-workflow workflow_id="bika_one_state_workflow"/>
   </type>

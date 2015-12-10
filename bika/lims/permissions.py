@@ -40,7 +40,6 @@ AddSRTemplate = 'BIKA: Add SRTemplate'
 AddStorageLevel = 'BIKA: Add StorageLevel'
 AddStorageUnit = 'BIKA: Add StorageUnit'
 AddSubGroup = 'BIKA: Add Sub-group'
-AddQuery = 'BIKA: Add Query'
 
 # Default Archetypes Add Permission
 ADD_CONTENT_PERMISSION = AddPortalContent
@@ -67,7 +66,6 @@ ADD_CONTENT_PERMISSIONS = {
     'SubGroup': AddSubGroup,
     'StorageLevel': AddStorageLevel,
     'StorageUnit': AddStorageUnit,
-    'Query': AddQuery,
 }
 
 # Very Old permissions:
