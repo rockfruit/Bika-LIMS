@@ -1,5 +1,7 @@
 from zope.interface import Interface
-
+from plone.portlets.interfaces import IPortletDataProvider
+from Products.CMFPlone import PloneMessageFactory as _
+from zope import schema
 
 class IBikaLIMS(Interface):
 
@@ -368,6 +370,18 @@ class ISRTemplates(Interface):
 class ISamplingRoundTemplate(Interface):
     ""
 
+class IStorageLevel(Interface):
+    ""
+
+class IStorageLevels(Interface):
+    ""
+
+class IStorageUnit(Interface):
+    ""
+
+class IStorageUnits(Interface):
+    ""
+
 class ISupplier(Interface):
 
     ""
@@ -381,6 +395,13 @@ class ISupplyOrder(Interface):
 
 class ISupplyOrderFolder(Interface):
     ""
+
+class IProductCategory(Interface):
+    """Product Category"""
+
+
+class IProductCategories(Interface):
+    """Product Categories"""
 
 
 class ISubGroups(Interface):
@@ -672,7 +693,45 @@ class IHeaderTableFieldRenderer(Interface):
         Accepts an Archetypes Field, returns HTML.
         """
 
+
 class ISamplePrepWorkflow(Interface):
     """This flag enables the sample_prep workflow transitions to be inserted
     into an object's workflow chain.
     """
+
+class IStockItem(Interface):
+	"""
+	Interface for StockItem class.
+	"""
+
+class IStockItems(Interface):
+    """
+    Interface for StockItems class.
+    """
+
+class IProduct(Interface):
+    """
+    Interface for Product.
+    """
+
+class IProducts(Interface):
+    """
+    Interface for Products.
+    """
+class IOrder(Interface):
+    "Interface for Orders for Inventory"
+
+class IOrderFolder(Interface):
+    "Interface for Order Folder for Inventory"
+
+class IStorageLevelIsAssignable(Interface):
+    """Just testing with alsoProvides and object_provides index
+    This interface should then be used to mark all storage levels
+    """
+
+class IExpiryPortlet(IPortletDataProvider):
+    count = schema.Int(title=_(u'Number of items to display'),
+                       description=_(u'How many items to list.'),
+                       required=True,
+                       default=5)
+

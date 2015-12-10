@@ -37,10 +37,13 @@
   <include file="supplier.zcml"/>
   <include file="supplyorder.zcml"/>
   <include file="supplyorderfolder.zcml"/>
+  
+  
   <include file="viewlets.zcml"/>
   <include file="arimports.zcml"/>
 
   <include package=".analysisrequest"/>
+  <include package=".order"/>
   <include package=".batch"/>
   <include package=".client"/>
   <include package=".samplinground"/>

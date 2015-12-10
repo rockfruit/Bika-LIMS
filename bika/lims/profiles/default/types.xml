@@ -60,10 +60,18 @@
  <object name="Method" meta_type="Factory-based Type Information with dynamic views"/>
  <object name="Methods" meta_type="Factory-based Type Information with dynamic views"/>
  <object name="Multifile" meta_type="Factory-based Type Information with dynamic views"/>
+ <object name="Order" meta_type="Factory-based Type Information with dynamic views"/>
+ <object name="OrderFolder" meta_type="Factory-based Type Information with dynamic views"/>
  <object name="Preservation" meta_type="Factory-based Type Information with dynamic views"/>
  <object name="Preservations" meta_type="Factory-based Type Information with dynamic views"/>
  <object name="Pricelist" meta_type="Factory-based Type Information with dynamic views"/>
  <object name="PricelistFolder" meta_type="Factory-based Type Information with dynamic views"/>
+ <object name="Product" meta_type="Factory-based Type Information with dynamic views"/>
+ <object name="Products" meta_type="Factory-based Type Information with dynamic views"/>
+ <object name="ProductCategories" meta_type="Factory-based Type Information with dynamic views"/>
+ <object name="ProductCategory" meta_type="Factory-based Type Information with dynamic views"/>
+ <object name="StockItem" meta_type="Factory-based Type Information with dynamic views"/>
+ <object name="StockItems" meta_type="Factory-based Type Information with dynamic views"/>
  <object name="ReferenceAnalysis" meta_type="Factory-based Type Information with dynamic views"/>
  <object name="ReferenceDefinition" meta_type="Factory-based Type Information with dynamic views"/>
  <object name="ReferenceDefinitions" meta_type="Factory-based Type Information with dynamic views"/>
@@ -91,6 +99,10 @@
  <object name="SamplingRounds" meta_type="Dexterity FTI" />
  <object name="SRTemplate" meta_type="Factory-based Type Information with dynamic views"/>
  <object name="SRTemplates" meta_type="Factory-based Type Information with dynamic views"/>
+ <object name="StorageLevel" meta_type="Factory-based Type Information with dynamic views"/>
+ <object name="StorageLevels" meta_type="Factory-based Type Information with dynamic views"/>
+ <object name="StorageUnit" meta_type="Factory-based Type Information with dynamic views"/>
+ <object name="StorageUnits" meta_type="Factory-based Type Information with dynamic views"/>
  <object name="SubGroups" meta_type="Factory-based Type Information with dynamic views"/>
  <object name="SubGroup" meta_type="Factory-based Type Information with dynamic views"/>
  <object name="Supplier" meta_type="Factory-based Type Information with dynamic views"/>

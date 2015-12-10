@@ -11,7 +11,7 @@ from bika.lims import logger
 from bika.lims.config import *
 from bika.lims.permissions import *
 from bika.lims.interfaces \
-        import IHaveNoBreadCrumbs, IARImportFolder, IARPriorities
+    import IHaveNoBreadCrumbs, IARImportFolder, IARPriorities
 from zope.event import notify
 from zope.interface import alsoProvides
 from Products.CMFEditions.Permissions import ApplyVersionControl
@@ -54,6 +54,7 @@ class BikaGenerator:
                        'referencesamples',
                        'samples',
                        'supplyorders',
+                       'orders',
                        'worksheets',
                        'reports',
                        'queries',
@@ -84,13 +85,18 @@ class BikaGenerator:
                        'bika_artemplates',
                        'bika_labcontacts',
                        'bika_labproducts',
+                       'bika_stockitems',
                        'bika_manufacturers',
+                       'bika_productcategories',
+                       'bika_products',
                        'bika_sampleconditions',
                        'bika_samplematrices',
                        'bika_samplingdeviations',
                        'bika_samplepoints',
                        'bika_sampletypes',
                        'bika_srtemplates',
+                       'bika_storagelevels',
+                       'bika_storageunits',
                        'bika_storagelocations',
                        'bika_subgroups',
                        'bika_suppliers',
@@ -207,6 +213,8 @@ class BikaGenerator:
         mp(AddStorageLocation, ['Manager', 'Owner', 'LabManager', ], 1)
         mp(AddSamplingDeviation, ['Manager', 'Owner', 'LabManager', 'LabClerk'], 1)
         mp(AddSRTemplate, ['Manager', 'Owner', 'LabManager'], 0)
+        mp(AddStorageLevel, ['Manager', 'LabManager', 'LabClerk'], 0)
+        mp(AddStorageUnit, ['Manager', 'LabManager', 'LabClerk'], 0)
         mp(AddSubGroup, ['Manager', 'LabManager', 'LabClerk'], 0)
         mp(AddQuery, ['Manager', 'Owner', 'LabManager', 'LabClerk'], 0)
 
@@ -222,6 +230,10 @@ class BikaGenerator:
         mp(AccessPreviousVersions, ['Manager', 'LabManager', 'LabClerk', 'Analyst', 'Owner', 'RegulatoryInspector'], 1)
 
         mp(DispatchOrder, ['Manager', 'LabManager', 'LabClerk'], 1)
+        mp(AddInventoryOrder, ['Manager', 'LabManager', 'LabClerk'], 1)
+        mp(DispatchInventoryOrder, ['Manager', 'LabManager', 'LabClerk'], 1)
+        mp(ReceiveInventoryOrder, ['Manager', 'LabManager', 'LabClerk'], 1)
+        mp(StoreInventoryOrder, ['Manager', 'LabManager', 'LabClerk'], 1)
         mp(ManageARImport, ['Manager', 'LabManager', 'LabClerk'], 1)
         mp(ManageARPriority, ['Manager', 'LabManager', 'LabClerk'], 1)
         mp(ManageAnalysisRequests, ['Manager', 'LabManager', 'LabClerk', 'Analyst', 'Sampler', 'Preserver', 'Owner', 'RegulatoryInspector'], 1)
@@ -421,6 +433,28 @@ class BikaGenerator:
             mp(permissions.DeleteObjects, ['Manager', 'LabManager', 'Owner'], 0)
             mp(permissions.View, ['Manager', 'LabManager'], 0)
             portal.supplyorders.reindexObject()
+        except:
+            pass
+
+        try:
+            # /orders folder permissions
+            mp = portal.orders.manage_permission
+            mp(CancelAndReinstate, ['Manager', 'LabManager', 'LabClerk'], 0)
+            mp(AddInventoryOrder,
+                ['Manager', 'LabManager', 'Owner', 'LabClerk'], 1)
+            mp(DispatchInventoryOrder,
+                ['Manager', 'LabManager', 'Owner', 'LabClerk'], 1)
+            mp(ReceiveInventoryOrder,
+                ['Manager', 'LabManager', 'Owner', 'LabClerk'], 1)
+            mp(StoreInventoryOrder,
+                ['Manager', 'LabManager', 'LabClerk', 'Owner'], 1)
+            mp(permissions.ListFolderContents, ['Member'], 1)
+            mp(permissions.AddPortalContent,
+                ['Manager', 'LabManager', 'Owner', 'LabClerk'], 0)
+            mp(permissions.DeleteObjects,
+                ['Manager', 'LabManager', 'Owner', 'LabClerk'], 0)
+            mp(permissions.View, ['Manager', 'LabManager', 'LabClerk'], 0)
+            portal.orders.reindexObject()
         except:
             pass
 
@@ -698,38 +732,44 @@ class BikaGenerator:
             pass
 
         at = getToolByName(portal, 'archetype_tool')
-        at.setCatalogsByType('Department', ['bika_setup_catalog', "portal_catalog", ])
-        at.setCatalogsByType('Container', ['bika_setup_catalog', ])
-        at.setCatalogsByType('ContainerType', ['bika_setup_catalog', ])
         at.setCatalogsByType('AnalysisCategory', ['bika_setup_catalog', ])
+        at.setCatalogsByType('AnalysisProfile', ['bika_setup_catalog', 'portal_catalog'])
         at.setCatalogsByType('AnalysisService', ['bika_setup_catalog', 'portal_catalog'])
         at.setCatalogsByType('AnalysisSpec', ['bika_setup_catalog', ])
-        at.setCatalogsByType('SampleCondition', ['bika_setup_catalog'])
-        at.setCatalogsByType('SampleMatrix', ['bika_setup_catalog', ])
-        at.setCatalogsByType('SampleType', ['bika_setup_catalog', 'portal_catalog'])
-        at.setCatalogsByType('SamplePoint', ['bika_setup_catalog', 'portal_catalog'])
-        at.setCatalogsByType('StorageLocation', ['bika_setup_catalog', 'portal_catalog'])
-        at.setCatalogsByType('SamplingDeviation', ['bika_setup_catalog', ])
+        at.setCatalogsByType('ARPriority', ['bika_setup_catalog', ])
+        at.setCatalogsByType('ARTemplate', ['bika_setup_catalog', 'portal_catalog'])
+        at.setCatalogsByType('AttachmentType', ['bika_setup_catalog', ])
+        at.setCatalogsByType('BatchLabel', ['bika_setup_catalog', ])
+        at.setCatalogsByType('Calculation', ['bika_setup_catalog', 'portal_catalog'])
+        at.setCatalogsByType('Container', ['bika_setup_catalog', ])
+        at.setCatalogsByType('ContainerType', ['bika_setup_catalog', ])
+        at.setCatalogsByType('Department', ['bika_setup_catalog', 'portal_catalog', ])
         at.setCatalogsByType('Instrument', ['bika_setup_catalog', ])
         at.setCatalogsByType('InstrumentType', ['bika_setup_catalog', ])
+        at.setCatalogsByType('LabContact', ['bika_setup_catalog', 'portal_catalog'])
+        at.setCatalogsByType('LabProduct', ['bika_setup_catalog', 'portal_catalog'])
+        at.setCatalogsByType('Manufacturer', ['bika_setup_catalog', 'portal_catalog'])
         at.setCatalogsByType('Method', ['bika_setup_catalog', 'portal_catalog'])
         at.setCatalogsByType('Multifile', ['bika_setup_catalog'])
-        at.setCatalogsByType('AttachmentType', ['bika_setup_catalog', ])
-        at.setCatalogsByType('Calculation', ['bika_setup_catalog', 'portal_catalog'])
-        at.setCatalogsByType('AnalysisProfile', ['bika_setup_catalog', 'portal_catalog'])
-        at.setCatalogsByType('ARTemplate', ['bika_setup_catalog', 'portal_catalog'])
-        at.setCatalogsByType('LabProduct', ['bika_setup_catalog', 'portal_catalog'])
-        at.setCatalogsByType('LabContact', ['bika_setup_catalog', 'portal_catalog'])
-        at.setCatalogsByType('Manufacturer', ['bika_setup_catalog', 'portal_catalog'])
+        at.setCatalogsByType('Order', ['bika_setup_catalog'])
         at.setCatalogsByType('Preservation', ['bika_setup_catalog', ])
+        at.setCatalogsByType('ProductCategory', ['bika_setup_catalog', ])
+        at.setCatalogsByType('StockItem', ['bika_setup_catalog', ])
+        at.setCatalogsByType('Product', ['bika_setup_catalog', ])
         at.setCatalogsByType('ReferenceDefinition', ['bika_setup_catalog', 'portal_catalog'])
+        at.setCatalogsByType('SampleCondition', ['bika_setup_catalog'])
+        at.setCatalogsByType('SampleMatrix', ['bika_setup_catalog', ])
+        at.setCatalogsByType('SamplePoint', ['bika_setup_catalog', 'portal_catalog'])
+        at.setCatalogsByType('SampleType', ['bika_setup_catalog', 'portal_catalog'])
+        at.setCatalogsByType('SamplingDeviation', ['bika_setup_catalog', ])
+        at.setCatalogsByType('StorageLevel', ['bika_setup_catalog', ])
         at.setCatalogsByType('SRTemplate', ['bika_setup_catalog', 'portal_catalog'])
+        at.setCatalogsByType('StorageUnit', ['bika_setup_catalog', 'portal_catalog'])
+        at.setCatalogsByType('StorageLocation', ['bika_setup_catalog', 'portal_catalog'])
         at.setCatalogsByType('SubGroup', ['bika_setup_catalog', ])
         at.setCatalogsByType('Supplier', ['bika_setup_catalog', 'portal_catalog'])
         at.setCatalogsByType('Unit', ['bika_setup_catalog', ])
         at.setCatalogsByType('WorksheetTemplate', ['bika_setup_catalog', 'portal_catalog'])
-        at.setCatalogsByType('BatchLabel', ['bika_setup_catalog', ])
-        at.setCatalogsByType('ARPriority', ['bika_setup_catalog', ])
 
         addIndex(bsc, 'path', 'ExtendedPathIndex', ('getPhysicalPath'))
         addIndex(bsc, 'allowedRolesAndUsers', 'KeywordIndex')
@@ -744,6 +784,7 @@ class BikaGenerator:
         addIndex(bsc, 'created', 'DateIndex')
         addIndex(bsc, 'Creator', 'FieldIndex')
         addIndex(bsc, 'getObjPositionInParent', 'GopipIndex')
+        addIndex(bsc, 'object_provides', 'KeywordIndex')
 
         addIndex(bsc, 'title', 'FieldIndex', 'Title')
         addIndex(bsc, 'sortable_title', 'FieldIndex')
@@ -787,6 +828,7 @@ class BikaGenerator:
         addIndex(bsc, 'getServiceUID', 'FieldIndex')
         addIndex(bsc, 'getTotalPrice', 'FieldIndex')
         addIndex(bsc, 'getUnit', 'FieldIndex')
+        addIndex(bsc, 'getBatchId', 'FieldIndex') 
         addIndex(bsc, 'getVATAmount', 'FieldIndex')
         addIndex(bsc, 'getVolume', 'FieldIndex')
         addIndex(bsc, 'sortKey', 'FieldIndex')
@@ -888,4 +930,3 @@ def setupVarious(context):
     setup.runImportStepFromProfile(
             'profile-plone.app.jquery:default', 'jsregistry')
     # setup.runImportStepFromProfile('profile-plone.app.jquerytools:default', 'jsregistry')
-

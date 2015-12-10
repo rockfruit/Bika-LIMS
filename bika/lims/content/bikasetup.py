@@ -479,6 +479,7 @@ schema = BikaFolderSchema.copy() + Schema((
                    {'portal_type': 'SupplyOrder', 'prefix': 'O', 'padding': '3', 'separator': '-', 'sequence_start': '0'},
                    {'portal_type': 'Worksheet', 'prefix': 'WS', 'padding': '4', 'separator': '-', 'sequence_start': '0'},
                    {'portal_type': 'Pricelist', 'prefix': 'PL', 'padding': '4', 'separator': '-', 'sequence_start': '0'},
+                   {'portal_type': 'StockItem', 'prefix': 'P', 'padding': '4', 'separator': '-', 'sequence_start': '0'},
                    ],
 #        fixedSize=8,
         widget=RecordsWidget(
@@ -552,6 +553,31 @@ schema = BikaFolderSchema.copy() + Schema((
             label=_("ID Server URL"),
             description=_("The full URL: http://URL/path:port")
 
+        ),
+    ),
+    BooleanField('CategoriseProducts',
+        schemata = "Inventory",
+        default = True,
+        widget = BooleanWidget(
+            label=_("Categorise Products"),
+            description=_("Group Products by category in the LIMS tables, helpful when the list is long")
+        ),
+    ),
+    StringField('StorageLevelTitleSeparator',
+        schemata = 'Inventory',
+        vocabulary = ('', '-', '_'),
+        default = '-',
+        widget = SelectionWidget(
+            label=_('Storage level title separator'),
+            description=_('The separator between title and index while creating multiple storage levels at once.'),
+            format='select',
+        )
+    ),
+    BooleanField('AutoPrintInventoryStickers',
+        schemata = "Inventory",
+        default = True,
+        widget = BooleanWidget(
+            label=_("Print stock item stickers automatically"),
         ),
     ),
 ))

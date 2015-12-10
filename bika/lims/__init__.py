@@ -82,10 +82,17 @@ def initialize(context):
     from content.methods import Methods
     from content.multifile import Multifile
     from content.organisation import Organisation
+    from content.orderfolder import OrderFolder
+    from content.order import Order
     from content.person import Person
     from content.preservation import Preservation
     from content.pricelist import Pricelist
     from content.pricelistfolder import PricelistFolder
+    from content.product import Product
+    from content.productcategory import ProductCategory
+    from content.stockitem import StockItem
+    from content.queryfolder import QueryFolder
+    from content.query import Query
     from content.referenceanalysis import ReferenceAnalysis
     from content.referencedefinition import ReferenceDefinition
     from content.referencesample import ReferenceSample
@@ -103,6 +110,8 @@ def initialize(context):
     from content.sampletype import SampleType
     from content.samplingdeviation import SamplingDeviation
     from content.srtemplate import SRTemplate
+    from content.storagelevel import StorageLevel
+    from content.storageunit import StorageUnit
     from content.subgroup import SubGroup
     from content.supplier import Supplier
     from content.suppliercontact import SupplierContact
@@ -130,6 +139,9 @@ def initialize(context):
     from controlpanel.bika_labproducts import LabProducts
     from controlpanel.bika_manufacturers import Manufacturers
     from controlpanel.bika_preservations import Preservations
+    from controlpanel.bika_productcategories import ProductCategories
+    from controlpanel.bika_stockitems import StockItems
+    from controlpanel.bika_products import Products
     from controlpanel.bika_referencedefinitions import ReferenceDefinitions
     from controlpanel.bika_sampleconditions import SampleConditions
     from controlpanel.bika_samplematrices import SampleMatrices
@@ -138,6 +150,8 @@ def initialize(context):
     from controlpanel.bika_sampletypes import SampleTypes
     from controlpanel.bika_samplingdeviations import SamplingDeviations
     from controlpanel.bika_srtemplates import SRTemplates
+    from controlpanel.bika_storagelevels import StorageLevels
+    from controlpanel.bika_storageunits import StorageUnits
     from controlpanel.bika_subgroups import SubGroups
     from controlpanel.bika_suppliers import Suppliers
     from controlpanel.bika_worksheettemplates import WorksheetTemplates

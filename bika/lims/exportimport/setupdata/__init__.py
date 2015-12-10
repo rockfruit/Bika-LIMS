@@ -30,7 +30,12 @@ def check_for_required_columns(name, data, required):
             message = _("%s has no '%s' column." % (name, column))
             raise Exception(t(message))
 
-
+def Int(thing):
+    try:
+        f = int(thing)
+    except ValueError:
+        f = 0
+    return f
 
 def Float(thing):
     try:
@@ -2214,3 +2219,47 @@ class AR_Priorities(WorksheetImporter):
                         obj.setBigIcon(big_icon)
                 obj.unmarkCreationFlag()
                 renameAfterCreation(obj)
+
+class Product_Categories(WorksheetImporter):
+
+    def Import(self):
+        folder = self.context.bika_setup.bika_productcategories
+        for row in self.get_rows(3):
+                obj = _createObjectByType("ProductCategory", folder, tmpID())
+                obj.edit(
+                    title=row['title'],
+                    description=row.get('description', ''))
+                obj.unmarkCreationFlag()
+                renameAfterCreation(obj)
+
+class Products(WorksheetImporter):
+
+    def Import(self):
+        bsc = getToolByName(self.context, 'bika_setup_catalog')
+        for row in self.get_rows(3):
+            if ('Category' not in row
+                or 'Supplier' not in row):
+                logger.info("Unable to import '%s'. Missing category or supplier" % row.get('title',''))
+                continue
+            supplier = self.get_object(bsc, 'Supplier', getName=row.get('Supplier', ''))
+            category = self.get_object(bsc, 'ProductCategory', title=row.get('Category'))
+            obj = _createObjectByType("Product", supplier, tmpID())
+
+            obj.edit(
+                title=row.get('title', ''),
+                description=row.get('description', ''),
+                CAS=row.get('CAS', ''),
+                SupplierCatalogueID=row.get('SupplierCatalogueID', ''),
+                Hazardous=self.to_bool(row.get('Hazardous', '')),
+                Quantity= Int(row.get('Quantity', '')),
+                Unit=row.get('Unit', ''),
+                VAT="%02f" % Float(row.get('VAT', '')),
+                Price="%02f" % Float(row.get('Price', '')),
+                Toxicity=row.get('Toxicity', ''),
+                HealthEffects=row.get('HealthEffects', ''),
+                StorageConditions=row.get('StorageConditions', ''),
+            )
+            obj.setCategory(category)
+
+            obj.unmarkCreationFlag()
+            renameAfterCreation(obj)

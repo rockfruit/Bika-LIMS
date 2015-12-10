@@ -24,7 +24,11 @@ AddInvoice = 'BIKA: Add Invoice'
 AddMethod = 'BIKA: Add Method'
 AddMultifile = 'BIKA: Add Multifile'
 AddPricelist = 'BIKA: Add Pricelist'
+AddProduct = 'BIKA: Add Product'
+AddProductCategory = 'BIKA: Add ProductCategory'
+AddStockItem = 'BIKA: Add StockItem'
 AddSupplyOrder = 'BIKA: Add SupplyOrder'
+AddInventoryOrder = 'BIKA: Add Inventory Order'
 AddSample = 'BIKA: Add Sample'
 AddSampleMatrix = 'BIKA: Add SampleMatrix'
 AddSamplePartition = 'BIKA: Add SamplePartition'
@@ -33,6 +37,8 @@ AddStorageLocation = 'BIKA: Add StorageLocation'
 AddSamplingDeviation = 'BIKA: Add SamplingDeviation'
 AddSamplingRound = 'BIKA: Add SamplingRound'
 AddSRTemplate = 'BIKA: Add SRTemplate'
+AddStorageLevel = 'BIKA: Add StorageLevel'
+AddStorageUnit = 'BIKA: Add StorageUnit'
 AddSubGroup = 'BIKA: Add Sub-group'
 AddQuery = 'BIKA: Add Query'
 
@@ -52,12 +58,15 @@ ADD_CONTENT_PERMISSIONS = {
     'Method': AddMethod,
     'Multifile': AddMultifile,
     'SupplyOrder': AddSupplyOrder,
+    'Order': AddInventoryOrder,
     'Sample': AddSample,
     'SampleMatrix': AddSampleMatrix,
     'SamplePartition': AddSamplePartition,
     'SamplingDeviation': AddSamplingDeviation,
     'SamplingRound': AddSamplingRound,
     'SubGroup': AddSubGroup,
+    'StorageLevel': AddStorageLevel,
+    'StorageUnit': AddStorageUnit,
     'Query': AddQuery,
 }
 
@@ -87,6 +96,9 @@ AccessJSONAPI = 'BIKA: Access JSON API'
 
 # New or changed permissions:
 # ---------------------------
+DispatchInventoryOrder = 'BIKA: Dispatch Inventory Order'
+ReceiveInventoryOrder = 'BIKA: Receive Inventory Order'
+StoreInventoryOrder = 'BIKA: Store Inventory Order'
 SampleSample = 'BIKA: Sample Sample'
 PreserveSample = 'BIKA: Preserve Sample'
 ReceiveSample = 'BIKA: Receive Sample'
