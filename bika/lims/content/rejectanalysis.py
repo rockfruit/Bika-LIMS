@@ -5,10 +5,12 @@
 
 """ RejectAnalysis """
 from Products.Archetypes.public import ReferenceField, Schema, registerType
+from zope.interface import implements
+
 from bika.lims.content.analysis import Analysis
 from bika.lims.config import PROJECTNAME
 from bika.lims.content.analysis import schema as analysis_schema
-
+from bika.lims.interfaces import ITransactionalType
 
 schema = analysis_schema + Schema((
     # The analysis that was originally rejected
@@ -20,6 +22,7 @@ schema = analysis_schema + Schema((
 
 class RejectAnalysis(Analysis):
     archetype_name = 'RejectAnalysis'
+    implements(ITransactionalType)
 
     schema = schema
 

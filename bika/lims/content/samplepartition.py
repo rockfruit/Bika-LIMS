@@ -7,7 +7,8 @@ from AccessControl import ClassSecurityInfo
 from bika.lims.browser.fields import DurationField
 from bika.lims.config import PROJECTNAME
 from bika.lims.content.bikaschema import BikaSchema
-from bika.lims.interfaces import ISamplePartition, ISamplePrepWorkflow
+from bika.lims.interfaces import ISamplePartition, ISamplePrepWorkflow, \
+    ITransactionalType
 from bika.lims.workflow import doActionFor
 from bika.lims.workflow import skip
 from DateTime import DateTime
@@ -61,7 +62,7 @@ schema['title'].required = False
 
 
 class SamplePartition(BaseContent, HistoryAwareMixin):
-    implements(ISamplePartition, ISamplePrepWorkflow)
+    implements(ISamplePartition, ISamplePrepWorkflow, ITransactionalType)
     security = ClassSecurityInfo()
     displayContentsTab = False
     schema = schema

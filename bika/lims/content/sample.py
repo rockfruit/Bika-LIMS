@@ -14,7 +14,8 @@ from bika.lims.browser.widgets.datetimewidget import DateTimeWidget
 from bika.lims.browser.widgets import RejectionWidget
 from bika.lims.config import PROJECTNAME
 from bika.lims.content.bikaschema import BikaSchema
-from bika.lims.interfaces import ISample, ISamplePrepWorkflow
+from bika.lims.interfaces import ISample, ISamplePrepWorkflow, \
+    ITransactionalType
 from bika.lims.permissions import SampleSample
 from bika.lims.permissions import ScheduleSampling
 from bika.lims.workflow import doActionFor, isBasicTransitionAllowed
@@ -647,7 +648,7 @@ schema['title'].required = False
 
 
 class Sample(BaseFolder, HistoryAwareMixin):
-    implements(ISample, ISamplePrepWorkflow)
+    implements(ISample, ISamplePrepWorkflow, ITransactionalType)
     security = ClassSecurityInfo()
     displayContentsTab = False
     schema = schema

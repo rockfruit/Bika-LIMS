@@ -13,7 +13,7 @@ from bika.lims.utils import to_utf8 as _c
 from bika.lims.browser.fields import HistoryAwareReferenceField
 from bika.lims.config import PROJECTNAME
 from bika.lims.content.bikaschema import BikaSchema
-from bika.lims.interfaces import IWorksheet
+from bika.lims.interfaces import IWorksheet, ITransactionalType
 from bika.lims.permissions import EditWorksheet, ManageWorksheets
 from bika.lims.permissions import Verify as VerifyPermission
 from bika.lims.workflow import doActionFor
@@ -112,7 +112,7 @@ schema['title'].widget.visible = {'edit': 'hidden', 'view': 'invisible'}
 
 class Worksheet(BaseFolder, HistoryAwareMixin):
     security = ClassSecurityInfo()
-    implements(IWorksheet)
+    implements(IWorksheet, ITransactionalType)
     displayContentsTab = False
     schema = schema
 
