@@ -20,11 +20,10 @@ from Products.Archetypes.utils import DisplayList
 
 from plone import api
 from zope.interface import implements
-
+from bika.lims.interfaces import ILabContact, IBikaSetupType
 from bika.lims.config import PROJECTNAME
 from bika.lims.content.person import Person
 from bika.lims.content.contact import Contact
-from bika.lims.interfaces import ILabContact
 from bika.lims import logger
 from bika.lims import bikaMessageFactory as _
 
@@ -89,7 +88,7 @@ schema['title'].widget.visible = False
 class LabContact(Contact):
     """A Lab Contact, which can be linked to a System User
     """
-    implements(ILabContact)
+    implements(ILabContact, IBikaSetupType)
 
     schema = schema
     displayContentsTab = False

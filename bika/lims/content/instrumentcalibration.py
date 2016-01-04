@@ -16,7 +16,7 @@ from Products.Archetypes.atapi import registerType
 
 from plone import api as ploneapi
 from zope.interface import implements
-
+from bika.lims.interfaces import IBikaSetupType
 # Schema and Fields
 from Products.Archetypes.atapi import Schema
 from Products.Archetypes.atapi import ReferenceField
@@ -163,7 +163,7 @@ schema['title'].widget.label = 'Task ID'
 class InstrumentCalibration(BaseFolder):
     """Manages the instrument calibration cycle
     """
-    implements(IInstrumentCalibration)
+    implements(IInstrumentCalibration, IBikaSetupType)
     security = ClassSecurityInfo()
     schema = schema
     displayContentsTab = False

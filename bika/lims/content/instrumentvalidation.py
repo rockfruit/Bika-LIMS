@@ -20,6 +20,7 @@ from plone import api as ploneapi
 # Schema and Fields
 from Products.Archetypes.atapi import Schema
 from bika.lims.content.bikaschema import BikaSchema
+from bika.lims.interfaces import IBikaSetupType
 from Products.Archetypes.atapi import ReferenceField
 from Products.Archetypes.atapi import DateTimeField
 from Products.Archetypes.atapi import StringField
@@ -143,7 +144,7 @@ schema['title'].widget.label = 'Task ID'
 class InstrumentValidation(BaseFolder):
     """Instrument validation task
     """
-    implements(IInstrumentValidation)
+    implements(IInstrumentValidation, IBikaSetupType)
     security = ClassSecurityInfo()
     schema = schema
     displayContentsTab = False

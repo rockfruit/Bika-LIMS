@@ -20,10 +20,10 @@ from Products.CMFPlone.utils import safe_unicode
 from Products.Archetypes.utils import DisplayList
 
 from plone import api
+from bika.lims.interfaces import IContact, IBikaSetupType
 from zope.interface import implements
 
 from bika.lims.utils import isActive
-from bika.lims.interfaces import IContact
 from bika.lims.content.person import Person
 from bika.lims.config import PROJECTNAME
 from bika.lims.config import ManageClients
@@ -72,9 +72,8 @@ schema.moveField('CCContact', before='AttachmentsPermitted')
 
 
 class Contact(Person):
-    """A Contact of a Client which can be linked to a System User
+    implements(IContact, IBikaSetupType)
     """
-    implements(IContact)
 
     schema = schema
     displayContentsTab = False

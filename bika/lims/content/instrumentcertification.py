@@ -16,6 +16,7 @@ from Products.Archetypes.atapi import registerType
 
 from zope.interface import implements
 from plone import api as ploneapi
+from bika.lims.interfaces import IBikaSetupType
 
 # Schema and Fields
 from Products.Archetypes.atapi import Schema
@@ -211,6 +212,7 @@ class InstrumentCertification(BaseFolder):
     security = ClassSecurityInfo()
     schema = schema
     displayContentsTab = False
+    implements(IBikaSetupType)
     _at_rename_after_creation = True
 
     def _renameAfterCreation(self, check_auto_id=False):

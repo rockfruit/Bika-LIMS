@@ -9,7 +9,7 @@ from bika.lims.utils import t
 from bika.lims.content.bikaschema import BikaSchema
 from bika.lims.config import PROJECTNAME
 from bika.lims.idserver import renameAfterCreation
-from bika.lims.interfaces import IARPriority
+from bika.lims.interfaces import IARPriority, IBikaSetupType
 from Products.Archetypes import atapi
 from Products.Archetypes.public import *
 from zope.interface import implements
@@ -54,7 +54,7 @@ class ARPriority(BaseContent):
     security = ClassSecurityInfo()
     schema = schema
     displayContentsTab = False
-    implements(IARPriority)
+    implements(IARPriority, IBikaSetupType)
     _at_rename_after_creation = True
 
     def _renameAfterCreation(self, check_auto_id=False):
