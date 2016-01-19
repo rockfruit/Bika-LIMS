@@ -480,6 +480,7 @@ schema = BikaFolderSchema.copy() + Schema((
                    {'portal_type': 'Worksheet', 'prefix': 'WS', 'padding': '4', 'separator': '-', 'sequence_start': '0'},
                    {'portal_type': 'Pricelist', 'prefix': 'PL', 'padding': '4', 'separator': '-', 'sequence_start': '0'},
                    {'portal_type': 'StockItem', 'prefix': 'P', 'padding': '4', 'separator': '-', 'sequence_start': '0'},
+                   {'portal_type': 'KitAssembly', 'prefix': 'K', 'padding': '2', 'separator': '-', 'sequence_start': '0'},
                    ],
 #        fixedSize=8,
         widget=RecordsWidget(

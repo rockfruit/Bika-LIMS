@@ -27,6 +27,21 @@ class GetServices():
                    sort_on = 'sortable_title')])
 
 
+class GetServicesCopy():
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __call__(self):
+        plone.protect.CheckAuthenticator(self.request)
+        bsc = getToolByName(self.context, 'bika_setup_catalog')
+        return json.dumps([c.Title for c in
+                bsc(portal_type = 'AnalysisService',
+                    getCategoryTitle = self.request.get('getCategoryTitle', ''),
+                    inactive_state = 'active',
+                    sort_on = 'sortable_title')])
+
 class AttachAnalyses():
     """ In attachment add form,
         the analyses dropdown combo uses this as source.

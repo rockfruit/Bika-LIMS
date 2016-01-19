@@ -176,6 +176,14 @@ class AddAnalysesView(BikaListingView):
                    inactive_state = 'active',
                    sort_on = 'sortable_title')]
 
+    def getServicesCopy(self):
+        bsc = getToolByName(self.context, 'bika_setup_catalog')
+        return [c.Title for c in
+                bsc(portal_type = 'AnalysisService',
+                   getCategoryUID = self.request.get('list_getCategoryUID', ''),
+                   inactive_state = 'active',
+                   sort_on = 'sortable_title')]
+
     def getClients(self):
         pc = getToolByName(self.context, 'portal_catalog')
         return [c.Title for c in

@@ -21,7 +21,6 @@
     tal:condition="sublists">
     <form method="post" name="header_form">
       <input type="hidden" name="header_table_submitted" value="1" />
-
       <table class="header_table">
 
         <tr tal:repeat="action prominent">

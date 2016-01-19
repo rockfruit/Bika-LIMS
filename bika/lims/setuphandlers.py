@@ -216,7 +216,7 @@ class BikaGenerator:
         mp(AddStorageLevel, ['Manager', 'LabManager', 'LabClerk'], 0)
         mp(AddStorageUnit, ['Manager', 'LabManager', 'LabClerk'], 0)
         mp(AddSubGroup, ['Manager', 'LabManager', 'LabClerk'], 0)
-        mp(AddQuery, ['Manager', 'Owner', 'LabManager', 'LabClerk'], 0)
+        #mp(AddQuery, ['Manager', 'Owner', 'LabManager', 'LabClerk'], 0)
 
         mp(permissions.AddPortalContent, ['Manager', 'Owner', 'LabManager'], 1)
         mp(permissions.ListFolderContents, ['Manager', 'Owner'], 1)
@@ -384,15 +384,15 @@ class BikaGenerator:
         portal.reports.reindexObject()
 
         # /queries folder permissions
-        mp = portal.queries.manage_permission
-        mp(permissions.ListFolderContents, ['Manager', 'LabManager', 'LabClerk', ], 0)
-        mp(permissions.View, ['Manager', 'LabManager', 'LabClerk'], 0)
-        mp('Access contents information', ['Manager', 'LabManager', 'LabClerk', 'Owner'], 0)
-        mp(permissions.AddPortalContent, ['Manager', 'LabManager', 'LabClerk', 'Owner'], 0)
-        mp(permissions.ModifyPortalContent, ['Manager', 'LabManager', 'LabClerk', 'Owner'], 0)
-        mp('ATContentTypes: Add Image', ['Manager', 'Labmanager', 'LabClerk'], 0)
-        mp('ATContentTypes: Add File', ['Manager', 'Labmanager', 'LabClerk'], 0)
-        portal.queries.reindexObject()
+        #mp = portal.queries.manage_permission
+        #mp(permissions.ListFolderContents, ['Manager', 'LabManager', 'LabClerk', ], 0)
+        #mp(permissions.View, ['Manager', 'LabManager', 'LabClerk'], 0)
+        #mp('Access contents information', ['Manager', 'LabManager', 'LabClerk', 'Owner'], 0)
+        #mp(permissions.AddPortalContent, ['Manager', 'LabManager', 'LabClerk', 'Owner'], 0)
+        #mp(permissions.ModifyPortalContent, ['Manager', 'LabManager', 'LabClerk', 'Owner'], 0)
+        #mp('ATContentTypes: Add Image', ['Manager', 'Labmanager', 'LabClerk'], 0)
+        #mp('ATContentTypes: Add File', ['Manager', 'Labmanager', 'LabClerk'], 0)
+        #portal.queries.reindexObject()
 
         # /invoices folder permissions
         mp = portal.invoices.manage_permission

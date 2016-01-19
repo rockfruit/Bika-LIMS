@@ -132,8 +132,7 @@
 
             <p>  <!-- AVS this should be conditional if any dryables present -->
                 <img src="" tal:attributes="src string:${portal/absolute_url}/++resource++bika.lims.images/dry.png">
-        <span i18n:translate="">
-            Can be reported as dry matter</span>
+                <span i18n:translate="">Can be reported as dry matter</span>
             </p>
 
             <!-- XXX this also -->

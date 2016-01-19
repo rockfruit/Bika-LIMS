@@ -117,6 +117,14 @@
 
     <browser:page
       for="bika.lims.interfaces.IWorksheet"
+      name="getServicesCopy"
+      class="bika.lims.browser.worksheet.ajax.GetServicesCopy"
+      permission="zope.Public"
+      layer="bika.lims.interfaces.IBikaLIMS"
+    />
+
+    <browser:page
+      for="bika.lims.interfaces.IWorksheet"
       name="attachAnalyses"
       class="bika.lims.browser.worksheet.ajax.AttachAnalyses"
       permission="zope.Public"
