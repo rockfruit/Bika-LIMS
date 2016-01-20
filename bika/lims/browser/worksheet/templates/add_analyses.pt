@@ -85,7 +85,7 @@
 					tal:attributes="name string:${form_id}_Title"
 					class="listing-filter">
 				<option value="any" i18n:translate="">Any</option>
-				<tal:options repeat="service view/getServicesCopy">
+				<tal:options repeat="service view/getServices">
 					<option
 						tal:attributes="
 							value python:service;

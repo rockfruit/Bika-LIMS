@@ -2371,7 +2371,7 @@ function AnalysisRequestAddByCol() {
                 {
                     type: "POST",
                     dataType: "json",
-                    url: window.location.href.split("/portal_factory")[0] + "/analysisrequest_submit2",
+                    url: window.location.href.split("/portal_factory")[0] + "/analysisrequest_submit",
                     data: request_data,
                     success: function (data) {
                         /*

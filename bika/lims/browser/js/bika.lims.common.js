@@ -64,6 +64,15 @@ function CommonUtils() {
             $(str).appendTo("#viewlet-above-content");
         };
 
+        window.bika.lims.portalWarningMessage = function (message) {
+            var str = "<dl class='portalMessage warning'>"+
+                "<dt>"+_("Warning")+"</dt>"+
+                "<dd><ul>" + message +
+                "</ul></dd></dl>";
+            $(".portalMessage").remove();
+            $(str).appendTo("#viewlet-above-content");
+        };
+
         window.bika.lims.log = function(e) {
             if (window.location.url == undefined || window.location.url == null) {
                 return;
