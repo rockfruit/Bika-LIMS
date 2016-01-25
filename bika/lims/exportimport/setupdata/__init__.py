@@ -2232,6 +2232,7 @@ class Product_Categories(WorksheetImporter):
                 obj.unmarkCreationFlag()
                 renameAfterCreation(obj)
 
+
 class Products(WorksheetImporter):
 
     def Import(self):
@@ -2261,5 +2262,28 @@ class Products(WorksheetImporter):
             )
             obj.setCategory(category)
 
+            obj.unmarkCreationFlag()
+            renameAfterCreation(obj)
+
+class Stock_Items(WorksheetImporter):
+
+    def Import(self):
+        folder = self.context.bika_setup.bika_stockitems
+        bsc = getToolByName(self.context, 'bika_setup_catalog')
+        for row in self.get_rows(3):
+            if ('Product' not in row):
+                logger.info("Unable to import '%s'. Missing product" % row.get('StockItemID', ''))
+                continue
+            product = self.get_object(bsc, 'Product', title=row.get('Product'))
+            obj = _createObjectByType("StockItem", folder, tmpID())
+
+            obj.edit(
+                StockItemID=row.get('StockItemID'),
+                description=row.get('description'),
+                location=row.get('location'),
+                Quantity=row.get('Quantity'),
+                orderId=row.get('orderId')
+            )
+            obj.setProduct(product)
             obj.unmarkCreationFlag()
             renameAfterCreation(obj)

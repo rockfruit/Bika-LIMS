@@ -65,26 +65,26 @@ class LoadSetupData(BrowserView):
         workbook = None
 
         if 'setupexisting' in form and 'existing' in form and form['existing']:
-                fn = form['existing'].split(":")
-                self.dataset_project = fn[0]
-                self.dataset_name = fn[1]
-                path = 'setupdata/%s/%s.xlsx' % \
-                    (self.dataset_name, self.dataset_name)
-                filename = resource_filename(self.dataset_project, path)
-                try:
-                    workbook = load_workbook(filename=filename)  # , use_iterators=True)
-                except AttributeError:
-                    print ""
-                    print traceback.format_exc()
-                    print "Error while loading ", path
+            fn = form['existing'].split(":")
+            self.dataset_project = fn[0]
+            self.dataset_name = fn[1]
+            path = 'setupdata/%s/%s.xlsx' % \
+                (self.dataset_name, self.dataset_name)
+            filename = resource_filename(self.dataset_project, path)
+            try:
+                workbook = load_workbook(filename=filename)  # , use_iterators=True)
+            except AttributeError:
+                print ""
+                print traceback.format_exc()
+                print "Error while loading ", path
 
         elif 'setupfile' in form and 'file' in form and form['file'] and 'projectname' in form and form['projectname']:
-                self.dataset_project = form['projectname']
-                tmp = tempfile.mktemp()
-                file_content = form['file'].read()
-                open(tmp, 'wb').write(file_content)
-                workbook = load_workbook(filename=tmp)  # , use_iterators=True)
-                self.dataset_name = 'uploaded'
+            self.dataset_project = form['projectname']
+            tmp = tempfile.mktemp()
+            file_content = form['file'].read()
+            open(tmp, 'wb').write(file_content)
+            workbook = load_workbook(filename=tmp)  # , use_iterators=True)
+            self.dataset_name = 'uploaded'
 
         assert(workbook is not None)
 
