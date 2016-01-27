@@ -7,6 +7,8 @@ class ManufacturerInstrumentsView(InstrumentsView):
 
     def folderitems(self):
         items = InstrumentsView.folderitems(self)
+        print items
+        print '------------'
         uidsup = self.context.UID()
         outitems = []
         for x in range(len(items)):

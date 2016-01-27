@@ -40,6 +40,8 @@ class ManufacturersView(BikaListingView):
             'Description': {'title': _('Description'),
                             'index': 'description',
                             'toggle': True},
+            'Website': {'title': _('Website URL'),
+                        'toggle': True},
         }
 
         self.review_states = [
@@ -47,16 +49,16 @@ class ManufacturersView(BikaListingView):
              'title': _('Active'),
              'contentFilter': {'inactive_state': 'active'},
              'transitions': [{'id':'deactivate'}, ],
-             'columns': ['Title', 'Description']},
+             'columns': ['Title', 'Description', 'Website']},
             {'id':'inactive',
              'title': _('Dormant'),
              'contentFilter': {'inactive_state': 'inactive'},
              'transitions': [{'id':'activate'}, ],
-             'columns': ['Title', 'Description']},
+             'columns': ['Title', 'Description', 'Website']},
             {'id':'all',
              'title': _('All'),
              'contentFilter':{},
-             'columns': ['Title', 'Description']},
+             'columns': ['Title', 'Description', 'Website']},
         ]
 
     def folderitems(self):
@@ -65,6 +67,7 @@ class ManufacturersView(BikaListingView):
             if not items[x].has_key('obj'): continue
             obj = items[x]['obj']
             items[x]['Description'] = obj.Description()
+            items[x]['Website'] = obj.getWebsite()
             items[x]['replace']['Title'] = "<a href='%s'>%s</a>" % \
                  (items[x]['url'], items[x]['Title'])
         return items

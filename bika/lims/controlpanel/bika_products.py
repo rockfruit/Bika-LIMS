@@ -36,6 +36,8 @@ class ProductsView(BikaListingView):
         self.pagesize = 25
 
         self.columns = {
+            'getProductID': {'title': _('Product ID'),
+                             'toggle': True},
             'Title': {'title': _('Title'),
                       'index': 'sortable_title'},
             'Category': {'title': _('Product Category'),
@@ -60,8 +62,10 @@ class ProductsView(BikaListingView):
              'title': _('Active'),
              'contentFilter': {'inactive_state': 'active'},
              'transitions': [{'id':'deactivate'}, ],
-             'columns': ['Title',
+             'columns': ['getProductID',
+                         'Title',
                          'Category',
+                         'SupplierCatalogueID',
                          'CAS',
                          'Quantity',
                          'Toxicity',
@@ -72,8 +76,10 @@ class ProductsView(BikaListingView):
              'title': _('Dormant'),
              'contentFilter': {'inactive_state': 'inactive'},
              'transitions': [{'id':'activate'}, ],
-             'columns': ['Title',
+             'columns': ['getProductID',
+                         'Title',
                          'Category',
+                         'SupplierCatalogueID',
                          'CAS',
                          'Quantity',
                          'Toxicity',
@@ -83,8 +89,10 @@ class ProductsView(BikaListingView):
             {'id':'all',
              'title': _('All'),
              'contentFilter':{},
-             'columns': ['Title',
+             'columns': ['getProductID',
+                         'Title',
                          'Category',
+                         'SupplierCatalogueID',
                          'CAS',
                          'Quantity',
                          'Toxicity',
@@ -99,6 +107,7 @@ class ProductsView(BikaListingView):
             if not items[x].has_key('obj'): continue
             obj = items[x]['obj']
             items[x]['Category'] = obj.getCategoryTitle()
+            items[x]['SupplierCatalogueID'] = obj.getSupplierCatalogueID()
             items[x]['CAS'] = obj.getCAS()
             items[x]['Quantity'] = obj.getQuantity()
             if obj.getQuantity() and obj.getUnit():
@@ -107,6 +116,8 @@ class ProductsView(BikaListingView):
             items[x]['VATAmount'] = obj.getVATAmount()
             items[x]['Price'] = obj.getPrice()
             items[x]['TotalPrice'] = obj.getTotalPrice()
+            items[x]['replace']['getProductID'] = "<a href='%s'>%s</a>" % \
+                 (items[x]['url'], items[x]['getProductID'])
             items[x]['replace']['Title'] = "<a href='%s'>%s</a>" % \
                  (items[x]['url'], items[x]['Title'])
         return items

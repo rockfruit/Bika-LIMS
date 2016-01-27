@@ -387,6 +387,7 @@ function BikaListingTableView() {
 			form_id = $(this).parents("form").attr("id")
 			portal_url = window.portal_url
 			toggle_cols = $("#" + form_id + "_toggle_cols").val()
+			console.log(toggle_cols);
 			if (toggle_cols == ""
 			  || toggle_cols == undefined
 			  || toggle_cols == null) {

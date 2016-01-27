@@ -44,6 +44,13 @@ schema = BikaSchema.copy() + Schema((
             visible = {'edit':'hidden', }
         ),
     ),
+    ComputedField('SupplierCatalogID',
+        expression = 'context.getProduct().getSupplierCatalogueID()',
+        widget = ComputedWidget(
+            label=_("Supplier Catalog ID"),
+            visible = {'edit':'hidden', }
+        ),
+    ),
     ComputedField('ProductCategoryTitle',
         expression = 'context.getProduct().getCategoryTitle()',
         widget = ComputedWidget(
@@ -73,10 +80,21 @@ schema = BikaSchema.copy() + Schema((
             label=_("Batch Id"),
         )
     ),
+    StringField('lotNumber',
+        widget = StringWidget(
+            label=_("Lot #"),
+        )
+    ),
     StringField('location',
         widget = StringWidget(
             label=_("Location"),
         )
+    ),
+    DateTimeField('dateManufactured',
+        searchable = 1,
+        widget = bika_DateTimeWidget(
+            label = 'Date Manufactured'
+        ),
     ),
     DateTimeField('dateReceived',
         searchable = 1,
@@ -109,9 +127,9 @@ schema = BikaSchema.copy() + Schema((
     ),
     StringField('StorageLevelID',
         widget = StringWidget(
-            label=_("Location"),
+            label=_("Storage Level ID"),
         )
-    ),
+    )
 ))
 
 schema['title'].required = False

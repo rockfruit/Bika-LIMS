@@ -34,6 +34,8 @@ class ProductCategoriesView(BikaListingView):
             'Description': {'title': _('Description'),
                             'index': 'description',
                             'toggle':True},
+            'getPrefix': {'title': _('Prefix'),
+                          'toggle': True},
         }
 
         self.review_states = [
@@ -41,16 +43,16 @@ class ProductCategoriesView(BikaListingView):
              'title': _('Active'),
              'contentFilter': {'inactive_state': 'active'},
              'transitions': [{'id':'deactivate'}, ],
-             'columns': ['Title', 'Description']},
+             'columns': ['Title', 'Description', 'getPrefix']},
             {'id':'inactive',
              'title': _('Dormant'),
              'contentFilter': {'inactive_state': 'inactive'},
              'transitions': [{'id':'activate'}, ],
-             'columns': ['Title', 'Description']},
+             'columns': ['Title', 'Description', 'getPrefix']},
             {'id':'all',
              'title': _('All'),
              'contentFilter':{},
-             'columns': ['Title', 'Description']},
+             'columns': ['Title', 'Description', 'getPrefix']},
         ]
 
     def folderitems(self):
@@ -60,6 +62,7 @@ class ProductCategoriesView(BikaListingView):
                 continue
             obj = items[x]['obj']
             items[x]['Description'] = obj.Description()
+            items[x]['getPrefix'] = obj.getPrefix()
             items[x]['replace']['Title'] = "<a href='%s'>%s</a>" % \
                (items[x]['url'], items[x]['Title'])
 

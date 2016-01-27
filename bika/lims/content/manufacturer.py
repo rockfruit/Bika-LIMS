@@ -8,7 +8,14 @@ from bika.lims.content.bikaschema import BikaSchema
 from bika.lims.interfaces import IManufacturer
 from zope.interface import implements
 
-schema = BikaSchema.copy()
+schema = BikaSchema.copy() + Schema((
+    StringField('website',
+                widget = StringWidget(
+                    label=_('Website URL')
+                ),
+                validators=('isURL',)
+    ),
+))
 
 schema['description'].schemata = 'default'
 schema['description'].widget.visible = True

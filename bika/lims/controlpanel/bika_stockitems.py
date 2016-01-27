@@ -48,24 +48,30 @@ class StockItemsView(BikaListingView):
                       'index': 'sortable_title',
                       'toggle': True},
             'orderId': {'title': _('Order Id'),
-                       'toggle': True},
+                       'toggle': False},
             'labId': {'title': _('Lab Id'),
                        'toggle': False},
             'batchId': {'title': _('Batch Id'),
                        'index' : 'getBatchId',
-                       'toggle': True},
+                       'toggle': False},
+            'lotNumber': {'title': _('Lot #'),
+                          'toggle': True},
             'product': {'title': _('Product'),
                        'toggle': True},
             'supplier': {'title': _('Supplier'),
                        'toggle': True},
+            'supplierCatalogID':{'title': _('Catalog ID'),
+                                 'toggle': True},
             'productCategory': {'title': _('Category'),
                        'toggle': True},
             'location': {'title': _('Location'),
                        'toggle': False},
+            'dateManufactured': {'title': _('Date Manufactured'),
+                                 'toggle': True},
             'dateReceived': {'title': _('Date Received'),
-                       'toggle': True},
+                       'toggle': False},
             'dateOpened': {'title': _('Date Opened'),
-                       'toggle': True},
+                       'toggle': False},
             'expiryDate': {'title': _('Expiry Date'),
                        'toggle': False},
             'disposalDate': {'title': _('Disposal Date'),
@@ -84,12 +90,15 @@ class StockItemsView(BikaListingView):
                          'orderId',
                          'labId',
                          'batchId',
+                         'lotNumber',
                          'product',
                          'supplier',
+                         'supplierCatalogID',
                          'productCategory',
                          'location',
                          'storageLevelId',
                          'isStored',
+                         'dateManufactured',
                          'dateReceived',
                          'dateOpened',
                          'expiryDate',
@@ -102,12 +111,15 @@ class StockItemsView(BikaListingView):
                          'orderId',
                          'labId',
                          'batchId',
+                         'lotNumber',
                          'product',
                          'supplier',
+                         'supplierCatalogID',
                          'productCategory',
                          'location',
                          'storageLevelId',
                          'isStored',
+                         'dateManufactured',
                          'dateReceived',
                          'dateOpened',
                          'expiryDate',
@@ -119,12 +131,15 @@ class StockItemsView(BikaListingView):
                          'orderId',
                          'labId',
                          'batchId',
+                         'lotNumber',
                          'product',
                          'Supplier',
+                         'supplierCatalogID',
                          'ProductCategory',
                          'location',
                          'storageLevelId',
                          'isStored',
+                         'dateManufactured',
                          'dateReceived',
                          'dateOpened',
                          'expiryDate',
@@ -139,12 +154,15 @@ class StockItemsView(BikaListingView):
             items[x]['orderId'] = obj.getOrderId()
             items[x]['labId'] = obj.getLabId()
             items[x]['batchId'] = obj.getBatchId()
+            items[x]['lotNumber'] = obj.getLotNumber()
             items[x]['product'] = obj.getProductTitle()
             items[x]['supplier'] = obj.getSupplierTitle()
+            items[x]['supplierCatalogID'] = obj.getSupplierCatalogID()
             items[x]['productCategory'] = obj.getProductCategoryTitle()
             items[x]['location'] = obj.getLocation()
             items[x]['storageLevelId'] = obj.getStorageLevelID()
             items[x]['isStored'] = 'yes' if obj.getIsStored() else 'no'
+            items[x]['dateManufactured'] = self.ulocalized_time(obj.getDateManufactured())
             items[x]['dateReceived'] = self.ulocalized_time(obj.getDateReceived())
             items[x]['dateOpened'] = self.ulocalized_time(obj.getDateOpened())
             items[x]['expiryDate'] = self.ulocalized_time(obj.getExpiryDate())

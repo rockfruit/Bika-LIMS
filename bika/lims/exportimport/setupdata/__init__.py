@@ -620,6 +620,7 @@ class Suppliers(WorksheetImporter):
                     IBN=row.get('IBN', ''),
                     NIB=row.get('NIB', ''),
                     Website=row.get('Website', ''),
+                    VAT="%02f" % Float(row.get('VAT', ''))
                 )
                 self.fill_contactfields(row, obj)
                 self.fill_addressfields(row, obj)
@@ -662,7 +663,8 @@ class Manufacturers(WorksheetImporter):
             if row['title']:
                 obj.edit(
                     title=row['title'],
-                    description=row.get('description', '')
+                    description=row.get('description', ''),
+                    website=row.get('website', '')
                 )
                 self.fill_addressfields(row, obj)
                 obj.unmarkCreationFlag()
@@ -1900,6 +1902,7 @@ class ID_Prefixes(WorksheetImporter):
                              'padding': row['padding'],
                              'prefix': row['prefix'],
                              'separator': separator})
+
         self.context.bika_setup.setPrefixes(prefixes)
 
 
@@ -2225,12 +2228,13 @@ class Product_Categories(WorksheetImporter):
     def Import(self):
         folder = self.context.bika_setup.bika_productcategories
         for row in self.get_rows(3):
-                obj = _createObjectByType("ProductCategory", folder, tmpID())
-                obj.edit(
-                    title=row['title'],
-                    description=row.get('description', ''))
-                obj.unmarkCreationFlag()
-                renameAfterCreation(obj)
+            obj = _createObjectByType("ProductCategory", folder, tmpID())
+            obj.edit(
+                title=row['title'],
+                description=row.get('description', ''),
+                Prefix=row['prefix'])
+            obj.unmarkCreationFlag()
+            renameAfterCreation(obj)
 
 
 class Products(WorksheetImporter):
@@ -2278,11 +2282,14 @@ class Stock_Items(WorksheetImporter):
             obj = _createObjectByType("StockItem", folder, tmpID())
 
             obj.edit(
-                StockItemID=row.get('StockItemID'),
-                description=row.get('description'),
-                location=row.get('location'),
-                Quantity=row.get('Quantity'),
-                orderId=row.get('orderId')
+                StockItemID=row.get('StockItemID', ''),
+                description=row.get('description', ''),
+                location=row.get('location', ''),
+                Quantity=row.get('Quantity', ''),
+                orderId=row.get('orderId', ''),
+                lotNumber=row.get('lotNumber', ''),
+                dateManufactured=row.get('dateManufactured', ''),
+                IsStored=row.get('isStored')
             )
             obj.setProduct(product)
             obj.unmarkCreationFlag()

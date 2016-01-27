@@ -56,7 +56,6 @@ def generateUniqueId(context):
     fn_normalize = getUtility(IFileNameNormalizer).normalize
     id_normalize = getUtility(IIDNormalizer).normalize
     prefixes = context.bika_setup.getPrefixes()
-
     year = context.bika_setup.getYearInPrefix() and \
         DateTime().strftime("%Y")[2:] or ''
     separator = '-'
@@ -152,7 +151,17 @@ def generateUniqueId(context):
             return str(new_id)
 
         for d in prefixes:
-            if context.portal_type == "Sample":
+            if context.portal_type == "Product":
+                prefix = fn_normalize(context.getCategory().getPrefix())
+                padding = context.bika_setup.getSampleIDPadding()
+                sequence_start = context.bika_setup.getSampleIDSequenceStart()
+                new_id = next_id(prefix+year)
+                if sequence_start > int(new_id):
+                    new_id = str(sequence_start)
+                if padding:
+                    new_id = new_id.zfill(int(padding))
+                return ('%s%s' + separator + '%s') % (prefix, year, new_id)
+            elif context.portal_type == "Sample":
                 # Special case for Sample IDs
                 prefix = fn_normalize(context.getSampleType().getPrefix())
                 padding = context.bika_setup.getSampleIDPadding()
@@ -190,4 +199,5 @@ def renameAfterCreation(obj):
     # The id returned should be normalized already
     new_id = generateUniqueId(obj)
     obj.aq_inner.aq_parent.manage_renameObject(obj.id, new_id)
+
     return new_id

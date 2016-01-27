@@ -13,8 +13,24 @@ from decimal import Decimal
 from Products.Archetypes.public import *
 from Products.Archetypes.references import HoldingReference
 import sys
+from Products.CMFCore import permissions
+from Products.CMFPlone.utils import safe_unicode
 
 schema = BikaSchema.copy() + Schema((
+    StringField('ProductID',
+        required=1,
+        searchable=True,
+        mode="rw",
+        read_permission=permissions.View,
+        write_permission=permissions.ModifyPortalContent,
+        widget=StringWidget(
+            label=_("Product ID"),
+            description=_("The ID assigned to the product"),
+            visible={'edit': 'invisible',
+                     'view': 'invisible'},
+            render_own_label=True,
+        ),
+    ),
     ReferenceField('Category',
         required=1,
         vocabulary='getCategories',
@@ -194,5 +210,9 @@ class Product(BaseContent):
 
     def getSupplierTitle(self):
         return self.aq_parent.Title()
+
+    def getProductID(self):
+        """ Return the Sample ID as title """
+        return safe_unicode(self.getId()).encode('utf-8')
 
 registerType(Product, config.PROJECTNAME)

@@ -26,6 +26,13 @@ schema = BikaFolderSchema.copy() + BikaSchema.copy() + ManagedSchema((
             label=_("VAT number"),
         ),
     ),
+    FixedPointField('VAT',
+        default_method='getDefaultVAT',
+        widget = DecimalWidget(
+            label=_("VAT %"),
+            description=_("Enter percentage value eg. 14.0"),
+        ),
+    ),
     StringField('Phone',
         widget = StringWidget(
             label=_("Phone"),
@@ -156,5 +163,14 @@ class Organisation(ATFolder):
 
 
         return address_lines
+
+    security.declarePublic('getDefaultVAT')
+    def getDefaultVAT(self):
+        """ return default VAT from bika_setup """
+        try:
+            vat = self.bika_setup.getVAT()
+            return vat
+        except ValueError:
+            return "0.00"
 
 registerType(Organisation, PROJECTNAME)
