@@ -53,7 +53,9 @@ class InstrumentsView(BikaListingView):
                            'toggle': False},
             'Method': {'title': _('Method'),
                            'toggle': True},
-            }
+            'Sponsor': {'title': _('Sponsor'),
+                        'toggle': True},
+        }
 
         self.review_states = [
             {'id':'default',
@@ -66,7 +68,8 @@ class InstrumentsView(BikaListingView):
                          'Model',
                          'ExpiryDate',
                          'WeeksToExpire',
-                         'Method']},
+                         'Method',
+                         'Sponsor']},
             {'id':'inactive',
              'title': _('Dormant'),
              'contentFilter': {'inactive_state': 'inactive'},
@@ -77,7 +80,8 @@ class InstrumentsView(BikaListingView):
                          'Model',
                          'ExpiryDate',
                          'WeeksToExpire',
-                         'Method']},
+                         'Method',
+                         'Sponsor']},
             {'id':'all',
              'title': _('All'),
              'contentFilter':{},
@@ -87,7 +91,8 @@ class InstrumentsView(BikaListingView):
                          'Model',
                          'ExpiryDate',
                          'WeeksToExpire',
-                         'Method']},
+                         'Method',
+                         'Sponsor']},
             ]
 
     def folderitems(self):
@@ -123,6 +128,7 @@ class InstrumentsView(BikaListingView):
                 items[x]['Method'] = ''
             items[x]['replace']['Title'] = "<a href='%s'>%s</a>" % \
                 (items[x]['url'], items[x]['Title'])
+            items[x]['Sponsor'] = obj.getSponsor()
 
         return items
 

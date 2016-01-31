@@ -706,6 +706,7 @@ class Instruments(WorksheetImporter):
                 Type=row.get('Type', ''),
                 Brand=row.get('Brand', ''),
                 Model=row.get('Model', ''),
+                Sponsor=row.get('Sponsor', ''),
                 SerialNo=row.get('SerialNo', ''),
                 DataInterface=row.get('DataInterface', ''),
                 Location=row.get('Location', ''),
@@ -720,6 +721,7 @@ class Instruments(WorksheetImporter):
             obj.setManufacturer(manufacturer)
             obj.setSupplier(supplier)
             obj.setMethod(method)
+            obj.setRemarks(row['Remarks'])
 
             # Attaching the instrument's photo
             if row.get('Photo', None):

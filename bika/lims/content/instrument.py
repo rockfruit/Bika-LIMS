@@ -58,7 +58,12 @@ schema = BikaFolderSchema.copy() + BikaSchema.copy() + Schema((
             visible={'view': 'invisible', 'edit': 'visible'}
         ),
     ),
-
+    StringField('Sponsor',
+        widget = StringWidget(
+            label=_("Sponsor"),
+            description=_("The instrumnent's Sponsor"),
+        )
+    ),
     StringField('Model',
         widget = StringWidget(
             label=_("Model"),
@@ -234,7 +239,17 @@ schema = BikaFolderSchema.copy() + BikaSchema.copy() + Schema((
         description=_("Installation certificate upload"),
         )
     ),
-
+    TextField('Remarks',
+        searchable = True,
+        default_content_type = 'text/plain',
+        allowed_content_types= ('text/plain', ),
+        default_output_type = "text/html",
+        widget = TextAreaWidget(
+            macro = "bika_widgets/remarks",
+            label=_("Remarks"),
+            append_only = True,
+        ),
+    ),
 ))
 
 schema.moveField('AssetNumber', before='description')
