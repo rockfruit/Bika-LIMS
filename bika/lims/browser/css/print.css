@@ -18,3 +18,17 @@ th {text-align: left; }
     width:60mm;
 }
 
+
+/*======================================*
+ *   Kit Assembly Print (bika.sanbi)    *
+ *======================================*/
+.kit-items tr th{
+    border-bottom: 1px solid #ccc;
+}
+.kit-items tr td{
+    border-bottom: 1px solid #ccc;
+}
+
+.kit-items .totals td{
+    font-weight: bold;
+}
