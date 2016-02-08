@@ -28,7 +28,6 @@ import zope.event
 class OrderWorkflowAction(WorkflowAction):
 
     """Workflow actions taken in Order context.
-
     """
 
     def __call__(self):

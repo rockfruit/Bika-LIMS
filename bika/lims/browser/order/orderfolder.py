@@ -75,7 +75,7 @@ class OrderFolderView(BikaListingView):
             },
             {
                 'id': 'stored',
-                'contentFilter': {'review_state':'stored'},
+                'contentFilter': {'review_state': 'stored'},
                 'title': _('Stored'),
                 'columns': [
                     'OrderNumber',

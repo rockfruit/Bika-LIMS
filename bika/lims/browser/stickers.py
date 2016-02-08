@@ -95,7 +95,7 @@ class Sticker(BrowserView):
                  'title': <teamplate_title>,
                  'selected: True/False'}
         """
-        seltemplate = self.getSelectedTemplate()
+        _, seltemplate = self.getSelectedTemplate()
         templates = []
         for temp in getStickerTemplates():
             out = temp
@@ -118,6 +118,7 @@ class Sticker(BrowserView):
             bs_template = self.context.bika_setup.getSmallStickerTemplate()
         elif size == 'large':
             bs_template = self.context.bika_setup.getLargeStickerTemplate()
+        prefix = ''
         rq_template = self.request.get('template', bs_template)
         # Check if the template exists. If not, fallback to default's
         if rq_template.find(':') >= 0:
@@ -128,7 +129,7 @@ class Sticker(BrowserView):
             templates_dir = os.path.join(this_dir, 'templates/stickers/')
         if not os.path.isfile(os.path.join(templates_dir, rq_template)):
             rq_template = 'Code_128_1x48mm.pt'
-        return rq_template
+        return prefix, rq_template
 
     def getSelectedTemplateCSS(self):
         """ Looks for the CSS file from the selected template and return its
@@ -136,12 +137,19 @@ class Sticker(BrowserView):
             file named default.css in the stickers path and return its contents.
             If no CSS file found, retrns an empty string
         """
-        template = self.getSelectedTemplate()
+        prefix, template = self.getSelectedTemplate()
         # Look for the CSS
         content = ''
+        '''
         if template.find(':') >= 0:
             # A template from another add-on
             prefix, template = template.split(':')
+            resource = queryResourceDirectory('stickers', prefix)
+            css = '{0}.css'.format(template[:-3])
+            if css in resource.listDirectory():
+                content = resource.readFile(css)
+        '''
+        if prefix:
             resource = queryResourceDirectory('stickers', prefix)
             css = '{0}.css'.format(template[:-3])
             if css in resource.listDirectory():
@@ -176,10 +184,14 @@ class Sticker(BrowserView):
         """
         curritem = self.nextItem()
         templates_dir = 'templates/stickers'
-        embedt = self.getSelectedTemplate()
+        prefix, embedt = self.getSelectedTemplate()
+        if prefix:
+            templates_dir = queryResourceDirectory('stickers', prefix).directory
+        '''
         if embedt.find(':') >= 0:
             prefix, embedt = embedt.split(':')
             templates_dir = queryResourceDirectory('stickers', prefix).directory
+        '''
         fullpath = os.path.join(templates_dir, embedt)
         try:
             embed = ViewPageTemplateFile(fullpath)

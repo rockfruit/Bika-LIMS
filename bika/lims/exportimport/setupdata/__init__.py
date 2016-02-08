@@ -721,7 +721,7 @@ class Instruments(WorksheetImporter):
             obj.setManufacturer(manufacturer)
             obj.setSupplier(supplier)
             obj.setMethod(method)
-            obj.setRemarks(row['Remarks'])
+            obj.setRemarks(row.get('Remarks', ''))
 
             # Attaching the instrument's photo
             if row.get('Photo', None):
@@ -2234,7 +2234,7 @@ class Product_Categories(WorksheetImporter):
             obj.edit(
                 title=row['title'],
                 description=row.get('description', ''),
-                Prefix=row['prefix'])
+                Prefix=row.get('prefix', ''))
             obj.unmarkCreationFlag()
             renameAfterCreation(obj)
 

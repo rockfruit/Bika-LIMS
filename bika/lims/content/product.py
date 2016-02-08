@@ -209,6 +209,9 @@ class Product(BaseContent):
         return vatamount.quantize(Decimal('0.00'))
 
     def getSupplierTitle(self):
+        if self.aq_parent.portal_type == "Products":
+            return ''
+
         return self.aq_parent.Title()
 
     def getProductID(self):
