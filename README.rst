@@ -4,6 +4,8 @@ Bika LIMS
 .. image:: https://travis-ci.org/bikalabs/bika.lims.svg?branch=master
     :target: https://travis-ci.org/bikalabs/bika.lims
 
+v3.3.1 (develop)
+
 The meaning of Gaob
 -------------------
 
