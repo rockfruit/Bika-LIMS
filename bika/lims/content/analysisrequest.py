@@ -518,7 +518,7 @@ schema = BikaSchema.copy() + Schema((
     ),
     DateTimeField(
         'SamplingDate',
-        required=1,
+        required=0,
         mode="rw",
         read_permission=permissions.View,
         write_permission=permissions.ModifyPortalContent,
