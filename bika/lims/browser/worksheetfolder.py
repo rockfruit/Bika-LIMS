@@ -149,7 +149,7 @@ class WorksheetFolderListingView(BikaListingView):
                       'index': 'sortable_title'},
             'Priority': {'title': _('Priority'),
                         'index':'Priority',
-                        'toggle': True},
+                        'toggle': False},
             'Analyst': {'title': _('Analyst'),
                         'index':'getAnalyst',
                         'toggle': True},

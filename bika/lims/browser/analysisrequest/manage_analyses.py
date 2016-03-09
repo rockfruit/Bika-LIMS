@@ -58,7 +58,7 @@ class AnalysisRequestAnalysesView(BikaListingView):
             'Priority': {'title': _('Priority'),
                          'sortable': False,
                          'index': 'Priority',
-                         'toggle': True },
+                         'toggle': False},
             'Partition': {'title': _('Partition'),
                           'sortable': False, },
             'min': {'title': _('Min')},
