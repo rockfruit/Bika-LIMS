@@ -366,7 +366,8 @@ class ajaxAnalysisRequestSubmit():
         # ignored - these fields may be present in all columns (probably because
         # the field has a default value set).  Their being present will not
         # cause warnings about other fields in those columns lacking values.
-        ignored = ["SampleSite", "CCEmails"]
+        ignored = ["SampleSite", "CCEmails", "SamplingDate",
+                   "AmountSampled", "AmountSampledMetric"]
 
         # First remove all states which are completely empty; if all
         # required fields are not present, we assume that the current
