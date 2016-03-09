@@ -34,6 +34,8 @@ class AnalysisRequestsView(_ARV, _ARAV):
                             }, 
                 'icon': '++resource++bika.lims.images/add.png'}
 
+        # In batch context, I don't care to waste space on the BatchID column
+        self.columns['BatchID']['toggle'] = False
         return super(AnalysisRequestsView, self).__call__()
 
     def getMemberDiscountApplies(self):
