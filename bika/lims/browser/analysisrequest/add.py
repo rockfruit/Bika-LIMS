@@ -363,6 +363,11 @@ class ajaxAnalysisRequestSubmit():
                     in AnalysisRequestSchema.fields()
                     if field.required] + ["Analyses"]
 
+        # ignored - these fields may be present in all columns (probably because
+        # the field has a default value set).  Their being present will not
+        # cause warnings about other fields in those columns lacking values.
+        ignored = ["SampleSite", "CCEmails"]
+
         # First remove all states which are completely empty; if all
         # required fields are not present, we assume that the current
         # AR had no data entered, and can be ignored
@@ -371,13 +376,15 @@ class ajaxAnalysisRequestSubmit():
             for key, val in state.items():
                 if val \
                         and "%s_hidden" % key not in state \
-                        and not key.endswith('hidden'):
+                        and not key.endswith('hidden') \
+                        and key not in ignored:
                     nonblank_states[arnum] = state
                     break
 
         # in valid_states, all ars that pass validation will be stored
         valid_states = {}
         for arnum, state in nonblank_states.items():
+            arnum = int(arnum)
             # Secondary ARs are a special case, these fields are not required
             if state.get('Sample', ''):
                 if 'SamplingDate' in required:
