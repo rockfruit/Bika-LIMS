@@ -392,7 +392,6 @@ class WorksheetAnalysesView(AnalysesView):
             'Pos': {'title': _('Position')},
             'DueDate': {'title': _('Due Date')},
             'Service': {'title': _('Analysis')},
-            'getPriority': {'title': _('Priority')},
             'Method': {'title': _('Method')},
             'Result': {'title': _('Result'),
                        'input_width': '6',
@@ -405,7 +404,7 @@ class WorksheetAnalysesView(AnalysesView):
             'Attachments': {'title': _('Attachments')},
             'Instrument': {'title': _('Instrument')},
             'state_title': {'title': _('State')},
-            'Priority': { 'title': _('Priority'), 'index': 'Priority'},
+            'Priority': { 'title': _('Priority'), 'index': 'Priority', 'toggle':False},
         }
         self.review_states = [
             {'id':'default',
