@@ -29,6 +29,9 @@ class AcquireFieldDefaults(object):
 
         fieldname = field.getName()
 
+        # Maybe some other fieldname on the parent is wanted.
+        # ... acquire = {'fieldname':'OtherField'}
+        # instead of .. acquire = True | False
         acquire = getattr(field, 'acquire', True)
         if type(acquire) == DictType:
             new_fieldname = acquire.get('fieldname', None)
@@ -40,7 +43,7 @@ class AcquireFieldDefaults(object):
             current = current.aq_parent
             if IPloneSiteRoot.providedBy(current):
                 break
-            if fieldname in current.schema._names:
-                value = current.schema[fieldname].get(current)
+            if fieldname in current.Schema()._names:
+                value = current.Schema()[fieldname].get(current)
                 if value is not None:
                     return value
