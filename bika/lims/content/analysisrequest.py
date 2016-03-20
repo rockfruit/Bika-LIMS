@@ -1005,8 +1005,8 @@ schema = BikaSchema.copy() + Schema((
         )
     ),
     ReferenceField(
-        'DefaultContainerType',
-        allowed_types = ('ContainerType',),
+        'Container',
+        allowed_types = ('container',),
         relationship = 'AnalysisRequestContainerType',
         referenceClass = HoldingReference,
         mode="rw",
@@ -1015,7 +1015,7 @@ schema = BikaSchema.copy() + Schema((
         acquire=True,
         widget=ReferenceWidget(
             label=_('Default Container'),
-            description=_('Default container for new sample partitions'),
+            description=_('Default container for new samples'),
             size=20,
             render_own_label=True,
             visible={'edit': 'visible',

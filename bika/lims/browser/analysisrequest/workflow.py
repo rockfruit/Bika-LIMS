@@ -535,7 +535,7 @@ class AnalysisRequestWorkflowAction(WorkflowAction):
         newar.setClientOrderNumber(ar.getClientOrderNumber())
         newar.setClientReference(ar.getClientReference())
         newar.setClientSampleID(ar.getClientSampleID())
-        newar.setDefaultContainerType(ar.getDefaultContainerType())
+        newar.setContainer(ar.getContainer())
         newar.setAdHoc(ar.getAdHoc())
         newar.setComposite(ar.getComposite())
         newar.setReportDryMatter(ar.getReportDryMatter())

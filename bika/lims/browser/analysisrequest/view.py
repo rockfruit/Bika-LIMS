@@ -276,15 +276,6 @@ class AnalysisRequestViewView(BrowserView):
         res.sort(lambda x, y: cmp(x[0], y[0]))
         return res
 
-    def containertypes(self):
-        """ DefaultContainerType vocabulary for AR Add
-        """
-        bsc = getToolByName(self.context, 'bika_setup_catalog')
-        res = [(o.getObject().Title(), o.getObject())
-               for o in bsc(portal_type='ContainerType')]
-        res.sort(lambda x, y: cmp(x[0], y[0]))
-        return res
-
     def SelectedServices(self):
         """ return information about services currently selected in the
             context AR.
