@@ -14,7 +14,6 @@ from plone.resource.utils import iterDirectoriesOfType, queryResourceDirectory
 from zope.component import getAdapters
 import glob, os, sys, traceback
 import App
-import Globals
 
 class WorksheetPrintView(BrowserView):
     """ Print view for a worksheet. This view acts as a placeholder, so

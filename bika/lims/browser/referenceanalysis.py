@@ -17,9 +17,8 @@ from bika.lims.utils import encode_header, createPdf
 from os.path import join
 from Products.CMFPlone.utils import safe_unicode
 from bika.lims.utils import tmpID
-import Globals
 from zope.component import getAdapters
-
+import tempfile
 
 class ResultOutOfRangeIcons(object):
     """An icon provider for Analyses: Result field out-of-range alerts
@@ -199,8 +198,7 @@ class AnalysesRetractedListReport(BrowserView):
         return self._data
 
     def toPdf(self):
-        outpath = join(Globals.INSTANCE_HOME, 'var')
-        filepath = join(outpath, tmpID() + ".pdf")
+        filepath = tempfile.mktemp(suffix=".pdf")
         html = safe_unicode(self.template()).encode('utf-8')
         return createPdf(html, filepath)
 

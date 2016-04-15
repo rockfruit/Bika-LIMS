@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from time import time
 from AccessControl import ModuleSecurityInfo, allow_module
 from bika.lims import logger
@@ -16,10 +15,10 @@ from zope.component import queryUtility
 from zope.i18n import translate
 from zope.i18n.locales import locales
 import App
-import Globals
 import os
 import re
 import urllib2
+import tempfile
 
 ModuleSecurityInfo('email.Utils').declarePublic('formataddr')
 allow_module('csv')
@@ -354,7 +353,7 @@ def createPdf(htmlreport, outfile=None, css=None, images={}):
         if css.startswith("http://") or css.startswith("https://"):
             # Download css file in temp dir
             u = urllib2.urlopen(css)
-            _cssfile = Globals.INSTANCE_HOME + '/var/' + tmpID() + '.css'
+            _cssfile = tempfile.mktemp(suffix='.css')
             localFile = open(_cssfile, 'w')
             localFile.write(u.read())
             localFile.close()
@@ -363,7 +362,7 @@ def createPdf(htmlreport, outfile=None, css=None, images={}):
         cssfile = open(_cssfile, 'r')
         css_def = cssfile.read()
     if not outfile:
-        outfile = Globals.INSTANCE_HOME + "/var/" + tmpID() + ".pdf"
+        outfile = tempfile.mktemp(suffix=".pdf")
 
     # WeasyPrint default's URL fetcher seems that doesn't support urls
     # like at_download/AttachmentFile (without mime, header, etc.).
@@ -380,7 +379,7 @@ def createPdf(htmlreport, outfile=None, css=None, images={}):
         HTML(string=htmlreport, encoding='utf-8').write_pdf(outfile)
 
     if debug_mode:
-        htmlfilepath = Globals.INSTANCE_HOME + "/var/" + tmpID() + ".html"
+        htmlfilepath = tempfile.mktemp(suffix=".html")
         htmlfile = open(htmlfilepath, 'w')
         htmlfile.write(htmlreport)
         htmlfile.close()

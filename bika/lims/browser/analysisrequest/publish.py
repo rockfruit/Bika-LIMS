@@ -21,9 +21,9 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from plone.resource.utils import iterDirectoriesOfType, queryResourceDirectory
 from zope.component import getAdapters
 import glob, os, sys, traceback
+import tempfile
 import urllib2
 import App
-import Globals
 
 class AnalysisRequestPublishView(BrowserView):
     template = ViewPageTemplateFile("templates/analysisrequest_publish.pt")
@@ -591,7 +591,7 @@ class AnalysisRequestPublishView(BrowserView):
         # like at_download/AttachmentFile (without mime, header, etc.).
         # Need to copy the image to the temp file and replace occurences
         # in the HTML report later
-        outfilename = Globals.INSTANCE_HOME + '/var/' + filename
+        outfilename = join(tempfile.tempdir, filename)
         outfile = open(outfilename, 'wb')
         outfile.write(str(af.data))
         outfile.close()
@@ -624,15 +624,15 @@ class AnalysisRequestPublishView(BrowserView):
         # SMTP errors are silently ignored if server is in debug mode
         debug_mode = App.config.getConfiguration().debug_mode
         # PDF and HTML files are written to disk if server is in debug mode
-        out_path = join(Globals.INSTANCE_HOME, 'var') if debug_mode \
-            else None
+        out_path = tempfile.tempdir if debug_mode else None
         out_fn = to_utf8(ar.Title())
+        pdf_outfile = join(out_path, out_fn + ".pdf") if out_path else None
+        html_outfile = join(out_path, out_fn + ".html") if out_path else None
 
-        if out_path:
-            open(join(out_path, out_fn + ".html"), "w").write(results_html)
+        if html_outfile:
+            open(html_outfile, 'w').write(results_html)
 
         # Create the pdf report (will always be attached to the AR)
-        pdf_outfile = join(out_path, out_fn + ".pdf") if out_path else None
         pdf_report = createPdf(htmlreport=results_html, outfile=pdf_outfile, images=self._images)
 
         recipients = []

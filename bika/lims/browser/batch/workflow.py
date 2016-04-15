@@ -13,7 +13,6 @@ from zope.interface import implements
 from Products.CMFPlone.utils import safe_unicode
 
 import App
-import Globals
 import os
 import plone
 
