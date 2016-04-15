@@ -203,12 +203,12 @@ class BatchWorkflowAction(AnalysisRequestWorkflowAction):
             if objects == {}:
                 pass
             else:
-                its = []
+                uidlist = []
                 for uid, obj in objects.items():
                     if isActive(obj):
-                        its.append(uid);
-                        its = ",".join(its)
-                        q = "/publish?items=" + its
+                        uidlist.append(uid)
+                        uidstr = ",".join(uidlist)
+                        q = "/publish?items=" + uidstr
                         dest = self.portal_url+"/analysisrequests" + q
                         self.request.response.redirect(dest)
 
