@@ -4,7 +4,7 @@ from DateTime.DateTime import DateTime, safelocaltime
 from DateTime.interfaces import DateTimeError
 from Products.CMFCore.utils import getToolByName
 from AccessControl import ClassSecurityInfo
-from Products.CMFPlone.i18nl10n import ulocalized_time as _ut
+from Products.CMFPlone.i18nl10n import ulocalized_time
 from Products.Five.browser import BrowserView
 from bika.lims import logger
 from zope.cachedescriptors.property import Lazy as lazy_property
@@ -41,21 +41,6 @@ def strptime(context, value):
         logger.warning("DateTimeField failed to format date "
                        "string '%s' with '%s'" % (value, fmtstr))
     return val
-
-
-def ulocalized_time(time, long_format=None, time_only=None, context=None,
-                    request=None):
-    # if time is a string, we'll try pass it through strptime with the various
-    # formats defined.
-    if isinstance(time, basestring):
-        time = strptime(context, time)
-    if time:
-        # no printing times if they were not specified in inputs
-        if time.second() + time.minute() + time.hour() == 0:
-            long_format = False
-        time_str = _ut(time, long_format, time_only, context,
-                                   'bika', request)
-        return time_str
 
 
 class BrowserView(BrowserView):
