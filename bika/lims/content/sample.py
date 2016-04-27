@@ -248,11 +248,11 @@ schema = BikaSchema.copy() + Schema((
         )
     ),
     BooleanField(
-        'BioHazardous',
+        'Hazardous',
         schemata = "AnalysisRequest and Sample Fields",
         acquire=True,
         widget=BooleanWidget(
-            label=_("BioHazardous"),
+            label=_("Hazardous"),
             size=20,
             render_own_label=True,
             visible={'edit': 'visible',
