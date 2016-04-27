@@ -26,7 +26,7 @@
 			<a tal:attributes="
 				style python:'background: url(%s) 2px 50%% no-repeat'%(view.context_actions[add_item]['icon']);
 				href python:view.context_actions[add_item]['url'];
-				class python:'context_action_link %s' % (view.context_actions[add_item].get('class',''))">
+				class python:'araddbtn context_action_link %s' % (view.context_actions[add_item].get('class',''))">
 				<span tal:replace="python:add_item"/>
 			</a>
         <label i18n:translate="" style="font-size:60%;position:relative;top:-0.3em;" >Number of ARs</label>

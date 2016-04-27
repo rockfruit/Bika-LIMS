@@ -40,9 +40,9 @@ function SiteView() {
                 if (new_val != '' && elem.data('oldVal') != new_val) {
                     // Updated stored value
                     elem.data('oldVal', new_val);
-                    var address = $(".context_action_link").attr('href');
+                    var address = $(".araddbtn").attr('href');
                     var href = addParam(address, 'ar_count', $(this).val())
-                    $(".context_action_link").attr('href', href);
+                    $(".araddbtn").attr('href', href);
                 }
             });
         });
