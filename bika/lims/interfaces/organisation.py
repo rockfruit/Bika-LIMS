@@ -5,35 +5,9 @@ from plone.supermodel import model
 from zope import schema
 
 
-# class IPhoneNumberRow(form.Schema):
-#     """A single row in the TestForm table
-#     """
-#     Type = schema.TextLine(
-#         readonly=False,
-#         required=False,
-#     )
-#     Number = schema.TextLine(
-#         readonly=False,
-#         required=False,
-#     )
-#
-#
-# PHONE_DEFAULT = [
-#     {'Type': 'Work Phone', 'Number': ''},
-# ]
-
-
 class IOrganisation(model.Schema):
     """Base fields for all organisation types
     """
-    # PhoneNumbers = schema.List(
-    #     title=_(u"Phone numbers"),
-    #     description=_(u"List of contact telephone and fax numbers"),
-    #     value_type=DictRow(title=u"Phone numbers",
-    #                        schema=IPhoneNumberRow),
-    #     required=False,
-    #     default=PHONE_DEFAULT,
-    # )
     PhoneNumber = schema.TextLine(
         title=_(u"Phone number"),
         required=False,

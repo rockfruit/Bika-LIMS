@@ -5,7 +5,6 @@
     <!-- Basic properties -->
     <property name="title" i18n:translate="">Department</property>
     <property name="description" i18n:translate="">
-        Various objects are grouped by department, including Services and Departments in the lab.
     </property>
     <property name="icon_expr"/>
     <property name="allow_discussion">False</property>
