@@ -1,40 +1,20 @@
-import os
 from setuptools import setup, find_packages
+import os
 
-version = '3.3.1'
-
-
-def read(*rnames):
-    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+version = '4.0.dev0'
 
 setup(name='bika.lims',
       version=version,
-      description="Bika LIMS",
-      long_description=read("README.rst") + \
-                       read("docs/INSTALL.rst") + \
-                       read("docs/CHANGELOG.txt") + \
-                       "\n\n" + \
-                       "Authors and maintainers\n" + \
-                       "-----------------------\n" + \
-                       "- Bika Lab Systems, http://bikalabs.com\n" + \
-                       "- Naralabs, http://naralabs.com",
+      description="Bika Open Source Laboratory Information Management System",
+      long_description=open("README.md").read(),
       # Get more strings from
       # http://pypi.python.org/pypi?:action=list_classifiers
       classifiers=[
-          "Framework :: Plone",
-          "Programming Language :: Python",
-          "Development Status :: 5 - Production/Stable",
-          "Environment :: Web Environment",
-          "Intended Audience :: Information Technology",
-          "Intended Audience :: Science/Research",
-          "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
-      ],
-      keywords=['lims', 'bika', 'opensource'],
-      author='Bika Laboratory Systems',
-      author_email='support@bikalabs.com',
-      maintainer='Naralabs',
-      maintainer_email='info@naralabs.com',
-      url='www.bikalims.org',
+        "Framework :: Plone",
+        "Programming Language :: Python",
+        ],
+      keywords='Open Source Laboratory Information Management System',
+      url='http://www.bikalims.org',
       license='AGPL',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['bika'],
@@ -43,43 +23,19 @@ setup(name='bika.lims',
       install_requires=[
           'setuptools',
           'plone.api',
-          'plone.jsonapi.core',
-          'Products.ATExtensions>=1.1a3',
-          'Products.CMFEditions',
-          'Products.DataGridField',
-          'Products.AdvancedQuery',
-          'Products.TinyMCE',
-          'collective.monkeypatcher',
-          'collective.js.jqueryui',
-          'plone.app.z3cform',
-          'openpyxl==1.5.8',
-          'plone.app.iterate',
+          'collective.z3cform.datagridfield',
           'magnitude',
-          'gpw',
-          'jarn.jsi18n==0.3',
-          'collective.wtf',
-          'WeasyPrint==0.19.2',
-          'collective.progressbar',
-          'z3c.unconfigure==1.0.1',
-          'plone.app.dexterity',
-          'plone.app.relationfield',
-          'plone.app.referenceablebehavior',
-          'five.pt',
+          'plone.formwidget.autocomplete',
+          'plone.principalsource',
+          'z3c.relationfield',
       ],
       extras_require={
           'test': [
-              'plone.app.testing',
-              'robotsuite',
-              'robotframework-selenium2library',
-              'plone.app.robotframework',
-              'Products.PloneTestCase',
-              'robotframework-debuglibrary',
-              'plone.resource',
-              'plone.app.textfield',
           ]
       },
       entry_points="""
+      # -*- Entry points: -*-
       [z3c.autoinclude.plugin]
       target = plone
       """,
-)
+      )

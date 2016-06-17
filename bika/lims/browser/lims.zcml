@@ -1,0 +1,31 @@
+<configure
+        xmlns="http://namespaces.zope.org/zope"
+        xmlns:browser="http://namespaces.zope.org/browser"
+        xmlns:i18n="http://namespaces.zope.org/i18n"
+        i18n_domain="bika.lims">
+
+    <!--
+    <adapter
+            for="Products.CMFCore.interfaces.IFolderish
+                 zope.publisher.interfaces.browser.IDefaultBrowserLayer
+                 plone.dexterity.interfaces.IDexterityFTI"
+            provides="zope.publisher.interfaces.browser.IBrowserPage"
+            factory=".lims.AddView"
+            name="LIMS"
+    />
+    <class class=".lims.AddView">
+        <require
+                permission="bika.lims.permissions.AddLIMS"
+                interface="zope.publisher.interfaces.browser.IBrowserPage"
+        />
+    </class>
+    <browser:page
+            for="bika.lims.interfaces.lims.ILIMS"
+            name="edit"
+            class=".lims.EditForm"
+            permission="cmf.ModifyPortalContent"
+    />
+    -->
+
+</configure>
+

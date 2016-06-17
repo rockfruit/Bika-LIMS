@@ -1,0 +1,14 @@
+<configure
+        xmlns="http://namespaces.zope.org/zope"
+        xmlns:plone="http://namespaces.plone.org/plone"
+        i18n_domain="bika.lims">
+
+    <plone:behavior
+            title="Name from person's fullname"
+            description="generates object title and ID from IPerson's fullname"
+            provides="bika.lims.behaviours.person.INameFromFullname"
+    />
+
+    <adapter factory="bika.lims.behaviours.person.NameFromFullname" />
+
+</configure>
