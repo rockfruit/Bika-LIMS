@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 from Products.CMFPlone.interfaces import IPloneSiteRoot
-from bika.lims.interfaces.lims import ILIMS
+from bika.lims.interfaces.limsroot import ILimsRoot
 
 
 def getLims(context):
-    """Return the ILIMS instance that is the ancestor of context.
+    """Return the ILimsRoot instance that is the ancestor of context.
     """
 
-    if ILIMS.providedBy(context):
+    if ILimsRoot.providedBy(context):
         return context
     parent = context.__parent__
-    while not (IPloneSiteRoot.providedBy(parent) or ILIMS.providedBy(parent)):
+    while not (IPloneSiteRoot.providedBy(parent) or ILimsRoot.providedBy(parent)):
         parent = parent.__parent__
     if IPloneSiteRoot.providedBy(parent):
         return None
-    if ILIMS.providedBy(parent):
+    if ILimsRoot.providedBy(parent):
         return parent

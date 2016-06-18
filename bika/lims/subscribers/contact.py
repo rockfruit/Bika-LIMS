@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from bika.lims.interfaces.contact import ILabContact, IClientContact
-from bika.lims.utils.lims import getLims
+from bika.lims.utils.limsroot import getLims
 from zope.interface import alsoProvides
 
 

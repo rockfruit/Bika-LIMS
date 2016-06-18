@@ -77,7 +77,7 @@ def setupPermissions(context):
     mp = portal.manage_permission
 
     # LIMS may be added by admin users:
-    mp(AddLIMS, ['Manager'], 0)
+    mp(AddLIMSRoot, ['Manager'], 0)
 
     # All other objects cannot be added at the root.
     mp(AddAliquot, [], 0)
@@ -98,4 +98,5 @@ def setupVarious(context):
     # Display 'LIMS' objects in the navigation
     registry = getUtility(IRegistry)
     settings = registry.forInterface(INavigationSchema, prefix="plone")
-    settings.displayed_types = tuple(list(settings.displayed_types) + ['LIMS'])
+    displayed_types = list(settings.displayed_types) + ['LIMSRoot']
+    settings.displayed_types = tuple(displayed_types)

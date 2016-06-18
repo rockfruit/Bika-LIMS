@@ -10,19 +10,19 @@
                  zope.publisher.interfaces.browser.IDefaultBrowserLayer
                  plone.dexterity.interfaces.IDexterityFTI"
             provides="zope.publisher.interfaces.browser.IBrowserPage"
-            factory=".lims.AddView"
-            name="LIMS"
+            factory="bika.lims.browser.limsroot.AddView"
+            name="LIMSRoot"
     />
-    <class class=".lims.AddView">
+    <class class=".limsroot.AddView">
         <require
                 permission="bika.lims.permissions.AddLIMS"
                 interface="zope.publisher.interfaces.browser.IBrowserPage"
         />
     </class>
     <browser:page
-            for="bika.lims.interfaces.lims.ILIMS"
+            for="bika.lims.interfaces.lims.ILimsRoot"
             name="edit"
-            class=".lims.EditForm"
+            class="bika.lims.browser.limsroot.EditForm"
             permission="cmf.ModifyPortalContent"
     />
     -->

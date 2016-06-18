@@ -20,8 +20,8 @@
     <permission id="bika.lims.permissions.AddLaboratory"
                 title="Bika LIMS: Add Laboratory"
     />
-    <permission id="bika.lims.permissions.AddLIMS"
-                title="Bika LIMS: Add LIMS"
+    <permission id="bika.lims.permissions.AddLIMSRoot"
+                title="Bika LIMS: Add LIMSRoot"
     />
     <permission id="bika.lims.permissions.AddSample"
                 title="Bika LIMS: Add Sample"

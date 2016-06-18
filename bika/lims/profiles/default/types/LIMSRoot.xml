@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
-<object name="LIMS" meta_type="Dexterity FTI" i18n:domain="plone"
+<object name="LIMSRoot" meta_type="Dexterity FTI" i18n:domain="plone"
         xmlns:i18n="http://xml.zope.org/namespaces/i18n">
 
     <!-- Basic properties -->
-    <property name="title" i18n:translate="">LIMS</property>
+    <property name="title" i18n:translate="">LIMS Root</property>
     <property name="description" i18n:translate="">
     </property>
     <property name="icon_expr"/>
     <property name="allow_discussion">False</property>
-    <property name="factory">LIMS</property>
-    <property name="add_view_expr">string:${folder_url}/++add++LIMS</property>
+    <property name="factory">LIMSRoot</property>
+    <property name="add_view_expr">string:${folder_url}/++add++LIMSRoot</property>
     <property name="link_target"/>
 
     <!-- Hierarchy control -->
@@ -23,8 +23,8 @@
 
     <!-- Schema, class and security -->
     <property name="klass">plone.dexterity.content.Container</property>
-    <property name="add_permission">bika.lims.permissions.AddLIMS</property>
-    <property name="schema">bika.lims.interfaces.lims.ILIMS</property>
+    <property name="add_permission">bika.lims.permissions.AddLIMSRoot</property>
+    <property name="schema">bika.lims.interfaces.limsroot.ILimsRoot</property>
     <property name="model_source"/>
     <property name="model_file"/>
 

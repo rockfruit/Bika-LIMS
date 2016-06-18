@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
-from Products.CMFCore.utils import getToolByName
-from bika.lims import messagefactory as _
 from Products.CMFCore.permissions import ModifyPortalContent
-from bika.lims.permissions import *
 from plone import api
+from zope.event import notify
+
+from bika.lims import messagefactory as _
+from bika.lims.events import LIMSCreatedEvent
+from bika.lims.permissions import *
 
 
 def Added(lims, event):
-    """When a new LIMS is created, we must create it's folder structure and
-    do some configuration.
+    """When a new LIMS root is created, we must create it's folder structure
+    and do some configuration.
 
     The order in which items are created here defines the default order
     of the site navigation.
@@ -16,8 +18,8 @@ def Added(lims, event):
     The permissions set here are inherited by children.
     """
 
-    # Prevent anyone from adding a LIMS inside of a LIMS
-    lims.manage_permission(AddLIMS, [], 0)
+    # Prevent anyone from adding a LIMSRoot inside of a LIMSRoot
+    lims.manage_permission(AddLIMSRoot, [], 0)
 
     # Create root folders and set their permissions
     # ---------------------------------------------
@@ -42,7 +44,7 @@ def Added(lims, event):
     # ------------------------------------------
     configuration = lims.configuration
     for x in [
-        #['Laboratory', 'laboratory', _(u"Laboratory")],
+        # ['Laboratory', 'laboratory', _(u"Laboratory")],
         ['Folder', 'contacts', _(u"Contacts")],
         ['Folder', 'departments', _(u"Departments")],
         ['Folder', 'samplepoints', _(u"Sample Points")],
@@ -69,3 +71,4 @@ def Added(lims, event):
     mp(AddSampleType, ['Manager', 'LabManager'], 0)
     mp(ModifyPortalContent, ['Manager', 'LabManager'], 0)
 
+    notify(LIMSCreatedEvent(lims))

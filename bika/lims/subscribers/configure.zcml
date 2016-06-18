@@ -5,27 +5,27 @@
         i18n_domain="bika.lims">
 
     <subscriber
-            for="bika.lims.interfaces.lims.ILIMS
+            for="bika.lims.interfaces.limsroot.ILimsRoot
                  zope.lifecycleevent.IObjectAddedEvent"
-            handler=".lims.Added"
+            handler="bika.lims.subscribers.limsroot.Added"
     />
 
     <subscriber
             for="bika.lims.interfaces.client.IClient
                  zope.lifecycleevent.IObjectAddedEvent"
-            handler=".client.Added"
+            handler="bika.lims.subscribers.client.Added"
     />
 
     <subscriber
             for="bika.lims.interfaces.contact.IContact
                  zope.lifecycleevent.IObjectAddedEvent"
-            handler=".contact.Added"
+            handler="bika.lims.subscribers.contact.Added"
     />
 
     <subscriber
             for="bika.lims.interfaces.samplepoint.ISamplePoint
                  zope.lifecycleevent.IObjectAddedEvent"
-            handler=".samplepoint.Added"
+            handler="bika.lims.subscribers.samplepoint.Added"
     />
 
 </configure>
