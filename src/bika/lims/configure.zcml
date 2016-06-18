@@ -1,0 +1,51 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:i18n="http://namespaces.zope.org/i18n"
+  i18n_domain="bika.lims">
+
+  <i18n:registerTranslations directory="locales"/>
+
+  <includeDependencies package="."/>
+
+  <include file="permissions.zcml"/>
+  <include file="profiles.zcml"/>
+
+  <include package=".adapters"/>
+  <include package=".behaviours"/>
+  <include package=".browser"/>
+  <include package=".subscribers"/>
+  <include package=".vocabularies"/>
+  <include package=".workflow"/>
+
+</configure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

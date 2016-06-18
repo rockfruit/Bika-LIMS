@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<object>
+  <hidden manager="plone.abovecontenttitle" skinname="*" purge="False">
+  </hidden>
+</object>

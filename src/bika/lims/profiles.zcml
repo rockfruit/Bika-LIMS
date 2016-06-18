@@ -1,0 +1,41 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+  i18n_domain="bika">
+
+  <genericsetup:registerProfile
+    name="default"
+    title="Bika LIMS"
+    directory="profiles/default"
+    description="Installs the Bika LIMS add-on"
+    provides="Products.GenericSetup.interfaces.EXTENSION"
+  />
+
+  <genericsetup:importStep
+    name="bika.lims-postInstall"
+    title="bika.lims post_install import step"
+    description="Post install import step from bika.lims"
+    handler=".setuphandlers.post_install">
+    <depends name="content"/>
+  </genericsetup:importStep>
+
+  <genericsetup:registerProfile
+    name="uninstall"
+    title="bika.lims"
+    directory="profiles/uninstall"
+    description="Uninstalls the bika.lims add-on"
+    provides="Products.GenericSetup.interfaces.EXTENSION"
+  />
+
+  <genericsetup:importStep
+    name="bika.lims-uninstall"
+    title="bika.lims uninstall import step"
+    description="Import step run during ininstalling bika.lims"
+    handler=".setuphandlers.uninstall">
+  </genericsetup:importStep>
+
+  <utility
+    factory=".setuphandlers.HiddenProfiles"
+    name="bika.lims-hiddenprofiles"/>
+
+</configure>

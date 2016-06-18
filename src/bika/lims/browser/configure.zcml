@@ -1,0 +1,21 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  i18n_domain="bika.lims">
+
+  <!-- Set overrides folder for Just-a-Bunch-Of-Templates product -->
+  <include package="z3c.jbot" file="meta.zcml"/>
+  <browser:jbot
+    directory="overrides"
+    layer="bika.lims.interfaces.IBikaLIMSLayer"
+  />
+
+  <!-- Publish static files -->
+  <browser:resourceDirectory
+    name="bika.lims"
+    directory="static"
+  />
+
+  <include file="limsroot.zcml"/>
+
+</configure>
