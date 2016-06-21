@@ -22,7 +22,7 @@ class ISampleType(model.Schema):
         required=True,
         max_length=5,
     )
-    RetentionPeriod = schema.Timedelta(
+    RetentionPeriod = schema.Int(
         title=_(u"Retention Period"),
         description=_(
             u"The time (in hours) for which un-preserved samples of this "
