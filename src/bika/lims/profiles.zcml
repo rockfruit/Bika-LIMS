@@ -13,9 +13,9 @@
 
   <genericsetup:importStep
     name="bika.lims-postInstall"
-    title="bika.lims post_install import step"
+    title="bika.lims postInstall import step"
     description="Post install import step from bika.lims"
-    handler=".setuphandlers.post_install">
+    handler=".setuphandlers.postInstall">
     <depends name="content"/>
   </genericsetup:importStep>
 

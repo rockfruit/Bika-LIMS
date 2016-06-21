@@ -21,10 +21,8 @@
 
   <!-- Schema, class and security -->
   <property name="klass">plone.dexterity.content.Item</property>
-  <property name="add_permission">bika.lims.permissions.AddSamplePoint
-  </property>
-  <property name="schema">bika.lims.interfaces.samplepoint.ISamplePoint
-  </property>
+  <property name="add_permission">bika.lims.permissions.AddSamplePoint</property>
+  <property name="schema">bika.lims.interfaces.samplepoint.ISamplePoint</property>
   <property name="model_source"/>
   <property name="model_file"/>
 

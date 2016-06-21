@@ -25,9 +25,10 @@ class ISampleType(model.Schema):
     RetentionPeriod = schema.Timedelta(
         title=_(u"Retention Period"),
         description=_(
-            u"The period for which un-preserved samples of this type can be "
-            u"kept before they expire and cannot be analysed any further"
+            u"The time (in hours) for which un-preserved samples of this "
+            u"type can be kept before they expire.  Enter 0 to never expire."
         ),
+        default=0.
         required=False,
     )
     Hazardous = schema.Bool(

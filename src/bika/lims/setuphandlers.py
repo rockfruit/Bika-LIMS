@@ -115,10 +115,20 @@ def setup_permissions(context):
     mp(AddSampleType, [], 0)
 
 
-def post_install(context):
-    """Post install script"""
+def uninstall(context):
+    """Uninstall script"""
+    if context.readDataFile('bikalims_uninstall.txt') is None:
+        return
+    # Do something during the uninstallation of this package
+    pass
+
+
+def postInstall(context):
     if context.readDataFile('bikalims_default.txt') is None:
         return
+    setup_roles(context)
+    setup_groups(context)
+    setup_permissions(context)
 
     # Display 'LIMSRoot' objects in the navigation
     registry = getUtility(IRegistry)
@@ -127,11 +137,3 @@ def post_install(context):
     if 'LIMSRoot' not in displayed_types:
         displayed_types.append('LIMSRoot')
         settings.displayed_types = tuple(displayed_types)
-
-
-def uninstall(context):
-    """Uninstall script"""
-    if context.readDataFile('bikalims_uninstall.txt') is None:
-        return
-    # Do something during the uninstallation of this package
-    pass
