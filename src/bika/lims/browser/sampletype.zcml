@@ -2,29 +2,28 @@
   xmlns="http://namespaces.zope.org/zope"
   i18n_domain="bika.lims">
 
-
-<!-- <adapter
+  <adapter
     for="Products.CMFCore.interfaces.IFolderish
                zope.publisher.interfaces.browser.IDefaultBrowserLayer
                plone.dexterity.interfaces.IDexterityFTI"
     provides="zope.publisher.interfaces.browser.IBrowserPage"
-    factory="bika.lims.browser.limsroot.AddView"
+    factory="bika.lims.browser.sampletype.AddView"
     name="LIMSRoot"
   />
 
-  <class class=".limsroot.AddView">
+  <class class=".sampletype.AddView">
     <require
-      permission="bika.lims.permissions.AddLIMS"
+      permission="bika.lims.permissions.AddSampleType"
       interface="zope.publisher.interfaces.browser.IBrowserPage"
     />
   </class>
 
   <browser:page
-    for="bika.lims.interfaces.lims.ILimsRoot"
+    for="bika.lims.interfaces.sampletype.ISampleType"
     name="edit"
-    class="bika.lims.browser.limsroot.EditForm"
+    class="bika.lims.browser.sampletype.EditForm"
     permission="cmf.ModifyPortalContent"
-  /> -->
+  />
 
 </configure>
 

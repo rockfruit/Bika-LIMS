@@ -1,25 +1,28 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
+from plone.supermodel import model
 from zope import schema
 
 from bika.lims import messagefactory as _
-from plone.supermodel import model
+
+
+def currentTime():
+    return datetime.now()
 
 
 class IAliquot(model.Schema):
     """Object that can hold other aliquots, or be an aliquot
     """
-    PourDate = schema.Date(
+    PourDate = schema.Datetime(
         title=_(u"Date of Aliquot Pour"),
         description=_(u"Date of Aliquot Pour"),
+        defaultFactory=currentTime,
         required=True,
     )
     FluidType = schema.Choice(
-        title=_(u"Fluid Type"),
-        description=_(u"Fluid Type"),
-        values=[_(u"Serum"),
-                _(u"Plasma"),
-                _(u"CSF"),
-                _(u"Whole Blood")],
+        title=_(u"Type of Aliquot"),
+        description=_(u"Possible aliquot types are controlled by the sample "
+                      u"type settings."),
         default=u"Serum",
         required=True,
     )

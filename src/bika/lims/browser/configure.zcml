@@ -17,5 +17,6 @@
   />
 
   <include file="limsroot.zcml"/>
+  <include file="sampletype.zcml"/>
 
 </configure>

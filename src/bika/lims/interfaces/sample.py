@@ -8,7 +8,6 @@ from plone.app.vocabularies.catalog import CatalogSource
 from plone.supermodel import model
 from z3c.relationfield import RelationChoice
 
-
 class ISample(model.Schema):
     """Represents the original sample.
     """

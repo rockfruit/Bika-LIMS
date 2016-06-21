@@ -26,4 +26,10 @@
     handler="bika.lims.subscribers.samplepoint.Added"
   />
 
+  <subscriber
+    for="bika.lims.interfaces.sample.ISample
+                 zope.lifecycleevent.IObjectAddedEvent"
+    handler="bika.lims.subscribers.sample.Added"
+  />
+
 </configure>

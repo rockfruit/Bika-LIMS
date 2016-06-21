@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # from bika.lims import messagefactory as _
-# from bika.lims.interfaces.lims import ILimsRoot
+# from bika.lims.interfaces.lims.interfaces import ILimsRoot
 # from collective.z3cform.datagridfield import DataGridFieldFactory
 # from plone.dexterity.browser import add
 # from plone.dexterity.browser import edit
@@ -16,7 +16,7 @@
 #     fields['PhoneNumbers'].widgetFactory = DataGridFieldFactory
 #
 #     def updateWidgets(self, prefix=None):
-#         super(AddForm, self).updateWidgets(prefix)
+#         super(EditForm, self).updateWidgets(prefix)
 #         self.widgets['PhoneNumbers'].allow_insert = False
 #         self.widgets['PhoneNumbers'].allow_delete = True
 #         self.widgets['PhoneNumbers'].auto_append = True
