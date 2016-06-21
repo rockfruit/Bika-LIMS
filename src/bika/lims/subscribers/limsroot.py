@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from Products.CMFCore.permissions import ModifyPortalContent
 from plone import api
+from zope.component import getMultiAdapter
 from zope.event import notify
 
 from bika.lims import messagefactory as _
@@ -25,25 +26,30 @@ def Added(lims, event):
     structure_permissions(lims)
     notify(LIMSCreatedEvent(lims))
 
+
 def create_structure(lims):
     for x in [
-        ['Folder', 'clients', _(u"Clients")],
-        ['Folder', 'samples', _(u"Samples")],
-        ['Folder', 'analysisrequests', _(u"Analysis Requests")],
-        ['Folder', 'configuration', _(u"Configuration")],
+        [lims, 'Folder', 'clients', _(u"Clients")],
+        [lims, 'Folder', 'samples', _(u"Samples")],
+        [lims, 'Folder', 'analysisrequests', _(u"Analysis Requests")],
+        [lims, 'Folder', 'configuration', _(u"Configuration")],
     ]:
-        api.content.create(lims, x[0], x[1], x[2])
+        obj = api.content.create(container=x[0], type=x[1], id=x[2], title=x[3])
+        obj.setLayout('folder_contents')
+
     configuration = lims.configuration
     for x in [
-        # ['Laboratory', 'laboratory', _(u"Laboratory")],
-        ['Folder', 'aliquoting', _(u"Aliquoting")],
-        ['Folder', 'contacts', _(u"Contacts")],
-        ['Folder', 'departments', _(u"Departments")],
-        ['Folder', 'samplepoints', _(u"Sample Points")],
-        ['Folder', 'sampletypes', _(u"Sample Types")],
+        # [configuration, 'Laboratory', 'laboratory', _(u"Laboratory")],
+        [configuration, 'Folder', 'aliquoting', _(u"Aliquoting")],
+        [configuration, 'Folder', 'services', _(u"Analysis Services")],
+        [configuration, 'Folder', 'contacts', _(u"Contacts")],
+        [configuration, 'Folder', 'departments', _(u"Departments")],
+        [configuration, 'Folder', 'samplepoints', _(u"Sample Points")],
+        [configuration, 'Folder', 'sampletypes', _(u"Sample Types")],
     ]:
-        api.content.create(configuration, x[0], x[1], x[2])
-    return configuration
+        obj = api.content.create(container=x[0], type=x[1], id=x[2], title=x[3])
+        obj.setLayout('folder_contents')
+
 
 def structure_permissions(lims):
     mp = lims.clients.manage_permission
@@ -73,4 +79,3 @@ def structure_permissions(lims):
     mp = lims.configuration.sampletypes.manage_permission
     mp(AddSampleType, ['Manager', 'LabManager'], 0)
     mp(ModifyPortalContent, ['Manager', 'LabManager'], 0)
-
