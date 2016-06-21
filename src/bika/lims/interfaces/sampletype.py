@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-from zope import schema
-
-from bika.lims import messagefactory as _
-from bika.lims.interfaces.samplepoint import ILabSamplePoint
 from plone.app.vocabularies.catalog import CatalogSource
 from plone.supermodel import model
 from z3c.relationfield import RelationChoice
 from z3c.relationfield import RelationList
+from zope import schema
+
+from bika.lims import messagefactory as _
+from bika.lims.interfaces.samplepoint import ILabSamplePoint
 
 
 class ISampleType(model.Schema):
@@ -28,7 +28,7 @@ class ISampleType(model.Schema):
             u"The time (in hours) for which un-preserved samples of this "
             u"type can be kept before they expire.  Enter 0 to never expire."
         ),
-        default=0.
+        default=0,
         required=False,
     )
     Hazardous = schema.Bool(

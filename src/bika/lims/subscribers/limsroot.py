@@ -36,6 +36,7 @@ def create_structure(lims):
     configuration = lims.configuration
     for x in [
         # ['Laboratory', 'laboratory', _(u"Laboratory")],
+        ['Folder', 'aliquoting', _(u"Aliquoting")],
         ['Folder', 'contacts', _(u"Contacts")],
         ['Folder', 'departments', _(u"Departments")],
         ['Folder', 'samplepoints', _(u"Sample Points")],
