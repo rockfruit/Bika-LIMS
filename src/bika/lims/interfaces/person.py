@@ -8,12 +8,8 @@ from zope.interface import Interface
 
 
 class IPerson(Interface):
-    """Doctor and Patient are based on this
+    """All person things
     """
-    Salutation = schema.TextLine(
-        title=_(u"Salutation"),
-        required=False,
-    )
     Firstname = schema.TextLine(
         title=_(u"First name"),
         required=True,
