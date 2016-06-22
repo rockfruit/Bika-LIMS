@@ -149,4 +149,5 @@ def add_to_displayed_types(typename):
 
 
 def create_lims(portal):
-    obj = api.content.create(portal, 'LIMSRoot', 'lims', _(u"LIMS"))
+    if 'lims' not in portal:
+        obj = api.content.create(portal, 'LIMSRoot', 'lims', _(u"LIMS"))
