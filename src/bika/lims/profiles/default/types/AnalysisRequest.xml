@@ -38,7 +38,8 @@
   <property name="default_view_fallback">False</property>
   <property name="immediate_view">view</property>
   <property name="view_methods">
-    <element value="view"/>
+  <element value="view"/>
+  <element value="folder_contents"/>
   </property>
 
   <alias from="(Default)" to="(dynamic view)"/>
