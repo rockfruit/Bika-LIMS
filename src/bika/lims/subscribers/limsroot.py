@@ -59,23 +59,24 @@ def structure_permissions(lims):
     mp(AddSample, ['Manager', 'LabManager'], 0)
 
     mp = lims.analysisrequests.manage_permission
-    mp(AddAnalysisRequest, ['Manager', 'LabManager'], 0)
+    mp(AddAnalysisRequest, ['Manager', 'LabManager', 'LabClerk', 'Owner'], 0)
+    mp(ModifyPortalContent, ['Manager', 'LabManager', 'LabClerk', 'Owner'], 0)
 
     mp = lims.configuration.manage_permission
     mp(AddLaboratory, [], 0)
 
     mp = lims.configuration.contacts.manage_permission
-    mp(AddContact, ['Manager', 'LabManager', 'LabClerk'], 0)
-    mp(ModifyPortalContent, ['Manager', 'LabManager', 'LabClerk'], 0)
+    mp(AddContact, ['Manager', 'LabManager', 'LabClerk', 'Owner'], 0)
+    mp(ModifyPortalContent, ['Manager', 'LabManager', 'LabClerk', 'Owner'], 0)
 
     mp = lims.configuration.departments.manage_permission
-    mp(AddDepartment, ['Manager', 'LabManager'], 0)
-    mp(ModifyPortalContent, ['Manager', 'LabManager'], 0)
+    mp(AddDepartment, ['Manager', 'LabManager', 'Owner'], 0)
+    mp(ModifyPortalContent, ['Manager', 'LabManager', 'Owner'], 0)
 
     mp = lims.configuration.samplepoints.manage_permission
-    mp(AddSamplePoint, ['Manager', 'LabManager'], 0)
-    mp(ModifyPortalContent, ['Manager', 'LabManager'], 0)
+    mp(AddSamplePoint, ['Manager', 'LabManager', 'Owner'], 0)
+    mp(ModifyPortalContent, ['Manager', 'LabManager', 'Owner'], 0)
 
     mp = lims.configuration.sampletypes.manage_permission
-    mp(AddSampleType, ['Manager', 'LabManager'], 0)
-    mp(ModifyPortalContent, ['Manager', 'LabManager'], 0)
+    mp(AddSampleType, ['Manager', 'LabManager', 'Owner'], 0)
+    mp(ModifyPortalContent, ['Manager', 'LabManager', 'Owner'], 0)
