@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 from Products.CMFPlone.interfaces import INavigationSchema
 from Products.CMFPlone.interfaces import INonInstallable
+from plone import api
 from plone.registry.interfaces import IRegistry
 from zope.component import getUtility
 from zope.interface import implementer
 
+from bika.lims import messagefactory as _
 from bika.lims.permissions import *
 
 
@@ -124,16 +126,27 @@ def uninstall(context):
 
 
 def postInstall(context):
+    portal = context.getSite()
     if context.readDataFile('bikalims_default.txt') is None:
         return
+
     setup_roles(context)
     setup_groups(context)
     setup_permissions(context)
 
     # Display 'LIMSRoot' objects in the navigation
+    create_lims(portal)
+    add_to_displayed_types('LIMSRoot')
+
+
+def add_to_displayed_types(typename):
     registry = getUtility(IRegistry)
     settings = registry.forInterface(INavigationSchema, prefix="plone")
     displayed_types = list(settings.displayed_types)
-    if 'LIMSRoot' not in displayed_types:
+    if typename not in displayed_types:
         displayed_types.append('LIMSRoot')
         settings.displayed_types = tuple(displayed_types)
+
+
+def create_lims(portal):
+    obj = api.content.create(portal, 'LIMSRoot', 'lims', _(u"LIMS"))
