@@ -9,8 +9,7 @@
   <property name="icon_expr"/>
   <property name="allow_discussion">False</property>
   <property name="factory">AnalysisRequest</property>
-  <property name="add_view_expr">string:${folder_url}/++add++AnalysisRequest
-  </property>
+  <property name="add_view_expr">string:${folder_url}/++add++AnalysisRequest</property>
   <property name="link_target"/>
 
   <!-- Hierarchy control -->
@@ -21,11 +20,8 @@
 
   <!-- Schema, class and security -->
   <property name="klass">plone.dexterity.content.Container</property>
-  <property name="add_permission">bika.lims.permissions.AddAnalysisRequest
-  </property>
-  <property
-    name="schema">bika.lims.interfaces.analysisrequest.IAnalysisRequest
-  </property>
+  <property name="add_permission">bika.lims.permissions.AddAnalysisRequest</property>
+  <property name="schema">bika.lims.interfaces.analysisrequest.IAnalysisRequest</property>
   <property name="model_source"/>
   <property name="model_file"/>
 
@@ -38,8 +34,8 @@
   <property name="default_view_fallback">False</property>
   <property name="immediate_view">view</property>
   <property name="view_methods">
-  <element value="view"/>
-  <element value="folder_contents"/>
+    <element value="view"/>
+    <element value="folder_contents"/>
   </property>
 
   <alias from="(Default)" to="(dynamic view)"/>

@@ -21,7 +21,7 @@
 
   <genericsetup:registerProfile
     name="uninstall"
-    title="bika.lims"
+    title="bika.lims uninstall profile"
     directory="profiles/uninstall"
     description="Uninstalls the bika.lims add-on"
     provides="Products.GenericSetup.interfaces.EXTENSION"
@@ -29,7 +29,7 @@
 
   <genericsetup:importStep
     name="bika.lims-uninstall"
-    title="bika.lims uninstall import step"
+    title="bika.lims uninstall handler"
     description="Import step run during ininstalling bika.lims"
     handler=".setuphandlers.uninstall">
   </genericsetup:importStep>
