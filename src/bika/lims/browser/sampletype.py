@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-from bika.lims.interfaces.sampletype import ISampleType
 from collective.z3cform.datagridfield import DataGridFieldFactory
 from plone.dexterity.browser import add
 from plone.dexterity.browser import edit
 from z3c.form import field
-from z3c.form.interfaces import HIDDEN_MODE
 
 from bika.lims import messagefactory as _
+from bika.lims.interfaces.sampletype import ISampleType
 
 
 class EditForm(edit.DefaultEditForm):
@@ -18,7 +17,7 @@ class EditForm(edit.DefaultEditForm):
 
     def updateWidgets(self, prefix=None):
         super(EditForm, self).updateWidgets(prefix)
-        self.widgets['AliquotTypes'].allow_insert = False
+        self.widgets['AliquotTypes'].allow_insert = True
         self.widgets['AliquotTypes'].allow_delete = True
         self.widgets['AliquotTypes'].auto_append = True
         self.widgets['AliquotTypes'].allow_reorder = True
@@ -28,9 +27,9 @@ class EditForm(edit.DefaultEditForm):
 
 
 class AddForm(add.DefaultAddForm):
-    portal_type = 'LIMSRoot'
+    portal_type = 'SampleType'
 
-    label = _(u"Add Sample Type")
+    label = _(u"Adds Sample Type")
     description = ""
 
     fields = field.Fields(ISampleType)
@@ -38,7 +37,7 @@ class AddForm(add.DefaultAddForm):
 
     def updateWidgets(self, prefix=None):
         super(EditForm, self).updateWidgets(prefix)
-        self.widgets['AliquotTypes'].allow_insert = False
+        self.widgets['AliquotTypes'].allow_insert = True
         self.widgets['AliquotTypes'].allow_delete = True
         self.widgets['AliquotTypes'].auto_append = True
         self.widgets['AliquotTypes'].allow_reorder = True

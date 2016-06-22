@@ -1,5 +1,6 @@
 <configure
   xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
   i18n_domain="bika.lims">
 
   <adapter
@@ -8,10 +9,10 @@
                plone.dexterity.interfaces.IDexterityFTI"
     provides="zope.publisher.interfaces.browser.IBrowserPage"
     factory="bika.lims.browser.sampletype.AddView"
-    name="LIMSRoot"
+    name="SampleType"
   />
 
-  <class class=".sampletype.AddView">
+  <class class="bika.lims.browser.sampletype.AddView">
     <require
       permission="bika.lims.permissions.AddSampleType"
       interface="zope.publisher.interfaces.browser.IBrowserPage"
@@ -26,4 +27,3 @@
   />
 
 </configure>
-

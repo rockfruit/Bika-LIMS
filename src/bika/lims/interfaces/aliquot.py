@@ -13,17 +13,17 @@ def currentTime():
 class IAliquot(model.Schema):
     """Object that can hold other aliquots, or be an aliquot
     """
-    PourDate = schema.Datetime(
-        title=_(u"Date of Aliquot Pour"),
-        description=_(u"Date of Aliquot Pour"),
+
+    DateCreated = schema.Datetime(
+        title=_(u"Date Created"),
         defaultFactory=currentTime,
         required=True,
     )
-    FluidType = schema.Choice(
+    AliquotType = schema.Choice(
         title=_(u"Type of Aliquot"),
         description=_(u"Possible aliquot types are controlled by the sample "
                       u"type settings."),
-        default=u"Serum",
+        vocabulary="bika.lims.vocabularies.aliquot.AliquotTypes",
         required=True,
     )
     Use = schema.Choice(
