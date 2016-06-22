@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from Products.CMFCore.permissions import ModifyPortalContent
+
 from bika.lims.permissions import AddAnalysisRequest
 from bika.lims.permissions import AddClient
 from bika.lims.permissions import AddContact
@@ -31,9 +33,11 @@ def Added(client, event):
 
     mp = client.samples.manage_permission
     mp(AddSample, ['Manager', 'LabManager', 'LabClerk', 'Owner'], 0)
+    mp(ModifyPortalContent, ['Manager', 'LabManager', 'LabClerk', 'Owner'], 0)
 
     mp = client.analysisrequests.manage_permission
-    mp(AddAnalysisRequest, ['LabManager', 'LabClerk', 'Owner'], 0)
+    mp(AddAnalysisRequest, ['Manager', 'LabManager', 'LabClerk', 'Owner'], 0)
+    mp(ModifyPortalContent, ['Manager', 'LabManager', 'LabClerk', 'Owner'], 0)
 
     # Create client/configuration/* and set permissions
     # -------------------------------------------------
@@ -45,7 +49,9 @@ def Added(client, event):
         instance = api.content.create(folder, 'Folder', x[0], x[1])
 
     mp = folder.contacts.manage_permission
-    mp(AddContact, ['LabManager', 'LabClerk', 'Owner'], 0)
+    mp(AddContact, ['Manager', 'LabManager', 'LabClerk', 'Owner'], 0)
+    mp(ModifyPortalContent, ['Manager', 'LabManager', 'LabClerk', 'Owner'], 0)
 
     mp = folder.samplepoints.manage_permission
-    mp(AddSamplePoint, ['LabManager', 'LabClerk', 'Owner'], 0)
+    mp(AddSamplePoint, ['Manager', 'LabManager', 'LabClerk', 'Owner'], 0)
+    mp(ModifyPortalContent, ['Manager', 'LabManager', 'LabClerk', 'Owner'], 0)

@@ -134,7 +134,6 @@ def postInstall(context):
     setup_groups(context)
     setup_permissions(context)
 
-    # Display 'LIMSRoot' objects in the navigation
     create_lims(portal)
     add_to_displayed_types('LIMSRoot')
 
