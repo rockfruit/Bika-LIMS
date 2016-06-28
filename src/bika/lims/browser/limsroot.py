@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # from bika.lims import messagefactory as _
-# from bika.lims.interfaces.lims.interfaces import ILimsRoot
+# from bika.lims.interfaces.lims.interfaces import ILIMSRoot
 # from collective.z3cform.datagridfield import DataGridFieldFactory
 # from plone.dexterity.browser import add
 # from plone.dexterity.browser import edit
@@ -12,7 +12,7 @@
 #     label = _(u"Edit LIMS details")
 #     description = _(u"You can edit the laboratory details below.")
 #
-#     fields = field.Fields(ILimsRoot)
+#     fields = field.Fields(ILIMSRoot)
 #     fields['PhoneNumbers'].widgetFactory = DataGridFieldFactory
 #
 #     def updateWidgets(self, prefix=None):
@@ -33,7 +33,7 @@
 #     description = _(u"After you complete some laboratory information in the "
 #                     u"fields below, this folder will contain a LIMS system.")
 #
-#     fields = field.Fields(ILimsRoot)
+#     fields = field.Fields(ILIMSRoot)
 #     fields['PhoneNumbers'].widgetFactory = DataGridFieldFactory
 #
 #     def updateWidgets(self, prefix=None):
@@ -49,3 +49,12 @@
 #
 # class AddView(add.DefaultAddView):
 #     form = AddForm
+
+from Products.Five import BrowserView
+from plone import api
+
+class ViewView(BrowserView):
+   """
+   """
+   def fieldnames(self):
+       import pdb;pdb.set_trace()

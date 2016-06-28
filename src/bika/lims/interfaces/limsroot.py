@@ -5,7 +5,7 @@ from bika.lims import messagefactory as _
 from plone.supermodel import model
 
 
-class ILimsRoot(model.Schema):
+class ILIMSRoot(model.Schema):
     """The LIMS root object.
     """
     # model.fieldset('settings',

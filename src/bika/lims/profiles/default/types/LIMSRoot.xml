@@ -24,7 +24,7 @@
   <!-- Schema, class and security -->
   <property name="klass">plone.dexterity.content.Container</property>
   <property name="add_permission">bika.lims.permissions.AddLIMSRoot</property>
-  <property name="schema">bika.lims.interfaces.limsroot.ILimsRoot</property>
+  <property name="schema">bika.lims.interfaces.limsroot.ILIMSRoot</property>
   <property name="model_source"/>
   <property name="model_file"/>
 
