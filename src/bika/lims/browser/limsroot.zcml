@@ -1,30 +1,38 @@
 <configure
   xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
   i18n_domain="bika.lims">
 
-
-<!-- <adapter
-    for="Products.CMFCore.interfaces.IFolderish
-               zope.publisher.interfaces.browser.IDefaultBrowserLayer
-               plone.dexterity.interfaces.IDexterityFTI"
-    provides="zope.publisher.interfaces.browser.IBrowserPage"
-    factory="bika.lims.browser.limsroot.AddView"
-    name="LIMSRoot"
-  />
-
-  <class class=".limsroot.AddView">
-    <require
-      permission="bika.lims.permissions.AddLIMS"
-      interface="zope.publisher.interfaces.browser.IBrowserPage"
+  <!-- <adapter
+      for="Products.CMFCore.interfaces.IFolderish
+                 zope.publisher.interfaces.browser.IDefaultBrowserLayer
+                 plone.dexterity.interfaces.IDexterityFTI"
+      provides="zope.publisher.interfaces.browser.IBrowserPage"
+      factory="bika.lims.browser.limsroot.AddView"
+      name="LIMSRoot"
     />
-  </class>
+
+    <class class=".limsroot.AddView">
+      <require
+        permission="bika.lims.permissions.AddLIMS"
+        interface="zope.publisher.interfaces.browser.IBrowserPage"
+      />
+    </class>
+
+    <browser:page
+      for="bika.lims.interfaces.lims.ILIMSRoot"
+      name="edit"
+      class="bika.lims.browser.limsroot.EditForm"
+      permission="cmf.ModifyPortalContent"
+    /> -->
 
   <browser:page
-    for="bika.lims.interfaces.lims.ILimsRoot"
-    name="edit"
-    class="bika.lims.browser.limsroot.EditForm"
-    permission="cmf.ModifyPortalContent"
-  /> -->
+    name="view"
+    for="bika.lims.interfaces.limsroot.ILIMSRoot"
+    class="bika.lims.browser.limsroot.ViewView"
+    template="templates/limsroot_view.pt"
+    permission="zope2.View"
+  />
 
 </configure>
 

@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from Products.Five import BrowserView
+
+
 # from bika.lims import messagefactory as _
 # from bika.lims.interfaces.lims.interfaces import ILIMSRoot
 # from collective.z3cform.datagridfield import DataGridFieldFactory
@@ -50,11 +53,7 @@
 # class AddView(add.DefaultAddView):
 #     form = AddForm
 
-from Products.Five import BrowserView
-from plone import api
 
 class ViewView(BrowserView):
-   """
-   """
-   def fieldnames(self):
-       import pdb;pdb.set_trace()
+    """LIMS front page.
+    """
