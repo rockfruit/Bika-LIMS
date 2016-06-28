@@ -8,6 +8,7 @@ from bika.lims import messagefactory as _
 from bika.lims.events import LIMSCreatedEvent
 from bika.lims.permissions import *
 
+from bika.lims.permissions import disallow_default_contenttypes
 
 def Added(lims, event):
     """When a new LIMS root is created, we must create it's folder structure
@@ -34,8 +35,10 @@ def create_structure(lims):
         [lims, 'Folder', 'analysisrequests', _(u"Analysis Requests")],
         [lims, 'Folder', 'configuration', _(u"Configuration")],
     ]:
-        obj = api.content.create(container=x[0], type=x[1], id=x[2], title=x[3])
-        obj.setLayout('folder_contents')
+        instance = api.content.create(
+            container=x[0], type=x[1], id=x[2], title=x[3])
+        instance.setLayout('folder_contents')
+        disallow_default_contenttypes(instance)
 
     configuration = lims.configuration
     for x in [
@@ -47,8 +50,10 @@ def create_structure(lims):
         [configuration, 'Folder', 'samplepoints', _(u"Sample Points")],
         [configuration, 'Folder', 'sampletypes', _(u"Sample Types")],
     ]:
-        obj = api.content.create(container=x[0], type=x[1], id=x[2], title=x[3])
-        obj.setLayout('folder_contents')
+        instance = api.content.create(
+            container=x[0], type=x[1], id=x[2], title=x[3])
+        instance.setLayout('folder_contents')
+        disallow_default_contenttypes(instance)
 
 
 def structure_permissions(lims):

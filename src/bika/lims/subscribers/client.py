@@ -8,6 +8,7 @@ from bika.lims.permissions import AddSample
 from bika.lims.permissions import AddSamplePoint
 from plone import api
 
+from bika.lims.permissions import disallow_default_contenttypes
 
 def Added(client, event):
     """When a new Client is created, we must create it's folder structure and
@@ -30,6 +31,7 @@ def Added(client, event):
         ['configuration', 'Configuration'],
     ]:
         instance = api.content.create(client, 'Folder', x[0], x[1])
+        disallow_default_contenttypes(instance)
 
     mp = client.samples.manage_permission
     mp(AddSample, ['Manager', 'LabManager', 'LabClerk', 'Owner'], 0)

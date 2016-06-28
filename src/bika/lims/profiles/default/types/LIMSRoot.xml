@@ -18,7 +18,6 @@
   <property name="allowed_content_types">
     <element value="Folder"/>
     <element value="Document"/>
-    <element value="Collection"/>
   </property>
 
   <!-- Schema, class and security -->
