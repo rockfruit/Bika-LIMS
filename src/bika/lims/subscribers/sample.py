@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from bika.lims.interfaces.samplepoint import ILabSamplePoint, IClientSamplePoint
+from bika.lims.permissions import AddAliquot
 from bika.lims.utils.limsroot import getLims
 from zope.interface import alsoProvides
 
