@@ -36,7 +36,7 @@ class AddForm(add.DefaultAddForm):
     fields['AliquotTypes'].widgetFactory = DataGridFieldFactory
 
     def updateWidgets(self, prefix=None):
-        super(EditForm, self).updateWidgets(prefix)
+        super(AddForm, self).updateWidgets(prefix)
         self.widgets['AliquotTypes'].allow_insert = True
         self.widgets['AliquotTypes'].allow_delete = True
         self.widgets['AliquotTypes'].auto_append = True
