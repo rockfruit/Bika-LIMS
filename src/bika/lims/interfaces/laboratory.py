@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from zope import schema
 
+from plone.namedfile.field import NamedBlobImage
+
 from bika.lims import messagefactory as _
 from bika.lims.interfaces.organisation import IOrganisation
 from plone.supermodel import model
@@ -9,63 +11,72 @@ from plone.supermodel import model
 class ILaboratory(IOrganisation):
     """Lab Client
     """
+
     title = schema.TextLine(
         title=_(u"Name"),
         required=True,
     )
+
     model.fieldset('accreditation',
                    label=_(u"Accreditation"),
-                   fields=['Confidence',
-                           'Accredited',
-                           'AccreditationBody',
-                           'AccreditationBodyURL',
-                           'Accreditation',
-                           'AccreditationReference',
-                           'AccreditationBodyLogo',
-                           'AccreditationPageHeader',
+                   fields=['confidence',
+                           'accredited',
+                           'accreditation_body',
+                           'accreditation_body_url',
+                           'accreditation',
+                           'accreditation_reference',
+                           'accreditation_body_logo',
+                           'accreditation_page_header',
                            ]
                    )
-    Accredited = schema.Bool(
+    accredited = schema.Bool(
         title=_(u"Laboratory Accredited"),
         description=_(u"Check this box if your laboratory is accredited"),
         required=False
     )
-    Confidence = schema.Int(
+
+    confidence = schema.Int(
         title=_(u"Confidence Level %"),
         description=_(u"This value is reported at the bottom of all "
                       u"published results"),
         required=False
     )
-    AccreditationBody = schema.TextLine(
+
+    accreditation_body = schema.TextLine(
         title=_(u"Accreditation Body"),
         description=_(u"Name of accreditation body, e.g. SANAS, APLAC, etc."),
         required=False
     )
-    AccreditationBodyURL = schema.URI(
+
+    accreditation_body_url = schema.URI(
         title=_(u"Accreditation Body URL"),
         description=_(u"Web address for the accreditation body"),
         required=False
     )
-    Accreditation = schema.TextLine(
+
+    accreditation = schema.TextLine(
         title=_(u"Accreditation"),
         description=_(u"The accreditation standard that applies, "
                       u"e.g. ISO 17025"),
         required=False
     )
-    AccreditationReference = schema.URI(
+
+    accreditation_reference = schema.URI(
         title=_(u"Accreditation Reference"),
         description=_(u"The reference code issued to the lab by the "
                       u"accreditation body"),
         required=False
     )
-    AccreditationBodyLogo = namedfile.NamedBlobImage(
+
+    accreditation_body_logo = NamedBlobImage(
         title=_(u"Accreditation Logo"),
         description=_(
             u"Please upload the logo you are authorised to use on your "
             u"website and results reports by your accreditation body."),
         required=False
     )
-    AccreditationPageHeader = schema.SourceText(
+
+    accreditation_page_header = schema.SourceText(
         title=_(u"Accreditation page header"),
         description=_(
             u"Enter the details of your lab's service accreditations here.  "

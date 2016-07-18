@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
-from bika.lims import messagefactory as _
-from plone.supermodel import model
 from zope import schema
+
+from collective.z3cform.datagridfield import DictRow
+from plone.directives import form
+from plone.supermodel import model
 from zope.interface import Attribute
+
+from bika.lims import messagefactory as _
+
 
 class IInterimRowSchema(form.Schema):
     """A single row in the TestForm table

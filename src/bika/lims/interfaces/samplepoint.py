@@ -1,20 +1,23 @@
 # -*- coding: utf-8 -*-
 from zope import schema
 
-from bika.lims import messagefactory as _
 from plone.app.vocabularies.catalog import CatalogSource
 from plone.supermodel import model
 from z3c.relationfield import RelationList, RelationChoice
+
+from bika.lims import messagefactory as _
 
 
 class ISamplePoint(model.Schema):
     """The location that a sample was taken from
     """
+
     title = schema.TextLine(
         title=_(u"Name"),
         required=True,
     )
-    SampleTypes = RelationList(
+
+    sample_types = RelationList(
         title=_(u"Sample Types"),
         description=_(
             u"The list of sample types that can be collected at this sample "

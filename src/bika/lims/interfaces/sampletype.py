@@ -13,22 +13,26 @@ from bika.lims.interfaces.samplepoint import ILabSamplePoint
 class IAliquotTypesRow(form.Schema):
     """A single row in the Aliquot Types table
     """
+
     title = schema.TextLine(
         title=_(u"Type Title"),
         description=_(u"Display Name"),
         required=True
     )
-    idTemplate = schema.TextLine(
+
+    id_template = schema.TextLine(
         title=_(u"ID template"),
         description=_(u"A template for naming new aliquots of this type"),
         readonly=False
     )
-    minimumVolume = schema.TextLine(
+
+    minimum_volume = schema.TextLine(
         title=_(u"Minimum Volume"),
         description=_(u"Specify with SI units, eg: 1uL, 1', 20g, or 1 kg."),
         readonly=False
     )
-    AutoCount = schema.Int(
+
+    auto_count = schema.Int(
         title=_(u"Auto Create"),
         description=_(u"These aliquots will be automatically created"),
         default=0,
@@ -48,17 +52,20 @@ ALIQUOT_TYPES_DEFAULT = [
 class ISampleType(form.Schema):
     """Types of samples
     """
+
     title = schema.TextLine(
         title=_(u"Title"),
         required=True,
     )
-    SampleIDPrefix = schema.TextLine(
+
+    sample_id_prefix = schema.TextLine(
         title=_(u"Sample ID Prefix"),
         description=_(u"New samples of this type will have this prefix."),
         required=True,
         max_length=5,
     )
-    RetentionPeriod = schema.Int(
+
+    retention_period = schema.Int(
         title=_(u"Retention Period"),
         description=_(
             u"The time (in hours) for which un-preserved samples of this "
@@ -68,12 +75,14 @@ class ISampleType(form.Schema):
         default=0,
         required=False,
     )
-    Hazardous = schema.Bool(
+
+    hazardous = schema.Bool(
         title=_(u"Hazardous"),
         description=_(u"Samples of this type should be treated as hazardous"),
         required=False,
     )
-    SamplePoints = RelationList(
+
+    sample_points = RelationList(
         title=_(u"Sample Points"),
         description=_(
             u"The list of sample points from which this sample type can be "
@@ -88,11 +97,13 @@ class ISampleType(form.Schema):
         unique=True,
         required=False,
     )
-    AliquotTypes = schema.List(
+
+    aliquot_types = schema.List(
         title=_(u"Aliquot Types"),
         value_type=DictRow(title=u"test", schema=IAliquotTypesRow),
         required=False,
     )
+
     # values=[_(u"Serum"),
     #         _(u"Plasma"),
     #         _(u"CSF"),

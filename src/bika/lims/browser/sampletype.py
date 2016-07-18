@@ -13,17 +13,17 @@ class EditForm(edit.DefaultEditForm):
     description = ""
 
     fields = field.Fields(ISampleType)
-    fields['AliquotTypes'].widgetFactory = DataGridFieldFactory
+    fields['aliquot_types'].widgetFactory = DataGridFieldFactory
 
     def updateWidgets(self, prefix=None):
         super(EditForm, self).updateWidgets(prefix)
-        self.widgets['AliquotTypes'].allow_insert = True
-        self.widgets['AliquotTypes'].allow_delete = True
-        self.widgets['AliquotTypes'].auto_append = True
-        self.widgets['AliquotTypes'].allow_reorder = True
+        self.widgets['aliquot_types'].allow_insert = True
+        self.widgets['aliquot_types'].allow_delete = True
+        self.widgets['aliquot_types'].auto_append = True
+        self.widgets['aliquot_types'].allow_reorder = True
         # Hide column headers - causes display issue, wish it worked.
-        # self.widgets['AliquotTypes'].columns[0]['mode'] = HIDDEN_MODE
-        # self.widgets['AliquotTypes'].columns[1]['mode'] = HIDDEN_MODE
+        # self.widgets['aliquot_types'].columns[0]['mode'] = HIDDEN_MODE
+        # self.widgets['aliquot_types'].columns[1]['mode'] = HIDDEN_MODE
 
 
 class AddForm(add.DefaultAddForm):
@@ -33,17 +33,17 @@ class AddForm(add.DefaultAddForm):
     description = ""
 
     fields = field.Fields(ISampleType)
-    fields['AliquotTypes'].widgetFactory = DataGridFieldFactory
+    fields['aliquot_types'].widgetFactory = DataGridFieldFactory
 
     def updateWidgets(self, prefix=None):
         super(AddForm, self).updateWidgets(prefix)
-        self.widgets['AliquotTypes'].allow_insert = True
-        self.widgets['AliquotTypes'].allow_delete = True
-        self.widgets['AliquotTypes'].auto_append = True
-        self.widgets['AliquotTypes'].allow_reorder = True
+        self.widgets['aliquot_types'].allow_insert = True
+        self.widgets['aliquot_types'].allow_delete = True
+        self.widgets['aliquot_types'].auto_append = True
+        self.widgets['aliquot_types'].allow_reorder = True
         # Hide column headers - causes display issue, wish it worked.
-        # self.widgets['AliquotTypes'].columns[0]['mode'] = HIDDEN_MODE
-        # self.widgets['AliquotTypes'].columns[1]['mode'] = HIDDEN_MODE
+        # self.widgets['aliquot_types'].columns[0]['mode'] = HIDDEN_MODE
+        # self.widgets['aliquot_types'].columns[1]['mode'] = HIDDEN_MODE
 
 
 class AddView(add.DefaultAddView):

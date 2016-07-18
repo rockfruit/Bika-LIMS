@@ -1,75 +1,86 @@
 # -*- coding: utf-8 -*-
 from zope import schema
 
-from bika.lims import messagefactory as _
 from plone.schema import Email
 from plone.supermodel import model
 from zope.interface import Interface
+
+from bika.lims import messagefactory as _
 
 
 class IPerson(Interface):
     """All person things
     """
-    Firstname = schema.TextLine(
+    first_name = schema.TextLine(
         title=_(u"First name"),
         required=True,
     )
-    Middlename = schema.TextLine(
+
+    middle_name = schema.TextLine(
         title=_(u"Middle name"),
         required=False,
     )
-    Lastname = schema.TextLine(
+
+    last_name = schema.TextLine(
         title=_(u"Last name"),
         required=False,
     )
-    PhoneNumbers = schema.List(
+
+    phone_numbers = schema.List(
         title=_(u"Phone numbers"),
         description=_(u"List of contact telephone and fax numbers"),
         value_type=schema.TextLine(),
         unique=True,
         required=False,
     )
-    EmailAddress = Email(
+
+    email_address = Email(
         title=_(u"Email address"),
         description=_(u"Email address"),
         required=False,
     )
-    JobTitle = schema.TextLine(
+
+    job_title = schema.TextLine(
         title=_(u"Job title"),
         required=False,
     )
 
     model.fieldset('address',
                    label=_(u"Address"),
-                   fields=['PhysicalAddress',
-                           'PostalAddress',
-                           'BillingAddress',
+                   fields=['physical_address',
+                           'postal_address',
+                           'billing_address',
                            ]
                    )
-    PhysicalAddress = schema.Text(
+
+    physical_address = schema.Text(
         title=_("Physical address"),
         required=False,
     )
-    PostalAddress = schema.Text(
+
+    postal_address = schema.Text(
         title=_("Postal address"),
         required=False,
     )
-    BillingAddress = schema.Text(
+
+    billing_address = schema.Text(
         title=_("Billing address"),
         required=False,
     )
 
     model.fieldset('logindetails',
                    label=_(u"Login Details"),
-                   fields=['Username',
-                           'Password',
+                   fields=['username',
+                           'password',
                            ]
                    )
-    Username = schema.TextLine(
+
+    username = schema.TextLine(
         title=_(u"Username"),
         required=False,
     )
-    Password = schema.Password(
+
+    password = schema.Password(
         title=_(u"Password"),
         required=False,
     )

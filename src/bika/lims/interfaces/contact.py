@@ -16,13 +16,14 @@ class IContact(IPerson):
 class IClientContact(IContact):
     """Client Contact
     """
+
     model.fieldset('publicationpreference',
                    label=_(u"Publication preference"),
-                   fields=['CCContacts',
-                           'AttachmentsPermitted',
+                   fields=['cc_contacts',
+                           'attachments_permitted',
                            ]
                    )
-    directives.widget(CCContacts=AutocompleteMultiFieldWidget)
+    directives.widget(cc_contacts=AutocompleteMultiFieldWidget)
 
     cc_contacts = schema.List(
         title=_(u"Contacts to CC"),
