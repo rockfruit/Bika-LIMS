@@ -23,7 +23,7 @@ def setup_roles(context):
     """Configure roles
     """
     portal = context.getSite()
-    if not context.readDataFile('bikalims_default.txt'):
+    if context.readDataFile('bikalims_default.txt') is None:
         return
 
     prm = portal.acl_users.portal_role_manager
@@ -49,7 +49,7 @@ def setup_groups(context):
     """Configure groups
     """
     portal = context.getSite()
-    if not context.readDataFile('bikalims_default.txt'):
+    if context.readDataFile('bikalims_default.txt') is None:
         return
 
     portal_groups = portal.portal_groups
@@ -101,7 +101,7 @@ def setup_permissions(context):
     """Setup the default site root permissions
     """
     portal = context.getSite()
-    if not context.readDataFile('bikalims_default.txt'):
+    if context.readDataFile('bikalims_default.txt') is None:
         return
 
     setup_default_permissions(portal)
@@ -109,7 +109,7 @@ def setup_permissions(context):
 
 def uninstall(context):
     """Uninstall script"""
-    if not context.readDataFile('bikalims_uninstall.txt'):
+    if context.readDataFile('bikalims_uninstall.txt') is None:
         return
     # Do something during the uninstallation of this package
     pass
@@ -117,7 +117,7 @@ def uninstall(context):
 
 def postInstall(context):
     portal = context.getSite()
-    if not context.readDataFile('bikalims_default.txt'):
+    if context.readDataFile('bikalims_default.txt') is None:
         return
 
     setup_roles(context)
