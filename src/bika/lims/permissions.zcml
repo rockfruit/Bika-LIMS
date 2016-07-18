@@ -7,6 +7,12 @@
   <permission id="bika.lims.permissions.AddAnalysisRequest"
               title="Bika LIMS: Add Analysis Request"/>
 
+  <permission id="bika.lims.permissions.AddAnalysisService"
+              title="Bika LIMS: Add Analysis Service"/>
+
+  <permission id="bika.lims.permissions.AddCalculation"
+              title="Bika LIMS: Add Calculation"/>
+
   <permission id="bika.lims.permissions.AddClient"
               title="Bika LIMS: Add Client"/>
 

@@ -5,6 +5,8 @@
   </property>
   <object name="Aliquot" meta_type="Dexterity FTI"/>
   <object name="AnalysisRequest" meta_type="Dexterity FTI"/>
+  <object name="AnalysisService" meta_type="Dexterity FTI"/>
+  <object name="Calculation" meta_type="Dexterity FTI"/>
   <object name="Client" meta_type="Dexterity FTI"/>
   <object name="Contact" meta_type="Dexterity FTI"/>
   <object name="Department" meta_type="Dexterity FTI"/>
