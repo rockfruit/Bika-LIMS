@@ -14,41 +14,50 @@ class IAliquot(model.Schema):
     """Object that can hold other aliquots, or be an aliquot
     """
 
-    DateCreated = schema.Datetime(
+    date_created = schema.Datetime(
         title=_(u"Date Created"),
         defaultFactory=currentTime,
         required=True,
     )
-    AliquotType = schema.Choice(
+
+    aliquot_type = schema.Choice(
         title=_(u"Type of Aliquot"),
         description=_(u"Possible aliquot types are controlled by the sample "
                       u"type settings."),
         vocabulary="bika.lims.vocabularies.aliquot.AliquotTypes",
         required=True,
     )
-    Use = schema.Choice(
+
+    purpose = schema.Choice(
         title=_(u"Use of Aliquot"),
-        description=_(u"Use of Aliquot Bulk or Working"),
-        values=[_(u"Bulk"),
-                _(u"Working"),
+        description=_(
+            u"Use of Aliquot<br><ul>"
+            u"<li>Working aliquot for analysis</li>"
+            u"<li>Bulk aliquot for storage</li>"
+            u"<li>Quality Control aliquot</li>"),
+        values=[_(u"Working"),
+                _(u"Bulk"),
                 _(u"Quality Control"),
                 _(u"Other")],
-        default=u"Bulk",
+        default=u"Working",
         required=True,
     )
-    Department = schema.Choice(
+
+    department = schema.Choice(
         title=_(u"Department"),
         description=_(u"Department Expected to use Aliquot"),
         vocabulary="bika.lims.vocabularies.Departments",
         required=True,
     )
-    StorageLocation = schema.TextLine(
+
+    storage_location = schema.TextLine(
         title=_(u"Storage Location of Aliquot"),
         description=_(u"Storage Location of Aliquot"),
         required=False,
     )
-    Volume = schema.Float(
-        title=_(u"Volume of Material in uL"),
-        description=_(u"volume of Material in uL"),
+
+    physical_quantity = schema.Float(
+        title=_(u"Physical quantity of material"),
+        description=_(u"Specify with SI units, eg: 1uL, 1', 20g, or 1 kg."),
         required=True,
     )

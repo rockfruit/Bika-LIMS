@@ -25,7 +25,7 @@ class IAliquotTypesRow(form.Schema):
     )
     minimumVolume = schema.TextLine(
         title=_(u"Minimum Volume"),
-        description=_(u"Specify with SI units, eg: 1cm/2, 1', 20g, or 1kg."),
+        description=_(u"Specify with SI units, eg: 1uL, 1', 20g, or 1 kg."),
         readonly=False
     )
     AutoCount = schema.Int(

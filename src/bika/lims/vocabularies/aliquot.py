@@ -53,12 +53,6 @@ class LabAliquotTypes():
 
     def __call__(self, context):
 
-        import sys
-        import pdb
-        for attr in ('stdin', 'stdout', 'stderr'):
-            setattr(sys, attr, getattr(sys, '__%s__' % attr))
-        pdb.set_trace()
-
         terms = [SimpleTerm(proxy.getObject(), title=proxy.Title)
                  for proxy in proxies]
         return SimpleVocabulary(terms)

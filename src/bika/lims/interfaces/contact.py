@@ -23,7 +23,8 @@ class IClientContact(IContact):
                            ]
                    )
     directives.widget(CCContacts=AutocompleteMultiFieldWidget)
-    CCContacts = schema.List(
+
+    cc_contacts = schema.List(
         title=_(u"Contacts to CC"),
         description=_(u"The selected contacts will be included when "
                       u"notifications and publications are sent."),
@@ -33,7 +34,8 @@ class IClientContact(IContact):
         required=False,
         unique=True,
     )
-    AttachmentsPermitted = schema.Bool(
+
+    attachments_permitted = schema.Bool(
         title=_(u"Results attachments permitted"),
         description=_(
             u"File attachments to results, e.g. microscope photos, will be "

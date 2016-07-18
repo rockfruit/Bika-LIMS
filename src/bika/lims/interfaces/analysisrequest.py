@@ -11,28 +11,20 @@ from z3c.relationfield import RelationChoice
 from z3c.relationfield import RelationList
 
 
-class IServicesSelectionRow(model.Schema):
-    """A single row in the TestForm table
-    """
-    Service = RelationChoice(
-        title=_(u"Analysis Service"),
-        source=CatalogSource(object_provides=IAnalysisService.__identifier__),
-        required=True,
-    )
-
-
 class IAnalysisRequest(model.Schema):
     """Analysis Request is the Client's interface for submitting samples
     and requesting analyses.
     """
-    PrimaryContact = RelationChoice(
+
+    primary_contact = RelationChoice(
         title=_(u"Primary Contact"),
         description=_(u"All notifications and publications will be sent to "
                       u"this contact."),
         source=CatalogSource(object_provides=IClientContact.__identifier__),
         required=True,
     )
-    CCContacts = RelationList(
+
+    cc_contacts = RelationList(
         title=_(u"Contacts to CC"),
         description=_(u"Publications will be sent to these contacts"),
         value_type=RelationChoice(
@@ -41,19 +33,22 @@ class IAnalysisRequest(model.Schema):
         ),
         unique=False,
     )
-    CCEmails = schema.Text(
+
+    cc_emails = schema.Text(
         title=_(u"CC Emails"),
         description=_(u"Publications will be sent to these email addresses."),
         required=False,
     )
-    Sample = RelationChoice(
+
+    sample = RelationChoice(
         title=_(u"Sample"),
         description=_(u"Select an existing sample to create a secondary AR, "
                       u"or leave this field blank to register a new sample."),
         source=CatalogSource(object_provides=ISample.__identifier__),
         required=False,
     )
-    Services = RelationList(
+
+    services = RelationList(
         title=_(u"Analyses"),
         description=_(u"Selected analysis services to be performed on "
                       u"the sample"),

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from Products.CMFPlone.interfaces import INavigationSchema
 from Products.CMFPlone.interfaces import INonInstallable
+from bika.lims.permissions import setup_default_permissions
 from plone import api
 from plone.registry.interfaces import IRegistry
 from zope.component import getUtility
 from zope.interface import implementer
 
 from bika.lims import messagefactory as _
-from bika.lims.permissions import *
 
 
 @implementer(INonInstallable)
@@ -23,7 +23,7 @@ def setup_roles(context):
     """Configure roles
     """
     portal = context.getSite()
-    if context.readDataFile('bikalims_default.txt') is None:
+    if not context.readDataFile('bikalims_default.txt'):
         return
 
     prm = portal.acl_users.portal_role_manager
@@ -49,7 +49,7 @@ def setup_groups(context):
     """Configure groups
     """
     portal = context.getSite()
-    if context.readDataFile('bikalims_default.txt') is None:
+    if not context.readDataFile('bikalims_default.txt'):
         return
 
     portal_groups = portal.portal_groups
@@ -98,28 +98,18 @@ def setup_groups(context):
 
 
 def setup_permissions(context):
-    """Configure roles
+    """Setup the default site root permissions
     """
     portal = context.getSite()
-    if context.readDataFile('bikalims_default.txt') is None:
+    if not context.readDataFile('bikalims_default.txt'):
         return
 
-    mp = portal.manage_permission
-    mp(AddLIMSRoot, ['Manager'], 0)
-    mp(AddAliquot, [], 0)
-    mp(AddAnalysisRequest, [], 0)
-    mp(AddClient, [], 0)
-    mp(AddContact, [], 0)
-    mp(AddDepartment, [], 0)
-    mp(AddLaboratory, [], 0)
-    mp(AddSample, [], 0)
-    mp(AddSamplePoint, [], 0)
-    mp(AddSampleType, [], 0)
+    setup_default_permissions(portal)
 
 
 def uninstall(context):
     """Uninstall script"""
-    if context.readDataFile('bikalims_uninstall.txt') is None:
+    if not context.readDataFile('bikalims_uninstall.txt'):
         return
     # Do something during the uninstallation of this package
     pass
@@ -127,7 +117,7 @@ def uninstall(context):
 
 def postInstall(context):
     portal = context.getSite()
-    if context.readDataFile('bikalims_default.txt') is None:
+    if not context.readDataFile('bikalims_default.txt'):
         return
 
     setup_roles(context)
