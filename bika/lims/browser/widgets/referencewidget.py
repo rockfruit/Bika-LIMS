@@ -42,7 +42,7 @@ class ReferenceWidget(StringWidget):
 
         # Default field to put back into input elements
         'ui_item': 'Title',
-        'search_fields': ('Title',),
+        'search_fields': ('Title','description'),
         'discard_empty': [],
         'popup_width': '550px',
         'showOn': False,
