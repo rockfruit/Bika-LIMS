@@ -89,6 +89,7 @@ class Sticker(BrowserView):
             parts = [item,]
         elif item.portal_type == 'ReferenceSample':
             sample = item
+            parts = [None,]
 
         items = []
         for p in parts:
@@ -172,7 +173,10 @@ class Sticker(BrowserView):
             self.item_index = 0
             self.rendered_items = []
         self.current_item = self.items[self.item_index]
-        self.rendered_items.append(self.current_item[2].getId())
+        if self.current_item[2]:
+            self.rendered_items.append(self.current_item[2].getId())
+        else:
+            self.rendered_items.append(self.current_item[1].getId())
         self.item_index += 1
         return self.current_item
 
