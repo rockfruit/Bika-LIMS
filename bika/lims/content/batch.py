@@ -21,6 +21,14 @@ from bika.lims.browser.widgets import RecordsWidget as bikaRecordsWidget
 from bika.lims.browser.widgets import ReferenceWidget
 
 
+@indexer(IBatch)
+def getClientUID(instance):
+    client = instance.getClient()
+    if not client:
+        client = instance.aq_parent
+    return client.UID()
+
+
 class InheritedObjectsUIField(RecordsField):
 
     """XXX bika.lims.RecordsWidget doesn't cater for multiValued fields

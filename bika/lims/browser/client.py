@@ -243,7 +243,7 @@ class ClientBatchesView(BatchFolderContentsView):
     def __init__(self, context, request):
         super(ClientBatchesView, self).__init__(context, request)
         self.view_url = self.context.absolute_url() + "/batches"
-        self.contentFilter['getParentUID'] = self.context.UID()
+        self.contentFilter['getClientUID'] = self.context.UID()
         
         review_states = []
         for review_state in self.review_states:
