@@ -69,11 +69,6 @@ DEFAULT_AR_SPECS = DisplayList((
     ('lab_sampletype_specs', _('Sample Type Specifications (Lab)')),
     ('client_sampletype_specs', _('Sample Type Specifications (Client)')),
 ))
-ARIMPORT_OPTIONS = DisplayList((
-    ('c', _('Classic')),
-    ('p', _('Profiles')),
-    # ('s', _('Special')),
-))
 EMAIL_SUBJECT_OPTIONS = DisplayList((
     ('ar', _('Analysis Request ID')),
     ('co', _('Order ID')),

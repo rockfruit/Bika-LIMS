@@ -360,19 +360,6 @@ DryMatterService = ReferenceField(
         description=_("The analysis to be used for determining dry matter."),
     )
 )
-ARImportOption = LinesField(
-    'ARImportOption',
-    schemata="Analyses",
-    vocabulary=ARIMPORT_OPTIONS,
-    widget=MultiSelectionWidget(
-        visible=False,
-        label=_("AR Import options"),
-        description=_(
-            "'Classic' indicates importing analysis requests per sample and "
-            "analysis service selection. With 'Profiles', analysis profile keywords "
-            "are used to select multiple analysis services together"),
-    )
-)
 ARAttachmentOption = StringField(
     'ARAttachmentOption',
     schemata="Analyses",

@@ -154,10 +154,6 @@ class Client(Organisation):
             return r[0].UID
 
 
-    security.declarePublic('getARImportOptions')
-    def getARImportOptions(self):
-        return ARIMPORT_OPTIONS
-
     security.declarePublic('getAnalysisCategories')
     def getAnalysisCategories(self):
         """ return all available analysis categories """

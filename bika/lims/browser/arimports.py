@@ -43,14 +43,10 @@ class ARImportView(BrowserView):
         """ validate the current ARImport object """
         request = self.request
         arimport = self.context
-        if arimport.getImportOption() in ('c', 'p'):
-            valid = arimport.validateIt()
-            if not valid:
-                msg = 'AR Import invalid'
-                IStatusMessage(request).addStatusMessage(_(msg), "error")
-        else:
-            msg = 'validation not yet implemented'
-            istatusmessage(request).addstatusmessage(_(msg), "error")
+        valid = arimport.validateIt()
+        if not valid:
+            msg = 'AR Import invalid'
+            IStatusMessage(request).addStatusMessage(_(msg), "error")
         request.response.redirect('%s/view' % arimport.absolute_url())
 
     def isSubmitted(self):
