@@ -1,5 +1,6 @@
 from Products.CMFCore.utils import getToolByName
 from bika.lims.interfaces import ISample
+from bika.lims.monkey.Schema import setDefaults
 from bika.lims.utils import tmpID
 from bika.lims.utils.sample import create_sample
 from bika.lims.utils.samplepartition import create_samplepartition
@@ -42,6 +43,8 @@ def create_analysisrequest(
     ar.processForm(REQUEST=request, values=values)
 
     # Object has been renamed
+    schema = ar.Schema()
+    setDefaults(schema, ar)
     ar.edit(RequestID=ar.getId())
 
     # Set initial AR state

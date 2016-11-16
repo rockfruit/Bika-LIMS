@@ -1,4 +1,4 @@
-
+from bika.lims.monkey.Schema import setDefaults
 from bika.lims.utils import tmpID
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import _createObjectByType
@@ -16,6 +16,8 @@ def create_sample(context, request, values):
         sample = _createObjectByType('Sample', context, tmpID())
         # Specifically set the sample type
         sample.setSampleType(values['SampleType'])
+        schema = sample.Schema()
+        setDefaults(schema, sample)
         # Specifically set the sample point
         if 'SamplePoint' in values:
             sample.setSamplePoint(values['SamplePoint'])
