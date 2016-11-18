@@ -92,7 +92,7 @@
                 tal:define="status python:context.getStatus() and 'Valid' or 'Invalid'">
                 <span tal:content="status">Valid</span>
                 <a tal:condition="python:status=='Invalid' and review_state != 'submitted'"
-                   tal:attributes="href string:${context/absolute_url}/validate_arimport" > Validate ...</a>
+                   tal:attributes="href string:${context/absolute_url}/validate" > Validate ...</a>
             </td>
         </tr>
 

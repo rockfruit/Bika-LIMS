@@ -1,6 +1,7 @@
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore import permissions
-from bika.lims.permissions import AddSupplyOrder
+from bika.lims.permissions import AddSupplyOrder, ManageARImport
+
 
 def ObjectModifiedEventHandler(obj, event):
     """ Various types need automation on edit.
@@ -45,6 +46,7 @@ def ObjectModifiedEventHandler(obj, event):
         mp(permissions.ModifyPortalContent, ['Manager', 'LabManager', 'Owner'], 0)
         mp(AddSupplyOrder, ['Manager', 'LabManager', 'Owner'], 0)
         mp('Access contents information', ['Manager', 'LabManager', 'Member', 'LabClerk', 'Analyst', 'Sampler', 'Preserver', 'Owner'], 0)
+        mp(ManageARImport, ['Manager', 'LabManger', 'LabClerk'], 1)
 
     elif obj.portal_type == 'Contact':
         mp = obj.manage_permission

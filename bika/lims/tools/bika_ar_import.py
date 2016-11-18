@@ -149,7 +149,7 @@ class bika_ar_import(UniqueObject, SimpleItem):
             DateImported = DateTime(),
             )
 
-        valid = self.validate_arimport_c(arimport)
+        valid = self.validate_c(arimport)
         REQUEST.RESPONSE.write('<script>document.location.href="%s/client_arimports?portal_status_message=%s%%20imported"</script>' % (client.absolute_url(), arimport_id))
 
 
@@ -289,7 +289,7 @@ class bika_ar_import(UniqueObject, SimpleItem):
             )
         arimport.processForm()
 
-        valid = self.validate_arimport_s(arimport)
+        valid = self.validate_s(arimport)
         REQUEST.RESPONSE.write('<script>document.location.href="%s/client_arimports?portal_status_message=%s%%20imported"</script>' % (client.absolute_url(), arimport_id))
 
 InitializeClass(bika_ar_import)

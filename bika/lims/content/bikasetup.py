@@ -562,7 +562,6 @@ schema = BikaFolderSchema.copy() + Schema((
     ExponentialFormatThreshold,
     EnableAnalysisRemarks,
     DryMatterService,
-    ARImportOption,
     ARAttachmentOption,
     AnalysisAttachmentOption,
     DefaultSampleLifetime,

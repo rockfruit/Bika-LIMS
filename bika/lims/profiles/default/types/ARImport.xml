@@ -32,7 +32,7 @@
          visible="True">
      <permission value='BIKA: Manage ARImport'/>
  </action>
-
+ 
  <action title="View"
          action_id="view"
          category="object"
@@ -45,5 +45,6 @@
          visible="True">
   <permission value="View"/>
  </action>
+
 
 </object>

@@ -144,3 +144,23 @@ class JSONReadExtender(object):
         include_fields = get_include_fields(request)
         if not include_fields or "transitions" in include_fields:
             data['transitions'] = get_workflow_actions(self.context)
+
+def getTransitionDate(obj, action_id):
+    workflow = getToolByName(obj, 'portal_workflow')
+    try:
+        # https://jira.bikalabs.com/browse/LIMS-2242:
+        # Sometimes the workflow history is inexplicably missing!
+        review_history = list(workflow.getInfoFor(obj, 'review_history'))
+    except WorkflowException:
+        logger.error(
+            "workflow history is inexplicably missing."
+            " https://jira.bikalabs.com/browse/LIMS-2242")
+        return None
+    # invert the list, so we always see the most recent matching event
+    review_history.reverse()
+    for event in review_history:
+        if event['action'] == action_id:
+            value = ulocalized_time(event['time'], long_format=True,
+                                    time_only=False, context=obj)
+            return value
+    return None

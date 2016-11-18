@@ -1524,7 +1524,6 @@ class Setup(WorksheetImporter):
             EnableAnalysisRemarks=self.to_bool(
                 values.get('EnableAnalysisRemarks', '')),
             DryMatterService=dry_uid,
-            ARImportOption=values['ARImportOption'],
             ARAttachmentOption=values['ARAttachmentOption'][0].lower(),
             AnalysisAttachmentOption=values[
                 'AnalysisAttachmentOption'][0].lower(),

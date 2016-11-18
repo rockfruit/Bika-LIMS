@@ -544,6 +544,27 @@ class IARImport(Interface):
 class IARImportItem(Interface):
     "Marker interface for an ARImport"
 
+class IARImportHandler(Interface):
+
+    def __init__(self, context, request):
+        pass
+
+    def parse_data(self, file_data):
+        """This is reponsible for taking raw file_data, and returning
+        all data required for import_data function to create objects.
+
+        This function is responsible for validating all incoming data
+        """
+
+    def import_parsed_data(self, parsed_data):
+        """This consumes the output from parsed_data, and writes the
+        corrosponding objects to the database.
+        """
+
+    def validate_arimport(self):
+        """Called to validate and re-validate ARImport and ARImportItems
+        before data can be written to the db
+        """
 
 class IPricelist(Interface):
     "Folder view marker for Pricelist"
