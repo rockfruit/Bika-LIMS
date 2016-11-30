@@ -442,10 +442,10 @@ class BikaGenerator:
         try:
             mp = portal.arimports.manage_permission
             mp(ManageARImport, ['Manager', 'LabManger', 'LabClerk'], 1)
-            mp(permissions.ListFolderContents, ['Manager', 'Member',], 1)
+            mp(permissions.ListFolderContents, ['Manager', 'LabManger', 'LabClerk',], 1)
             mp(permissions.AddPortalContent, ['Manager', 'LabManger', 'LabClerk'], 0)
             mp(permissions.DeleteObjects, ['Manager'], 0)
-            mp(permissions.View, ['Manager', 'Member', 'LabClerk'], 0)
+            mp(permissions.View, ['Manager', 'LabManger', 'LabClerk'], 0)
             portal.arimports.reindexObject()
         except:
             pass

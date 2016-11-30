@@ -2,255 +2,23 @@
 #
 # Copyright 2011-2016 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
-import os
 
-import App
 from DateTime.DateTime import DateTime
 from Products.Archetypes.event import ObjectInitializedEvent
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import _createObjectByType
-from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.statusmessages.interfaces import IStatusMessage
-from bika.lims import bikaMessageFactory as _, logger
-from bika.lims.browser import BrowserView, ulocalized_time
-from bika.lims.browser.bika_listing import BikaListingView
-from bika.lims.interfaces import IClient, IARImportHandler
+from bika.lims import logger
+from bika.lims.interfaces import IARImportHandler
 from bika.lims.utils import tmpID
-from bika.lims.workflow import getTransitionDate, doActionFor
+from bika.lims.workflow import doActionFor
 from collective.progressbar.events import InitialiseProgressBar, \
     UpdateProgressEvent
 from collective.progressbar.events import ProgressBar
 from collective.progressbar.events import ProgressState
-from plone.app.contentlisting.interfaces import IContentListing
-from plone.app.layout.globals.interfaces import IViewView
-from plone.protect import CheckAuthenticator
 from zope import event
-from zope.component import getAdapter
 from zope.event import notify
-from zope.interface import alsoProvides
 from zope.interface import implements
-
-
-class ARImportsView(BikaListingView):
-    implements(IViewView)
-
-    def __init__(self, context, request):
-        super(ARImportsView, self).__init__(context, request)
-        request.set('disable_plone.rightcolumn', 1)
-        alsoProvides(request, IContentListing)
-
-        self.catalog = "portal_catalog"
-        self.contentFilter = {
-            'portal_type': 'ARImport',
-            'cancellation_state': 'active',
-            'sort_on': 'sortable_title',
-        }
-        self.context_actions = {}
-        if IClient.providedBy(self.context):
-            self.context_actions = {
-                _('AR Import'): {
-                    'url': 'arimport_add',
-                    'icon': '++resource++bika.lims.images/add.png'}}
-        self.show_sort_column = False
-        self.show_select_row = False
-        self.show_select_column = False
-        self.pagesize = 50
-        self.form_id = "arimports"
-
-        self.icon = \
-            self.portal_url + "/++resource++bika.lims.images/arimport_big.png"
-        self.title = self.context.translate(_("Analysis Request Imports"))
-        self.description = ""
-
-        self.columns = {
-            'Title': {'title': _('Title')},
-            'Client': {'title': _('Client')},
-            'Filename': {'title': _('Filename')},
-            'Creator': {'title': _('Date Created')},
-            'DateCreated': {'title': _('Date Created')},
-            'DateValidated': {'title': _('Date Validated')},
-            'DateImported': {'title': _('Date Imported')},
-            'state_title': {'title': _('State')},
-        }
-        self.review_states = [
-            {'id': 'default',
-             'title': _('Pending'),
-             'contentFilter': {'review_state': ['invalid', 'valid'],
-                               'cancellation_state': 'active'
-                               },
-             'columns': ['Title',
-                         'Creator',
-                         'Filename',
-                         'Client',
-                         'DateCreated',
-                         'DateValidated',
-                         'DateImported',
-                         'state_title']},
-            {'id': 'imported',
-             'title': _('Imported'),
-             'contentFilter': {'review_state': 'imported',
-                               'cancellation_state': 'active'
-                               },
-             'columns': ['Title',
-                         'Creator',
-                         'Filename',
-                         'Client',
-                         'DateCreated',
-                         'DateValidated',
-                         'DateImported']},
-            {'id': 'cancelled',
-             'title': _('Cancelled'),
-             'contentFilter': {'review_state': ['invalid', 'valid', 'imported'],
-                               'cancellation_state': 'cancelled'
-                               },
-             'columns': ['Title',
-                         'Creator',
-                         'Filename',
-                         'Client',
-                         'DateCreated',
-                         'DateValidated',
-                         'DateImported',
-                         'state_title']},
-            {'id': 'all',
-             'title': _('All'),
-             'contentFilter': {},
-             'columns': ['Title',
-                         'Creator',
-                         'Filename',
-                         'Client',
-                         'DateCreated',
-                         'DateValidated',
-                         'DateImported',
-                         'state_title']},
-        ]
-
-    def folderitems(self, **kwargs):
-        items = super(ARImportsView, self).folderitems()
-        for x in range(len(items)):
-            if 'obj' not in items[x]:
-                continue
-            obj = items[x]['obj']
-            items[x]['Title'] = obj.title_or_id()
-            if items[x]['review_state'] == 'invalid':
-                items[x]['replace']['Title'] = "<a href='%s/edit'>%s</a>" % (
-                    obj.absolute_url(), items[x]['Title'])
-            else:
-                items[x]['replace']['Title'] = "<a href='%s/view'>%s</a>" % (
-                    obj.absolute_url(), items[x]['Title'])
-            items[x]['Creator'] = obj.Creator()
-            items[x]['Filename'] = obj.getFilename()
-            parent = obj.aq_parent
-            items[x]['Client'] = parent if IClient.providedBy(parent) else ''
-            items[x]['replace']['Client'] = "<a href='%s'>%s</a>" % (
-                parent.absolute_url(), parent.Title())
-            items[x]['DateCreated'] = ulocalized_time(
-                obj.created(), long_format=True, time_only=False, context=obj)
-            date = getTransitionDate(obj, 'validate')
-            items[x]['DateValidated'] = date if date else ''
-            date = getTransitionDate(obj, 'import')
-            items[x]['DateImported'] = date if date else ''
-
-        return items
-
-
-class ClientARImportsView(ARImportsView):
-    def __init__(self, context, request):
-        super(ClientARImportsView, self).__init__(context, request)
-        self.contentFilter['path'] = {
-            'query': '/'.join(context.getPhysicalPath())
-        }
-
-        self.review_states = [
-            {'id': 'default',
-             'title': _('Pending'),
-             'contentFilter': {'review_state': ['invalid', 'valid']},
-             'columns': ['Title',
-                         'Creator',
-                         'Filename',
-                         'DateCreated',
-                         'DateValidated',
-                         'DateImported',
-                         'state_title']},
-            {'id': 'imported',
-             'title': _('Imported'),
-             'contentFilter': {'review_state': 'imported'},
-             'columns': ['Title',
-                         'Creator',
-                         'Filename',
-                         'DateCreated',
-                         'DateValidated',
-                         'DateImported',
-                         'state_title']},
-            {'id': 'cancelled',
-             'title': _('Cancelled'),
-             'contentFilter': {
-                 'review_state': ['initial', 'invalid', 'valid', 'imported'],
-                 'cancellation_state': 'cancelled'
-             },
-             'columns': ['Title',
-                         'Creator',
-                         'Filename',
-                         'DateCreated',
-                         'DateValidated',
-                         'DateImported',
-                         'state_title']},
-        ]
-
-
-class ClientARImportAddView(BrowserView):
-    implements(IViewView)
-    template = ViewPageTemplateFile('templates/arimport_add_form.pt')
-
-    def __init__(self, context, request):
-        super(ClientARImportAddView, self).__init__(context, request)
-        alsoProvides(request, IContentListing)
-
-    def debug_mode(self):
-        return App.config.getConfiguration().debug_mode
-
-    def __call__(self):
-        CheckAuthenticator(self.request.form)
-
-        if self.request.form.get('submitted', False):
-
-            csvfile = self.request.form.get('csvfile')
-            rawdata = csvfile.read()
-            fullfilename = csvfile.filename
-            fullfilename = fullfilename.split('/')[-1]
-            filename = fullfilename.split('.')[0]
-
-            # Create the arimport object
-            arimport = _createObjectByType("ARImport", self.context, tmpID())
-            arimport.processForm()
-            arimport.setTitle(self.mkTitle(filename))
-            arimport.Schema()['RawData'].set(arimport, rawdata)
-
-            # This can be overridden in other packages, so that client code
-            # can control the arimport processing
-            # See also IARImportSchema
-            adapter = getAdapter(self, interface=IARImportHandler,
-                                 name="ARImportHandler")(self.request, arimport)
-
-            # attempt to validate and parse form data into arimport fields
-            adapter.parse_raw_data()
-            adapter.validate_arimport()
-
-            url = arimport.absolute_url() + "/view"
-            return self.request.response.redirect(url)
-
-        else:
-
-            return self.template()
-
-    def mkTitle(self, filename):
-        pc = getToolByName(self.context, 'portal_catalog')
-        nr = 1
-        while True:
-            newname = '%s-%s' % (os.path.splitext(filename)[0], nr)
-            existing = pc(portal_type='ARImport', title=newname)
-            if not existing:
-                return newname
-            nr += 1
 
 
 class ImportHandler():
@@ -266,14 +34,14 @@ class ImportHandler():
         self.data = []
 
     def __call__(self, request, arimport):
+        """The handler is always called with the request and arimport object.
+        """
         self.request = request
         self.arimport = arimport
-        return self
 
-    def parse_raw_data(self):
-        """Create ARImport and ARImportItem and set schema fields from the
-        raw data.
-        Handled instead by the import function.
+    def validate_data(self):
+        """Validate the contents of the ARImport schema, including all
+        values found in arimport.ItemData
         """
         csvfile = self.request.form.get('csvfile')
         fullfilename = csvfile.filename
@@ -346,7 +114,7 @@ class ImportHandler():
                 analyses.append(sample_headers[(i - 10)])
             if len(analyses) > 0:
                 aritem_id = '%s_%s' % ('aritem', (str(next_num)))
-                aritem = _createObjectByType("ARImportItem", self.arimport,
+                aritem = _createObjectByType("", self.arimport,
                                              aritem_id)
                 aritem.edit(
                     SampleName=sample[0],
@@ -395,16 +163,16 @@ class ImportHandler():
         )
         self.arimport._renameAfterCreation()
 
-    def import_parsed_data(self, arimport):
+    def import_data(self):
         """Create and update objects from the parsed data
         # This one cheats, and does a bunch of validation stuff.
         """
 
-        uc = arimport.uid_catalog
+        uc = self.arimport.uid_catalog
 
         ars = []
         samples = []
-        client = arimport.aq_parent
+        client = self.arimport.aq_parent
         contact_obj = None
         cc_contact_obj = None
 
@@ -412,13 +180,13 @@ class ImportHandler():
 
         # validate contact
         for contact in client.objectValues('Contact'):
-            if contact.getUsername() == arimport.getContactID():
+            if contact.getUsername() == self.arimport.getContactID():
                 contact_obj = contact
-            if arimport.getCCContactID() == None:
+            if self.arimport.getCCContactID() == None:
                 if contact_obj != None:
                     break
             else:
-                if contact.getUsername() == arimport.getCCContactID():
+                if contact.getUsername() == self.arimport.getCCContactID():
                     cc_contact_obj = contact
                     if contact_obj != None:
                         break
@@ -430,7 +198,7 @@ class ImportHandler():
         services = {}
         service_uids = {}
 
-        for service in arimport.bika_setup_catalog(
+        for service in self.arimport.bika_setup_catalog(
                 portal_type='AnalysisService'):
             obj = service.getObject()
             keyword = obj.getKeyword()
@@ -438,16 +206,16 @@ class ImportHandler():
                 services[keyword] = '%s:%s' % (obj.UID(), obj.getPrice())
             service_uids[obj.UID()] = '%s:%s' % (obj.UID(), obj.getPrice())
 
-        samplepoints = arimport.bika_setup_catalog(
+        samplepoints = self.arimport.bika_setup_catalog(
             portal_type='SamplePoint',
-            Title=arimport.getSamplePoint())
+            Title=self.arimport.getSamplePoint())
         if not samplepoints:
             valid_batch = False
 
         profiles = {}
-        aritems = arimport.objectValues('ARImportItem')
+        aritems = self.arimport.objectValues('')
 
-        request = arimport.REQUEST
+        request = self.arimport.REQUEST
         title = 'Submitting AR Import'
         # Initialize the Progress Bar
         self.progressbar_init("Importing File")
@@ -464,7 +232,7 @@ class ImportHandler():
                 if not profiles.has_key(profilekey):
                     profiles[profilekey] = []
                     # there is no profilekey index
-                    l_prox = arimport._findProfileKey(profilekey)
+                    l_prox = self.arimport._findProfileKey(profilekey)
                     if l_prox:
                         profiles[profilekey] = \
                             [s.UID() for s in l_prox.getService()]
@@ -472,7 +240,7 @@ class ImportHandler():
                     else:
                         # TODO This will not find it!!
                         # there is no profilekey index
-                        c_prox = arimport.bika_setup_catalog(
+                        c_prox = self.arimport.bika_setup_catalog(
                             portal_type='AnalysisProfile',
                             getClientUID=client.UID(),
                             getProfileKey=profilekey)
@@ -505,7 +273,7 @@ class ImportHandler():
 
             for analysis in aritem.getAnalyses(full_objects=True):
                 if not services.has_key(analysis):
-                    for service in arimport.bika_setup_catalog(
+                    for service in self.arimport.bika_setup_catalog(
                             portal_type='AnalysisService',
                             getKeyword=analysis):
                         obj = service.getObject()
@@ -519,7 +287,7 @@ class ImportHandler():
                 else:
                     valid_batch = False
 
-            sampletypes = arimport.portal_catalog(
+            sampletypes = self.arimport.portal_catalog(
                 portal_type='SampleType',
                 sortable_title=aritem.getSampleType().lower(),
             )
@@ -528,7 +296,7 @@ class ImportHandler():
                 return
             sampletypeuid = sampletypes[0].getObject().UID()
 
-            samplematrices = arimport.bika_setup_catalog(
+            samplematrices = self.arimport.bika_setup_catalog(
                 portal_type='SampleMatrix',
                 sortable_title=aritem.getSampleMatrix().lower(),
             )
@@ -559,7 +327,7 @@ class ImportHandler():
                 Remarks=aritem.getClientRemarks(),
             )
             sample._renameAfterCreation()
-            sample.setSamplePoint(arimport.getSamplePoint())
+            sample.setSamplePoint(self.arimport.getSamplePoint())
             sample.setSampleID(sample.getId())
             event.notify(ObjectInitializedEvent(sample))
             sample.at_post_create_script()
@@ -567,7 +335,7 @@ class ImportHandler():
             samples.append(sample_id)
             aritem.setSample(sample_uid)
 
-            priorities = arimport.bika_setup_catalog(
+            priorities = self.arimport.bika_setup_catalog(
                 portal_type='ARPriority',
                 sortable_title=aritem.Priority.lower(),
             )
@@ -585,10 +353,10 @@ class ImportHandler():
             ar.unmarkCreationFlag()
             ar.edit(
                 RequestID=ar_id,
-                Contact=arimport.getContact(),
-                CCContact=arimport.getCCContact(),
-                CCEmails=arimport.getCCEmailsInvoice(),
-                ClientOrderNumber=arimport.getOrderID(),
+                Contact=self.arimport.getContact(),
+                CCContact=self.arimport.getCCContact(),
+                CCEmails=self.arimport.getCCEmailsInvoice(),
+                ClientOrderNumber=self.arimport.getOrderID(),
                 ReportDryMatter=report_dry_matter,
                 Profile=ar_profile,
                 Analyses=analyses,
@@ -604,10 +372,10 @@ class ImportHandler():
             ars.append(ar_id)
             ar._renameAfterCreation()
             self.progressbar_progress(n + 1, item_count)
-            arimport._add_services_to_ar(ar, analyses)
+            self.arimport._add_services_to_ar(ar, analyses)
 
-        arimport.setDateApplied(DateTime())
-        arimport.reindexObject()
+        self.arimport.setDateApplied(DateTime())
+        self.arimport.reindexObject()
 
     def validate_arimport(self, instance):
         """Validation assumes the form_data has been parsed, and that
@@ -674,17 +442,12 @@ class ImportHandler():
         if not contact_found:
             batch_remarks.append('\n' + 'Contact invalid')
             valid_batch = False
-        if cccontact_uname != None and \
-                        cccontact_uname != '':
-            if not cc_contact_found:
-                batch_remarks.append('\n' + 'CC contact invalid')
-                valid_batch = False
+        if cccontact_uname and not cc_contact_found:
+            batch_remarks.append('\n' + 'CC contact invalid')
+            valid_batch = False
 
         # validate sample point
         samplepoint = instance.getSamplePoint()
-        if samplepoint != None:
-            points = pc(portal_type='SamplePoint',
-                        Title=samplepoint)
 
         sampletypes = \
             [p.Title for p in pc(portal_type="SampleType")]
@@ -705,7 +468,7 @@ class ImportHandler():
                 dependencies = calc.getDependentServices()
                 if dependencies:
                     dependant_services[service.getKeyword()] = dependencies
-        aritems = instance.objectValues('ARImportItem')
+        aritems = instance.objectValues('')
         for aritem in aritems:
             item_remarks = []
             valid_item = True
@@ -927,3 +690,44 @@ class ImportHandler():
         """Add a statusmessage to the response
         """
         return IStatusMessage(self.request).addStatusMessage(msg, facility)
+
+    def resolve_analyses(self, value):
+        """Resolve a value to a Service, or a list of services.  Value can be
+        any of the following:
+
+        - Service Title
+        - Service Keyword
+        - CAS NR of Analysis Service
+        - Profile Title
+
+        These are searched in order, and the first match is the winner.
+        If a value can't be resolved to a service, an error is flagged
+
+        Returns a list of service objects found.
+
+        """
+        bsc = self.arimport.bika_setup_catalog
+        value = value.strip()
+
+        # Service Title?
+        brains = bsc(portal_type='AnalysisService', title=value)
+        if brains:
+            return [brains[0].getObject()]
+
+        # Service Keyword?
+        brains = bsc(portal_type='AnalysisService', getKeyword=value)
+        if brains:
+            return [brains[0].getObject()]
+
+        # CAS nr of brains?
+        clean_value = re.sub('\W', '_', value).lower()
+        brains = bsc(portal_type='AnalysisService', Identifiers=clean_value)
+        if brains:
+            return [brains[0].getObject()]
+
+        # Profile Title?
+        brains = bsc(portal_type='AnalysisProfile', title=value)
+        if brains:
+            return [x for x in brains[0].getObject().getService()]
+
+        return "Cannot locate service with value '{}'".format(value)

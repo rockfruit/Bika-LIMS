@@ -541,29 +541,31 @@ class IARImport(Interface):
     "Marker interface for an ARImport"
 
 
-class IARImportItem(Interface):
-    "Marker interface for an ARImport"
-
 class IARImportHandler(Interface):
 
     def __init__(self, context, request):
         pass
 
-    def parse_data(self, file_data):
-        """This is reponsible for taking raw file_data, and returning
-        all data required for import_data function to create objects.
+    def parse_raw_data(self):
+        """This is reponsible for handling raw file data submitted by user.
 
-        This function is responsible for validating all incoming data
+        It must complete all possible fields in the ARImport schema.
+
+        It's also responsible for completing the values in arimport.ItemData
         """
 
-    def import_parsed_data(self, parsed_data):
-        """This consumes the output from parsed_data, and writes the
-        corrosponding objects to the database.
+    def validate(self):
+        """Resolve and validate stored values
+
+        This function is responsible for setting context.Valid=True.
+
+        If this function does not set Valid=True, the reasons why must
+        be stored in context.Errors.
         """
 
-    def validate_arimport(self):
-        """Called to validate and re-validate ARImport and ARImportItems
-        before data can be written to the db
+    def import_data(self):
+        """This consumes the ARImport values, and creates the
+        corrosponding objects in the database.
         """
 
 class IPricelist(Interface):

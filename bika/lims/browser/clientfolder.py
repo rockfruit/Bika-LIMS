@@ -17,7 +17,6 @@ from zope.component import getUtility
 from plone.registry.interfaces import IRegistry
 import plone,json
 
-
 class ClientFolderContentsView(BikaListingView):
 
     implements(IFolderContentsView)

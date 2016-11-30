@@ -95,23 +95,25 @@ function SiteView() {
         });
 
         // Client combogrid searches by ID
-        $("input[id*='ClientID']").combogrid({
-            colModel: [{'columnName':'ClientUID','hidden':true},
-                       {'columnName':'ClientID','width':'20','label':_('Client ID')},
-                       {'columnName':'Title','width':'80','label':_('Title')}],
-            showOn: true,
-            width: '450px',
-            url: window.portal_url + "/getClients?_authenticator=" + $('input[name="_authenticator"]').val(),
-            select: function( event, ui ) {
-                $(this).val(ui.item.ClientID);
-                $(this).change();
-                return false;
-            }
-        });
+        if($(".portaltype-client").length == 0 && $(".portaltype-arimport").length == 0){
+            $("input[id*='ClientID']").combogrid({
+                colModel: [{'columnName':'ClientUID','hidden':true},
+                           {'columnName':'ClientID','width':'20','label':_('Client ID')},
+                           {'columnName':'Title','width':'80','label':_('Title')}],
+                showOn: true,
+                width: '450px',
+                url: window.portal_url + "/getClients?_authenticator=" + $('input[name="_authenticator"]').val(),
+                select: function( event, ui ) {
+                    $(this).val(ui.item.ClientID);
+                    $(this).change();
+                    return false;
+                }
+            });
+        }
 
         // Display add Client button next to Client ID input for all
         // views except from Client View
-        if($(".portaltype-client").length == 0){
+        if($(".portaltype-client").length == 0 && $(".portaltype-arimport").length == 0){
             $("input[id='ClientID']")
                 .after('<a style="border-bottom:none !important;margin-left:.5;"' +
                        ' class="add_client"' +

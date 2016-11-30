@@ -27,17 +27,6 @@
             <br/>
         </div>
 
-        <div class="field" tal:condition="view/debug_mode">
-            <label for="check_input" i18n:translate="label_debug">
-                <input type="checkbox"
-                       name="check"
-                       id="check_input"
-                       tal:attributes="checked request/form/debug|nothing"
-                       value="1"/>
-                Check Import Data
-            </label>
-        </div>
-
         <input tabindex=""
                class="context"
                type="submit"

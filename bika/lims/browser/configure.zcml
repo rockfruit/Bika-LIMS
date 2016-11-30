@@ -49,7 +49,7 @@
   <include package=".widgets"/>
   <include package=".reports"/>
 
-  <include file="arimports.zcml"/>
+  <include package=".arimport"/>
 
   <browser:page
       for="*"

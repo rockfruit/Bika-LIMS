@@ -1,0 +1,40 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="bika">
+
+  <!-- View to upload a file and create a new ARImport -->
+  <browser:page
+      for="bika.lims.interfaces.IClient"
+      name="arimport_add"
+      class="bika.lims.browser.arimport.views.ClientARImportAddView"
+      permission="bika.lims.ManageARImport"
+  />
+
+  <!-- manager listing of all imports -->
+  <browser:page
+      for="bika.lims.interfaces.IARImportFolder"
+      name="arimports"
+      class="bika.lims.browser.arimport.views.ARImportsView"
+      permission="zope2.View"
+  />
+
+  <!-- client listing of imports -->
+  <browser:page
+      for="bika.lims.interfaces.IClient"
+      name="arimports"
+      class="bika.lims.browser.arimport.views.ClientARImportsView"
+      permission="zope2.View"
+  />
+
+  <!-- Default adapter for ARImportHandler;
+       override this for differrent behaviours -->
+  <adapter
+      for="bika.lims.interfaces.IARImport
+             zope.publisher.interfaces.http.IHTTPRequest"
+      provides="bika.lims.interfaces.IARImportHandler"
+      factory="bika.lims.browser.arimport.handler.ImportHandler"
+      permission="zope2.View"
+  />
+
+</configure>

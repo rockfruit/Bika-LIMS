@@ -1,3 +1,4 @@
+from Products.CMFPlone.i18nl10n import ulocalized_time
 from bika.lims import enum
 from bika.lims import PMF
 from bika.lims import logger
