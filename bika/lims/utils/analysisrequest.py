@@ -41,6 +41,8 @@ def create_analysisrequest(
     # processform renames the sample, this requires values to contain the Sample.
     values['Sample'] = sample
     ar.processForm(REQUEST=request, values=values)
+    # Required to ensure that IAcquireFieldDefaults is honored
+    ar.setDefaults()
 
     # Object has been renamed
     schema = ar.Schema()
