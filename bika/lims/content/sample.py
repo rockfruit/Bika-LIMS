@@ -228,7 +228,6 @@ schema = BikaSchema.copy() + Schema((
     BooleanField(
         'ReturnSampleToClient',
         schemata = "AnalysisRequest and Sample Fields",
-        acquire=True,
         widget=BooleanWidget(
             label=_("Return Sample To Client"),
             size=20,
@@ -250,7 +249,6 @@ schema = BikaSchema.copy() + Schema((
     BooleanField(
         'Hazardous',
         schemata = "AnalysisRequest and Sample Fields",
-        acquire=True,
         widget=BooleanWidget(
             label=_("Hazardous"),
             size=20,
@@ -272,7 +270,6 @@ schema = BikaSchema.copy() + Schema((
     StringField(
         'SampleTemperature',
         schemata = "AnalysisRequest and Sample Fields",
-        acquire=True,
         widget=StringWidget(
             label=_("Sample Temperature"),
             size=20,
@@ -298,7 +295,6 @@ schema = BikaSchema.copy() + Schema((
         mode="rw",
         read_permission=permissions.View,
         write_permission=SampleSample,
-        acquire=True,
         widget = DateTimeWidget(
             label=_("Date Sampled"),
             size=20,
@@ -322,7 +318,6 @@ schema = BikaSchema.copy() + Schema((
         read_permission=permissions.View,
         write_permission=SampleSample,
         vocabulary='getSamplers',
-        acquire=True,
         widget=BikaSelectionWidget(
             format='select',
             label=_("Sampler"),
@@ -367,7 +362,6 @@ schema = BikaSchema.copy() + Schema((
         read_permission=permissions.View,
         write_permission=permissions.ModifyPortalContent,
         vocabulary='getPreparationWorkflows',
-        acquire=True,
         widget=SelectionWidget(
             format="select",
             label=_("Preparation Workflow"),
@@ -394,7 +388,6 @@ schema = BikaSchema.copy() + Schema((
         mode="rw",
         read_permission=permissions.View,
         write_permission=permissions.ModifyPortalContent,
-        acquire=True,
         widget=ReferenceWidget(
             label=_("Sampling Deviation"),
             render_own_label=True,
@@ -423,7 +416,6 @@ schema = BikaSchema.copy() + Schema((
         mode="rw",
         read_permission=permissions.View,
         write_permission=permissions.ModifyPortalContent,
-        acquire=True,
         widget=ReferenceWidget(
             label=_("Sample Condition"),
             render_own_label=True,
