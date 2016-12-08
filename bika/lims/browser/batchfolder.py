@@ -122,7 +122,8 @@ class BatchFolderContentsView(BikaListingView):
             if callable(date):
                 date = date()
             items[x]['BatchDate'] = date
-            items[x]['replace']['BatchDate'] = self.ulocalized_time(date)
+            items[x]['replace']['BatchDate'] = self.ulocalized_time(
+                date, long_format=False)
             
             items[x]['Client'] = obj.getClient().Title() if obj.getClient() else ''
 
