@@ -381,7 +381,7 @@ def createPdf(htmlreport, outfile=None, css=None, images={}):
     if debug_mode:
         htmlfilepath = tempfile.mktemp(suffix=".html")
         htmlfile = open(htmlfilepath, 'w')
-        htmlfile.write(htmlreport)
+        htmlfile.write(unicode(htmlreport).encode('utf-8'))
         htmlfile.close()
     return open(outfile, 'r').read()
 
