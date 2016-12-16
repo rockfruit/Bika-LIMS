@@ -112,9 +112,12 @@ class Report(BrowserView):
         in_shoulder_range_count = 0
         analysis_count = 0
 
+
+
         proxies = self.bika_analysis_catalog(self.contentFilter)
 
         if not proxies:
+            import pdb;pdb.set_trace();pass
             message = _("No analyses matched your query")
             self.context.plone_utils.addPortalMessage(message, 'error')
             return self.default_template()
@@ -223,13 +226,9 @@ class Report(BrowserView):
 
                 in_range = a['result_in_range']
                 # result out of range
-                if str(in_range[0]) == 'False':
+                if not in_range:
                     out_of_range_count += 1
                     a['Result'] = "%s %s" % (a['Result'], error_icon)
-                # result almost out of range
-                if str(in_range[0]) == '1':
-                    in_shoulder_range_count += 1
-                    a['Result'] = "%s %s" % (a['Result'], warning_icon)
 
                 spec = {}
                 if hasattr(a["obj"], 'specification') and a["obj"].specification:

@@ -82,6 +82,7 @@ class Report(BrowserView):
 
         proxies = self.bika_analysis_catalog(self.contentFilter)
         if not proxies:
+            import pdb;pdb.set_trace();pass
             message = _("No analyses matched your query")
             self.context.plone_utils.addPortalMessage(message, 'error')
             return self.default_template()
