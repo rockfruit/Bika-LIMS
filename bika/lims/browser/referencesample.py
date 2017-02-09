@@ -192,7 +192,12 @@ class ReferenceAnalysesView(AnalysesView):
             upper = smax + error_amount
             lower = smin - error_amount
 
-            anrow = {'date': item['Captured'],
+            # The date format here must match the one used for the x_axis in
+            # bika.lims.graphics.controlchart.js!
+            captured = self.ulocalized_time(
+                analysis.getResultCaptureDate(), long_format=1)
+
+            anrow = {'date': captured,
                      'min': smin,
                      'max': smax,
                      'target': target,
