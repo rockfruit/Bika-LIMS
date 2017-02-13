@@ -1,5 +1,6 @@
 # Testing layer to provide some of the features of PloneTestCase
 from Products.CMFPlone.utils import _createObjectByType
+from plone.app.robotframework.testing import REMOTE_LIBRARY_BUNDLE_FIXTURE
 
 from bika.lims.exportimport.load_setup_data import LoadSetupData
 from plone.app.testing import applyProfile
@@ -92,11 +93,11 @@ class BikaTestLayer(PloneSandboxLayer):
                     portal.clients.manage_setLocalRoles(username, ['Owner', ])
 
         # load test data
-        self.request = makerequest(portal.aq_parent).REQUEST
-        self.request.form['setupexisting'] = 1
-        self.request.form['existing'] = "bika.lims:test"
-        lsd = LoadSetupData(portal, self.request)
-        lsd()
+        # self.request = makerequest(portal.aq_parent).REQUEST
+        # self.request.form['setupexisting'] = 1
+        # self.request.form['existing'] = "bika.lims:test"
+        # lsd = LoadSetupData(portal, self.request)
+        # lsd()
 
         portal.bika_setup.setShowNewReleasesInfo(False)
 
@@ -130,7 +131,9 @@ BIKA_FUNCTIONAL_TESTING = FunctionalTesting(
 )
 
 BIKA_ROBOT_TESTING = FunctionalTesting(
-    bases=(BIKA_TEST_FIXTURE, z2.ZSERVER_FIXTURE),
+    bases=(BIKA_TEST_FIXTURE,
+           REMOTE_LIBRARY_BUNDLE_FIXTURE,
+           z2.ZSERVER_FIXTURE),
     name="BikaTestingLayer:Robot"
 )
 
