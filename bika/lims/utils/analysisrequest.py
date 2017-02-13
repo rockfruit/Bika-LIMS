@@ -7,6 +7,7 @@ from bika.lims.utils.samplepartition import create_samplepartition
 from bika.lims.workflow import doActionFor
 from Products.CMFPlone.utils import _createObjectByType
 
+
 def create_analysisrequest(context, request, values, analyses=None,
                            partitions=None, specifications=None, prices=None):
     """This is meant for general use and should do everything necessary to
@@ -47,7 +48,7 @@ def create_analysisrequest(context, request, values, analyses=None,
 
     if not analyses_services:
         raise RuntimeError(
-                "create_analysisrequest: no analyses services provided")
+            "create_analysisrequest: no analyses services provided")
 
     # Create new sample or locate the existing for secondary AR
     if not values.get('Sample', False):
@@ -153,3 +154,68 @@ def create_analysisrequest(context, request, values, analyses=None,
     # Return the newly created Analysis Request
     return ar
 
+
+def _resolve_items_to_service_uids(items):
+    """ Returns a list of service uids without duplicates based on the items
+    :param items:
+        A list (or one object) of service-related info items. The list can be
+        heterogeneous and each item can be:
+        - Analysis Service instance
+        - Analysis instance
+        - Analysis Service title
+        - Analysis Service UID
+        - Analysis Service Keyword
+        If an item that doesn't match any of the criterias above is found, the
+        function will raise a RuntimeError
+    """
+    portal = None
+    bsc = None
+    service_uids = []
+
+    # Maybe only a single item was passed
+    if type(items) not in (list, tuple):
+        items = [items, ]
+    for item in items:
+        # service objects
+        if IAnalysisService.providedBy(item):
+            uid = item.UID()
+            service_uids.append(uid)
+            continue
+
+        # Analysis objects (shortcut for eg copying analyses from other AR)
+        if IAnalysis.providedBy(item):
+            uid = item.getService().UID()
+            service_uids.append(uid)
+            continue
+
+        # An object UID already there?
+        if (item in service_uids):
+            continue
+
+        # Maybe object UID.
+        portal = portal if portal else api.portal.get()
+        bsc = bsc if bsc else getToolByName(portal, 'bika_setup_catalog')
+        brains = bsc(UID=item)
+        if brains:
+            uid = brains[0].UID
+            service_uids.append(uid)
+            continue
+
+        # Maybe service Title
+        brains = bsc(portal_type='AnalysisService', title=item)
+        if brains:
+            uid = brains[0].UID
+            service_uids.append(uid)
+            continue
+
+        # Maybe service Keyword
+        brains = bsc(portal_type='AnalysisService', getKeyword=item)
+        if brains:
+            uid = brains[0].UID
+            service_uids.append(uid)
+            continue
+
+        raise RuntimeError(
+            str(item) + " should be the UID, title, keyword "
+                        " or title of an AnalysisService.")
+    return list(set(service_uids))
