@@ -1,11 +1,18 @@
+# This file is part of Bika LIMS
+#
+# Copyright 2011-2016 by it's authors.
+# Some rights reserved. See LICENSE.txt, AUTHORS.txt.
+
 from Products.CMFCore.utils import getToolByName
-from bika.lims.interfaces import ISample
-from bika.lims.monkey.Schema import setDefaults
+from Products.CMFPlone.utils import _createObjectByType
+from bika.lims.interfaces import IAnalysisService, IAnalysis
 from bika.lims.utils import tmpID
 from bika.lims.utils.sample import create_sample
 from bika.lims.utils.samplepartition import create_samplepartition
 from bika.lims.workflow import doActionFor
+from plone import api
 from Products.CMFPlone.utils import _createObjectByType
+
 
 
 def create_analysisrequest(context, request, values, analyses=None,
