@@ -1,14 +1,21 @@
 *** Settings ***
+Library         BuiltIn
+Library         Selenium2Library  timeout=5  implicit_wait=1
+Library         String
+Resource        keywords.txt
+Resource        plone/app/robotframework/selenium.robot
+Resource        plone/app/robotframework/server.robot
+Resource        plone/app/robotframework/annotate.robot
+Library         Remote  ${PLONEURL}/RobotRemote
+Variables       plone/app/testing/interfaces.py
+Variables       bika/lims/tests/variables.py
 
-Library          BuiltIn
-Library          Selenium2Library  timeout=5  implicit_wait=0.2
-Library          String
-Resource         keywords.txt
-Library          bika.lims.testing.Keywords
-Variables        plone/app/testing/interfaces.py
-Variables        bika/lims/tests/variables.py
-Suite Setup      Start browser
-Suite Teardown   Close All Browsers
+Suite Setup     Start browser
+Suite Teardown  Close All Browsers
+
+Library          DebugLibrary
+
+
 
 *** Variables ***
 
@@ -16,143 +23,71 @@ ${input_identifier} =  input#arimport_file
 
 *** Test Cases ***
 
-Test AR Importing dependencies
-    Log in                      test_labmanager  test_labmanager
-    Wait until page contains    You are now logged in
+Importing invalid filename fails
 
-    Import Classic Valid AR
-    Submit Valid AR Import
-    Import Classic AR File with invalid filename
-    Import Classic AR File with errors
+A perfect AR
+    Log in   test_labmanager  test_labmanager
+    setup stuff
 
-    Import Profile Valid AR
-    Submit Valid AR Import
-    Import Profile AR File with invalid filename
-    Import Profile AR File with errors
+    load arimport_perfect.csv
+    There should be no errors
+    There should be 4 ARs
+
+An AR with errors, imports correctly after we fix them
+    Log in  test_labmanager  test_labmanager
+    setup stuff
+
+    load arimport_missing_Sample Type.csv
+    the Sample Type field value should be ''
+    an error containing Sample Type should exist
+    select from dropdown   Sample Type        Sample Type 1
+    click button      Save
+    run validate transition
+    There should be no errors
+    run import transition
+    There should be 4 ars
 
 *** Keywords ***
 
-Import Classic AR File with invalid filename
-    Go to                       http://localhost:55001/plone/clients/client-1
+setup stuff
+    ${client_uid} = Create Object   clients  Client  c01   title=Client 1 Title  ClientID=Client 1 ID
+    ${contact_uid} = CreateObject   clients/c01   Contact   contact1   title=Contact 1
+    ${cat_uid} =  Create Object  bika_setup/bika_analysiscategories  AnalysisCategory  c1  title=Category 1
+    ${st_uid} =  Create Object   bika_setup/bika_sampletypes  SampleType  ST1  title=Sample Type 1   Prefix=ST
+    ${sp_uid} =  Create Object   bika_setup/bika_samplepoints  SamplePoint  SP1  title=Sample Point 1
+    ${service_uid1} =  Create Object  bika_setup/bika_analysisservices  AnalysisService  srv1  title=Service 1 Title  Keyword=srv1  Category=${cat_uid}
+    ${service_uid2} =  Create Object  bika_setup/bika_analysisservices  AnalysisService  srv2  title=Service 2 Title  Keyword=srv2  Category=${cat_uid}
+    ${service_uid3} =  Create Object  bika_setup/bika_analysisservices  AnalysisService  srv2  title=Service 3 Title  Keyword=srv3  Category=${cat_uid}
+    ${profile_uid1} =  Create Object  bika_setup/bika_analysisprofiles  AnalysisProfile  prf1  title=Profile 1 Title  Service=${service_uid1},${service_uid1}
+
+load ${filename}
+    Go to                       http://localhost:55001/plone/clients/c01
+    debug
     Wait until page contains    Imports
+    click link                  Add
     ${PATH_TO_TEST} =           run keyword   resource_filename
-    Import Classic ARImport     ${PATH_TO_TEST}/files/ARImportClassicInvalidFilename.csv
-    Page Should Contain         Error
-    Page Should Contain         does not match entered filename
-
-Import Classic AR File with errors
-    Go to                       http://localhost:55001/plone/clients/client-1
-    Wait until page contains    Imports
-    ${PATH_TO_TEST} =           run keyword   resource_filename
-    Import Classic ARImport     ${PATH_TO_TEST}/files/ARImportClassicErrors.csv
-    Wait until page contains    Remarks
-    Page Should Contain         Client ID should be
-    Page Should Contain         Contact invalid
-    Page Should Contain         Sample type WrongType invalid
-    Page Should Contain         Sample Matrix WrongMatrix invalid
-    Page Should Contain         Container type WrongContainer invalid
-
-Import Classic Valid AR
-    Go to                       http://localhost:55001/plone/clients/client-1
-    Wait until page contains    Imports
-    ${PATH_TO_TEST} =           run keyword   resource_filename
-    Import Classic ARImport     ${PATH_TO_TEST}/files/ARImportClassicValid.csv
-    sleep                       5s
-    Page Should Contain         Valid
-    Page Should Not Contain     Error
-
-Import Profile Valid AR
-    Go to                       http://localhost:55001/plone/clients/client-1
-    Wait until page contains    Imports
-    ${PATH_TO_TEST} =           run keyword   resource_filename
-    Import Profile ARImport     ${PATH_TO_TEST}/files/ARImportProfileValid.csv
-    sleep                       5s
-    Page Should Contain         Valid
-    Page Should Not Contain     Error
-
-Import Profile AR File with invalid filename
-    Go to                       http://localhost:55001/plone/clients/client-1
-    Wait until page contains    Imports
-    ${PATH_TO_TEST} =           run keyword   resource_filename
-    Import Profile ARImport     ${PATH_TO_TEST}/files/ARImportProfileInvalidFilename.csv
-    Page Should Contain         Error
-    Page Should Contain         does not match entered filename
-
-Import Profile AR File with errors
-    Go to                       http://localhost:55001/plone/clients/client-1
-    Wait until page contains    Imports
-    ${PATH_TO_TEST} =           run keyword   resource_filename
-    Import Profile ARImport     ${PATH_TO_TEST}/files/ARImportProfileErrors.csv
-    Page Should Contain         Remarks
-    Page Should Contain         Client ID should be
-    Page Should Contain         Contact invalid
-    Page Should Contain         Sample type WrongType invalid
-    Page Should Contain         Sample Matrix WrongMatrix invalid
-    Page Should Contain         Container type WrongContainer invalid
-
-
-Submit Valid AR Import
-    Open Workflow Menu
-    Click Link                  link=Submit ARImport
-    Wait until page contains    View
-    Page Should Contain         Submitted
-    Click Element               xpath=/html/body/div[1]/div[2]/div[1]/div[2]/div[2]/div/div/div/table[2]/tbody/tr[1]/td[2]/a[1]
-    Page Should Contain         Manage Analyses
-    Page Should Contain         Sample Due
-    ${Matrix} =                 Get value    xpath=//input[@id="SampleMatrix"]
-    Log                         ${Matrix}
-    Should Be Equal             ${Matrix}    Grain
-
-Import Classic ARImport
-    [arguments]  ${file}
-
-    Click Link                  Imports
-    Wait until page contains    AR Import
-    Click Link                  AR Import
-    Wait until page contains    Import Analysis Request Data
-    Select Import Option        c
-    Import ARImport File        ${file}
-
-Import Profile ARImport
-    [arguments]  ${file}
-
-    Click Link                  Imports
-    Wait until page contains    AR Import
-    Click Link                  AR Import
-    Wait until page contains    Import Analysis Request Data
-    Select Import Option        p
-    Import ARImport File        ${file}
-
-Import ARImport File
-    [arguments]  ${file}
-
     Choose File                 css=${input_identifier}  ${file}
-    Wait until page contains    Import Analysis Request Data
-    Set Selenium Timeout        30
+
+    Set Selenium Timeout        10
     Click Button                Import
     Set Selenium Timeout        5
 
-HangOn
-    Import library  Dialogs
-    Pause execution
+There should be no errors.
+    debug
+    Textfield value should be  css=#errors  ''
+    State of arimport is Valid
 
-Open Add New Menu
-    Open Menu  plone-contentmenu-factories
+State should be ${state_id}
+    Page should contain element  css=span.state-${state_id}   ARImport state should be ${id}
 
-Open Workflow Menu
-    Open Menu  plone-contentmenu-workflow
+run ${transition} transition
+    # plone workflow dropdown
+    Click Element  css=a[title="Change the state of this item"]
+    Click Element  workflow-transition-validate
 
-Open Menu
-    [Arguments]  ${elementId}
+There should be ${nr} ars
+    debug
 
-    Element Should Be Visible  css=dl#${elementId}
-    Element Should Not Be Visible  css=dl#${elementId} dd.actionMenuContent
-    Click link  css=dl#${elementId} dt.actionMenuHeader a
-    Wait until keyword succeeds  5s  1s  Element Should Be Visible  css=dl#${elementId} dd.actionMenuContent
-
-Select Import Option
-    [Arguments]  ${option}
-
-    [Documentation]  LOG Set Import Option to ${option}
-    Select Radio Button  ImportOption  ${option}
-    Radio Button Should Be Set To  ImportOption  ${option}
+the ${field} value should be ${y}
+    debug
+    element value should be  ${y}

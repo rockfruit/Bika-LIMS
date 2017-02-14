@@ -66,11 +66,12 @@ setup(name='bika.lims',
           'test': [
               'plone.app.testing',
               'robotsuite',
-              'robotframework',
               'robotframework-selenium2library',
               'plone.app.robotframework',
               'Products.PloneTestCase',
               'robotframework-debuglibrary',
+              'plone.resource',
+              'plone.app.textfield',
           ]
       },
       entry_points="""
