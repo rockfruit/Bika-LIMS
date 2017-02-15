@@ -54,14 +54,6 @@ class InvoiceBatch(BaseFolder):
     def invoices(self):
         return self.objectValues('Invoice')
 
-    # security.declareProtected(PostInvoiceBatch, 'post')
-    # def post(self, REQUEST = None):
-    #     """ Post invoices
-    #     """
-    #     map (lambda e: e._post(), self.invoices())
-    #     if REQUEST:
-    #         REQUEST.RESPONSE.redirect('invoicebatch_invoices')
-
     security.declareProtected(ManageInvoices, 'createInvoice')
 
     def createInvoice(self, client_title, items):

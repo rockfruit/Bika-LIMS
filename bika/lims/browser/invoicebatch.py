@@ -9,10 +9,12 @@ from bika.lims.utils import currency_format
 import csv
 from cStringIO import StringIO
 
-class InvoiceBatchInvoicesView(BikaListingView):
 
+class InvoiceBatchInvoicesView(BikaListingView):
     def __init__(self, context, request):
         super(InvoiceBatchInvoicesView, self).__init__(context, request)
+        self.context = context
+        self.request = request
         self.contentFilter = {}
         self.title = context.Title()
         self.description = ""
@@ -20,7 +22,7 @@ class InvoiceBatchInvoicesView(BikaListingView):
         self.show_select_row = False
         self.show_select_all_checkbox = False
         self.show_select_column = True
-        self.pagesize = 25
+        self.pagesize = 50
         request.set('disable_border', 1)
         self.context_actions = {}
         self.columns = {
@@ -79,27 +81,23 @@ class InvoiceBatchInvoicesView(BikaListingView):
         items = BikaListingView.folderitems(self, full_objects)
         for item in items:
             obj = item['obj']
-            number_link = "<a href='%s'>%s</a>" % (
-                item['url'], obj.getId()
-            )
-            item['replace']['id'] = number_link
-            
-            if obj.getClient():
-                item['client'] = obj.getClient().Title()
-                item['replace']['client'] = "<a href='%s'>%s</a>" % (
-                    obj.getClient().absolute_url(), obj.getClient().Title()
-                )
+            item['replace']['id'] = \
+                "<a href='%s'>%s</a>" % (item['url'], obj.getId())
 
-                item['email'] = obj.getClient().getEmailAddress()
+            client = obj.getClient()
+            if client:
+                item['client'] = client.Title()
+                item['replace']['client'] = "<a href='%s'>%s</a>" % (
+                    (client.absolute_url(), client.Title()))
+                item['email'] = client.getEmailAddress()
                 item['replace']['email'] = "<a href='%s'>%s</a>" % (
-                    'mailto:%s' % obj.getClient().getEmailAddress(), obj.getClient().getEmailAddress()
-                )
-                item['phone'] = obj.getClient().getPhone()
+                    'mailto:%s' % client.getEmailAddress(),
+                    client.getEmailAddress())
+                item['phone'] = client.getPhone()
             else:
                 item['client'] = ''
                 item['email'] = ''
                 item['phone'] = ''
-            
             item['Created'] = self.ulocalized_time(obj.created())
             item['invoicedate'] = self.ulocalized_time(obj.getInvoiceDate())
             item['startdate'] = self.ulocalized_time(obj.getBatchStartDate())
@@ -111,11 +109,9 @@ class InvoiceBatchInvoicesView(BikaListingView):
 
 
 class BatchFolderExportCSV(InvoiceBatchInvoicesView):
-
     def __call__(self, REQUEST, RESPONSE):
-        """
-        Export invoice batch into csv format.
-        Writes the csv file into the RESPONSE to allow
+        """Export invoice batch into csv format.
+        Writes the csv file into the response to allow
         the file to be streamed to the user.
         Nothing gets returned.
         """
@@ -133,45 +129,63 @@ class BatchFolderExportCSV(InvoiceBatchInvoicesView):
 
         csv_rows = [['Invoice Batch']]
         # Invoice batch header
-        csv_rows.append(['ID', container.getId()])
-        csv_rows.append(['Invoice Batch Title', container.title])
-        csv_rows.append(['Start Date', container.getBatchStartDate().strftime('%Y-%m-%d')])
-        csv_rows.append(['End Date', container.getBatchEndDate().strftime('%Y-%m-%d')])
+        csv_rows.append(
+            ['ID', container.getId()])
+        csv_rows.append(
+            ['Invoice Batch Title', container.title])
+        csv_rows.append(
+            ['Start Date', container.getBatchStartDate().strftime('%Y-%m-%d')])
+        csv_rows.append(
+            ['End Date', container.getBatchEndDate().strftime('%Y-%m-%d')])
         csv_rows.append([])
 
         # Building the invoice field header
         csv_rows.append(['Invoices'])
-        csv_rows.append(['Invoice ID', 'Client ID', 'Client Name', 'Account Num.', 'Phone', 'Date', 'Total Price'])
+        csv_rows.append([
+            'Invoice ID',
+            'Client ID',
+            'Client Name',
+            'Account Num.',
+            'Phone',
+            'Date',
+            'Total Price'
+        ])
         invoices_items_rows = []
+        currency = currency_format(self.context, 'en')
         for invoice in invoices:
             # Building the invoice field header
-            invoice_info_header = [invoice.getId(),
-                                   invoice.getClient().getId(),
-                                   invoice.getClient().getName(),
-                                   invoice.getClient().getAccountNumber(),
-                                   invoice.getClient().getPhone(),
-                                   invoice.getInvoiceDate().strftime('%Y-%m-%d'),
-                                   ]
+            invoice_info_header = [
+                invoice.getId(),
+                invoice.getClient().getId(),
+                invoice.getClient().getName(),
+                invoice.getClient().getAccountNumber(),
+                invoice.getClient().getPhone(),
+                invoice.getInvoiceDate().strftime('%Y-%m-%d'),
+                currency(invoice.getTotal()),
+            ]
             csv_rows.append(invoice_info_header)
-            # Obtaining and sorting all analysis items. These analysis are saved inside a list to add later
+            # Obtaining and sorting all analysis items.
+            # These analysis are saved inside a list to add later
             items = invoice.invoice_lineitems
             mixed = [(item.get('OrderNumber', ''), item) for item in items]
             mixed.sort()
             # Defining each analysis row
             for line in mixed:
-                invoice_analysis = [line[1].get('ItemDate', ''),
-                                    line[1].get('ItemDescription', ''),
-                                    line[1].get('OrderNumber', ''),
-                                    line[1].get('Subtotal', ''),
-                                    line[1].get('VATAmount', ''),
-                                    line[1].get('Total', ''),
-                                    ]
+                invoice_analysis = [
+                    line[1].get('ItemDate', ''),
+                    line[1].get('ItemDescription', ''),
+                    line[1].get('OrderNumber', ''),
+                    line[1].get('Subtotal', ''),
+                    line[1].get('VATAmount', ''),
+                    line[1].get('Total', ''),
+                ]
                 invoices_items_rows.append(invoice_analysis)
 
         csv_rows.append([])
         # Creating analysis items header
         csv_rows.append(['Invoices items'])
-        csv_rows.append(['Date', 'Description', 'Order', 'Amount', 'VAT', 'Amount incl. VAT'])
+        csv_rows.append(['Date', 'Description', 'Order', 'Amount', 'VAT',
+                         'Amount incl. VAT'])
         # Adding all invoices items
         for item_row in invoices_items_rows:
             csv_rows.append(item_row)
@@ -187,6 +201,6 @@ class BatchFolderExportCSV(InvoiceBatchInvoicesView):
         setheader = RESPONSE.setHeader
         setheader('Content-Length', len(result))
         setheader('Content-Type',
-            'text/x-comma-separated-values')
+                  'text/x-comma-separated-values')
         setheader('Content-Disposition', 'inline; filename=%s' % filename)
         RESPONSE.write(result)
