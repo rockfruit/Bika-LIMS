@@ -163,6 +163,7 @@ def getTransitionActor(obj, action_id):
         message = str(e)
         logger.error("Cannot retrieve review_history on {}: {}".format(
             obj, message))
+    return ''
 
 
 # Enumeration of the available status flows
