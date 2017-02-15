@@ -110,8 +110,10 @@ class AddAnalysesView(BikaListingView):
             if 'getWorksheetTemplate' in form and form['getWorksheetTemplate']:
                 layout = self.context.getLayout()
                 wst = rc.lookupObject(form['getWorksheetTemplate'])
+                client_title = form.get('client', 'any')
                 self.request['context_uid'] = self.context.UID()
-                self.context.applyWorksheetTemplate(wst)
+                self.context.applyWorksheetTemplate(
+                    wst, client_title=client_title)
                 if len(self.context.getLayout()) != len(layout):
                     self.context.plone_utils.addPortalMessage(
                         PMF("Changes saved."))
@@ -149,7 +151,7 @@ class AddAnalysesView(BikaListingView):
             cookie_dep_uid = self.request.get('filter_by_department_info', '')
             # Comparing departments' UIDs
             result = True if serv_dep.UID() in\
-                cookie_dep_uidsplit(',') else False
+                cookie_dep_uid.split(',') else False
         return result
 
     def folderitems(self):
