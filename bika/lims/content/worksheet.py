@@ -205,8 +205,11 @@ class Worksheet(BaseFolder, HistoryAwareMixin):
         self.REQUEST['context_uid'] = self.UID()
         try:
             workflow.doActionFor(analysis, 'unassign')
-        except WorkflowException:
-            pass
+        except WorkflowException as e:
+            message = str(e)
+            logger.error(
+                "Cannot use 'unassign' transition on {}: {}".format(
+                analysis, message))
         # Note: subscriber might unassign the AR and/or promote the worksheet
 
         # remove analysis from context.Analyses *after* unassign,
