@@ -159,7 +159,7 @@ class BikaTestLayer(SimpleTestLayer):
         self.request.form['setupexisting'] = 1
         self.request.form['existing'] = "bika.lims:test"
         lsd = LoadSetupData(portal, self.request)
-        lsd()    import sys
+        lsd()
 
         logout()
 
