@@ -160,12 +160,6 @@ class BikaTestLayer(SimpleTestLayer):
         self.request.form['existing'] = "bika.lims:test"
         lsd = LoadSetupData(portal, self.request)
         lsd()    import sys
-    import pdb
-    for attr in ('stdin', 'stdout', 'stderr'):
-        setattr(sys, attr, getattr(sys, '__%s__' % attr))
-    pdb.set_trace()
-    pass
-
 
         logout()
 
