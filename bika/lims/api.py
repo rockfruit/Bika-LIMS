@@ -302,7 +302,7 @@ def get_icon(brain_or_object, html_tag=True):
     return tag
 
 
-def get_object_by_uid(uid):
+def get_object_by_uid(uid, default=_marker):
     """Find an object by a given UID
 
     :param uid: The UID of the object to find
@@ -312,6 +312,8 @@ def get_object_by_uid(uid):
 
     # nothing to do here
     if not uid:
+        if default is not _marker:
+            return default
         fail("get_object_by_uid requires UID as first argument; got {} instead"
              .format(uid))
 
@@ -331,12 +333,14 @@ def get_object_by_uid(uid):
     # try to find the object with the portal catalog
     res = pc(UID=uid)
     if not res:
+        if default is not _marker:
+            return default
         fail("No object found for UID {}".format(uid))
 
     return get_object(res[0])
 
 
-def get_object_by_path(path):
+def get_object_by_path(path, default=_marker):
     """Find an object by a given physical path or absolute_url
 
     :param path: The physical path of the object to find
@@ -346,6 +350,8 @@ def get_object_by_path(path):
 
     # nothing to do here
     if not path:
+        if default is not _marker:
+            return default
         fail("get_object_by_path first argument must be a path; {} received"
              .format(path))
 
@@ -360,6 +366,8 @@ def get_object_by_path(path):
         path = "/".join(request.physicalPathFromURL(path))
 
     if not path.startswith(portal_path):
+        if default is not _marker:
+            return default
         fail("Not a physical path inside the portal.")
 
     if path == portal_path:
@@ -367,6 +375,8 @@ def get_object_by_path(path):
 
     res = pc(path=dict(query=path, depth=0))
     if not res:
+        if default is not _marker:
+            return default
         fail("Object at path '{}' not found".format(path))
     return get_object(res[0])
 
