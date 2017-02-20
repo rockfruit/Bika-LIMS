@@ -311,7 +311,7 @@ Getting an object by UID
 ------------------------
 
 This function finds an object by its uinique ID (UID).
-The portal object with the defined UId of `0` is also supported::
+The portal object with the defined UId of '0' is also supported::
 
     >>> api.get_object_by_uid('0')
     <PloneSite at /plone>
@@ -321,6 +321,15 @@ The portal object with the defined UId of `0` is also supported::
 
     >>> api.get_object_by_uid(uid_client_brain)
     <Client at /plone/clients/client-1>
+
+If a default value is provided, the function will never fail.  Any exception
+or error will result in the default value being returned::
+
+    >>> api.get_object_by_uid('invalid uid', 'default')
+    'default'
+
+    >>> api.get_object_by_uid(None, 'default')
+    'default'
 
 
 Getting an object by Path
@@ -340,6 +349,14 @@ Paths outside the portal raise an error::
     Traceback (most recent call last):
     [...]
     BikaLIMSError: Not a physical path inside the portal.
+
+Any exception returns default value::
+
+    >>> api.get_object_by_path('/invaid/path', 'default')
+    'default'
+
+    >>> api.get_object_by_path(None, 'default')
+    'default'
 
 
 Getting the Physical Path of an Object
