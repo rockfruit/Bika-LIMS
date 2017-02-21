@@ -536,7 +536,8 @@ def search(query, catalog=_marker, show_inactive=False):
 
     limit = query.get("limit")
     try:
-        limit = int(limit)
+        if limit:
+            limit = int(limit)
     except ValueError:
         logger.warn("search: limit should be int, received {}.".format(limit))
         limit = None
