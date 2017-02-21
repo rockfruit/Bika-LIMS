@@ -531,9 +531,15 @@ def search(query, catalog=_marker, show_inactive=False):
         search_results = filter(is_active, search_results)
 
     # Handle the `limit`, `sort_order` and the `sort_on` manually
-    limit = query.get("limit")
     sort_on = query.get("sort_on", "created")
     sort_order = query.get("sort_order", "ascending")
+
+    limit = query.get("limit")
+    try:
+        limit = int(limit)
+    except ValueError:
+        logger.warn("search: limit should be int, received {}.".format(limit))
+        limit = None
 
     def _sort_on(x, y):
         x = safe_getattr(x, sort_on, x)
