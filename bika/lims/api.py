@@ -454,13 +454,15 @@ def get_parent(brain_or_object, catalog_search=False):
     return get_object(brain_or_object).aq_parent
 
 
-def search(query, catalog=_marker):
+def search(query, catalog=_marker, show_inactive=False):
     """Search for objects.
 
     :param query: A suitable search query.
     :type query: dict
     :param catalog: A single catalog id or a list of catalog ids
     :type catalog: str/list
+    :param show_inactive: Include inactive or dormant objects
+    :type show_inactive: Boolean
     :returns: Search results
     :rtype: List of ZCatalog brains
     """
@@ -507,6 +509,10 @@ def search(query, catalog=_marker):
 
     # With a single catalog, we don't have to care about merging the results
     if len(catalogs) == 1:
+        brains = catalogs[0](query)
+        # Avoid inactive or dormant items
+        if not show_inactive:
+            return filter(is_active, brains)
         return catalogs[0](query)
 
     # Multiple catalog results need to be merged
@@ -519,6 +525,10 @@ def search(query, catalog=_marker):
     # The search results of all catalog queries are now mixed, so we have to
     # order them according to the search spec
     search_results = results.values()
+
+    # Avoid inactive or dormant items.
+    if not show_inactive:
+        search_results = filter(is_active, search_results)
 
     # Handle the `limit`, `sort_order` and the `sort_on` manually
     limit = query.get("limit")
@@ -638,6 +648,28 @@ def get_workflow_status_of(brain_or_object):
     """
     obj = get_object(brain_or_object)
     return ploneapi.content.get_state(obj)
+
+
+def is_active(brain_or_object):
+    """ Check if obj is inactive or cancelled.
+    """
+    if is_brain(brain_or_object):
+        if base_hasattr(brain_or_object, 'inactive_state') and \
+                        brain_or_object.inactive_state == 'inactive':
+            return False
+        if base_hasattr(brain_or_object, 'cancellation_state') and \
+                        brain_or_object.cancellation_state == 'cancelled':
+            return False
+    obj = get_object(brain_or_object)
+    wf = get_tool('portal_workflow')
+    workflows = get_workflows_for(obj)
+    if 'bika_inactive_workflow' in workflows \
+            and wf.getInfoFor(obj, 'inactive_state') == 'inactive':
+        return False
+    if 'bika_cancellation_workflow' in workflows \
+            and wf.getInfoFor(obj, 'cancellation_state') == 'cancelled':
+        return False
+    return True
 
 
 def get_roles_for_permission(permission, brain_or_object):

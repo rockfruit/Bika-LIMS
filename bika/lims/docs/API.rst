@@ -514,6 +514,21 @@ We could also explicitly define a catalog to achieve the same::
     >>> len(results)
     1
 
+To see inactive or dormant items, we must explicitly request them.  This means
+that even if we explicitly specify the ID of an item that is inactive, it will
+not be returned by default!
+
+    >>> from plone.api.content import transition
+    >>> results = api.search({"portal_type": "AnalysisCategory", "id": "analysiscategory-1"})
+    >>> len(results)
+    1
+    >>> transition(analysiscategory1, 'deactivate')
+    >>> results = api.search({"portal_type": "AnalysisCategory", "id": "analysiscategory-1"})
+    >>> len(results)
+    0
+    >>> results = api.search({"portal_type": "AnalysisCategory", "id": "analysiscategory-1"}, show_inactive=True)
+    >>> len(results)
+    1
 
 Getting an Attribute of an Object
 ---------------------------------
@@ -589,6 +604,37 @@ This function returns the state of a given object::
 
     >>> api.get_workflow_status_of(client)
     'active'
+
+
+Getting inactive/cancellation state of different workflows
+----------------------------------------------------------
+
+There are two workflows allowing an object to be set inactive.  We provide
+the is_active function to return False if an item is set inactive with either
+of these workflows.
+
+In the search() test above, the is_active function's handling of brain states
+is tested.  Here, I just want to test if object states are handled correctly.
+
+For setup types, we use bika_inctive_workflow::
+
+    >>> from plone.api.content import transition
+
+    >>> method1 = api.create(portal.methods, "Method", title="Test Method")
+    >>> api.is_active(method1)
+    True
+    >>> transition(method1, 'deactivate')
+    >>> api.is_active(method1)
+    False
+
+For transactional types, bika_cancellation_workflow is used::
+
+    >>> batch1 = api.create(portal.batches, "Batch", title="Test Batch")
+    >>> api.is_active(batch1)
+    True
+    >>> transition(batch1, 'cancel')
+    >>> api.is_active(batch1)
+    False
 
 
 Getting the granted Roles for a certain Permission on an Object
