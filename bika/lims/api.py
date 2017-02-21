@@ -513,7 +513,7 @@ def search(query, catalog=_marker, show_inactive=False):
         # Avoid inactive or dormant items
         if not show_inactive:
             return filter(is_active, brains)
-        return catalogs[0](query)
+        return brains
 
     # Multiple catalog results need to be merged
     results = dict()
