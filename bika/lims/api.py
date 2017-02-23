@@ -657,6 +657,20 @@ def get_workflow_status_of(brain_or_object):
     return ploneapi.content.get_state(obj)
 
 
+def do_transition_for(brain_or_object, transition):
+    """Performs a workflow transition for the passed in object.
+
+    :param brain_or_object: A single catalog brain or content object
+    :type brain_or_object: ATContentType/DexterityContentType/CatalogBrain
+    :returns: The object where the transtion was performed
+    """
+    if not isinstance(transition, basestring):
+        fail("Transition type needs to be string, got '%s'" % type(transition))
+    obj = get_object(brain_or_object)
+    ploneapi.content.transition(obj, transition)
+    return obj
+
+
 def is_active(brain_or_object):
     """Check if the workflow state of the object is 'inactive' or 'cancelled'.
 

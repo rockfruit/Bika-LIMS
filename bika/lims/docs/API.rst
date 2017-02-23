@@ -518,11 +518,12 @@ To see inactive or dormant items, we must explicitly request them.  This means
 that even if we explicitly specify the ID of an item that is inactive, it will
 not be returned by default!
 
-    >>> from plone.api.content import transition
     >>> results = api.search({"portal_type": "AnalysisCategory", "id": "analysiscategory-1"})
     >>> len(results)
     1
-    >>> transition(analysiscategory1, 'deactivate')
+    >>> analysiscategory1 = api.do_transition_for(analysiscategory1, 'deactivate')
+    >>> api.is_active(analysiscategory1)
+    False
     >>> results = api.search({"portal_type": "AnalysisCategory", "id": "analysiscategory-1"})
     >>> len(results)
     0
@@ -606,6 +607,20 @@ This function returns the state of a given object::
     'active'
 
 
+Transitioning an Object
+-----------------------
+
+This function performs a workflow transition and returns the object::
+
+    >>> client = api.do_transition_for(client, "deactivate")
+    >>> api.is_active(client)
+    False
+
+    >>> client = api.do_transition_for(client, "activate")
+    >>> api.is_active(client)
+    True
+
+
 Getting inactive/cancellation state of different workflows
 ----------------------------------------------------------
 
@@ -618,12 +633,10 @@ is tested.  Here, I just want to test if object states are handled correctly.
 
 For setup types, we use bika_inctive_workflow::
 
-    >>> from plone.api.content import transition
-
     >>> method1 = api.create(portal.methods, "Method", title="Test Method")
     >>> api.is_active(method1)
     True
-    >>> transition(method1, 'deactivate')
+    >>> method1 = api.do_transition_for(method1, 'deactivate')
     >>> api.is_active(method1)
     False
 
@@ -632,7 +645,7 @@ For transactional types, bika_cancellation_workflow is used::
     >>> batch1 = api.create(portal.batches, "Batch", title="Test Batch")
     >>> api.is_active(batch1)
     True
-    >>> transition(batch1, 'cancel')
+    >>> batch1 = api.do_transition_for(batch1, 'cancel')
     >>> api.is_active(batch1)
     False
 
