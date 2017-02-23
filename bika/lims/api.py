@@ -658,14 +658,19 @@ def get_workflow_status_of(brain_or_object):
 
 
 def is_active(brain_or_object):
-    """ Check if obj is inactive or cancelled.
+    """Check if the workflow state of the object is 'inactive' or 'cancelled'.
+
+    :param brain_or_object: A single catalog brain or content object
+    :type brain_or_object: ATContentType/DexterityContentType/CatalogBrain
+    :returns: False if the object is in the state 'inactive' or 'cancelled'
+    :rtype: bool
     """
     if is_brain(brain_or_object):
         if base_hasattr(brain_or_object, 'inactive_state') and \
-                        brain_or_object.inactive_state == 'inactive':
+           brain_or_object.inactive_state == 'inactive':
             return False
         if base_hasattr(brain_or_object, 'cancellation_state') and \
-                        brain_or_object.cancellation_state == 'cancelled':
+           brain_or_object.cancellation_state == 'cancelled':
             return False
     obj = get_object(brain_or_object)
     wf = get_tool('portal_workflow')
@@ -703,7 +708,7 @@ def is_versionable(brain_or_object, policy='at_edit_autoversion'):
     pr = get_tool("portal_repository")
     obj = get_object(brain_or_object)
     return pr.supportsPolicy(obj, 'at_edit_autoversion') \
-           and pr.isVersionable(obj)
+        and pr.isVersionable(obj)
 
 
 def get_version(brain_or_object):
