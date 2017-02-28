@@ -28,6 +28,10 @@ def create_sample(context, request, values):
         sample.processForm(REQUEST=request, values=values)
         # Required to ensure that IAcquireFieldDefaults is honored
         sample.setDefaults()
+        # Specifically set the DateSampled
+        if 'DateSampled' in values:
+            sample.setDateSampled(values['DateSampled'])
+            sample.setSamplingDate(values['DateSampled'])
         # Perform the appropriate workflow action
         workflow_action =  'sampling_workflow' if workflow_enabled \
             else 'no_sampling_workflow'

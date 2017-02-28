@@ -1,7 +1,21 @@
-# Testing layer to provide some of the features of PloneTestCase
-from Products.CMFPlone.utils import _createObjectByType
+# This file is part of Bika LIMS
+#
+# Copyright 2011-2016 by it's authors.
+# Some rights reserved. See LICENSE.txt, AUTHORS.txt.
 
+# Testing layer to provide some of the features of PloneTestCase
+from AccessControl import getSecurityManager
+from AccessControl.SecurityManagement import newSecurityManager, \
+    setSecurityManager
+from Products.CMFPlone.utils import _createObjectByType
+from plone.app.robotframework import AutoLogin, Content
+from zope.component.hooks import getSite
+from bika.lims import logger
 from bika.lims.exportimport.load_setup_data import LoadSetupData
+from bika.lims.utils.analysisrequest import create_analysisrequest
+from plone import api
+from plone.app.robotframework.testing import REMOTE_LIBRARY_BUNDLE_FIXTURE
+from plone.app.robotframework.remote import RemoteLibrary, RemoteLibraryLayer
 from plone.app.testing import applyProfile
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import login
@@ -15,20 +29,22 @@ from Products.CMFPlone.setuphandlers import setupPortalContent
 from Testing.makerequest import makerequest
 from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
-from plone.app.testing import login
 from plone.testing.z2 import Browser
+
 import bika.lims
-from bika.lims.jsonapi import set_fields_from_request
+import pkg_resources
 import collective.js.jqueryui
 import plone.app.iterate
 import Products.ATExtensions
 import Products.PloneTestCase.setup
+
 import transaction
-from zope.component.hooks import getSite
 
 
-class BikaTestLayer(PloneSandboxLayer):
-
+class SimpleTestLayer(PloneSandboxLayer):
+    """Configure a default site with bika.lims addon installed,
+    and with no data or settings loaded.
+    """
     defaultBases = (PLONE_FIXTURE,)
 
     def setUpZope(self, app, configurationContext):
@@ -72,41 +88,40 @@ class BikaTestLayer(PloneSandboxLayer):
                     username = "test_%s" % (role.lower())
                 else:
                     username = "test_%s%s" % (role.lower(), user_nr)
-                member = portal.portal_registration.addMember(
-                    username,
-                    username,
-                    properties={
-                        'username': username,
-                        'email': username + "@example.com",
-                        'fullname': username}
-                )
-                # Add user to all specified groups
-                group_id = role + "s"
-                group = portal.portal_groups.getGroupById(group_id)
-                if group:
-                    group.addMember(username)
-                # Add user to all specified roles
-                member._addRole(role)
-                # If user is in LabManagers, add Owner local role on clients folder
-                if role == 'LabManager':
-                    portal.clients.manage_setLocalRoles(username, ['Owner', ])
-
-        # load test data
-        self.request = makerequest(portal.aq_parent).REQUEST
-        self.request.form['setupexisting'] = 1
-        self.request.form['existing'] = "bika.lims:test"
-        lsd = LoadSetupData(portal, self.request)
-        lsd()
-
-        portal.bika_setup.setShowNewReleasesInfo(False)
+                try:
+                    member = portal.portal_registration.addMember(
+                        username,
+                        username,
+                        properties={
+                            'username': username,
+                            'email': username + "@example.com",
+                            'fullname': username}
+                    )
+                    # Add user to all specified groups
+                    group_id = role + "s"
+                    group = portal.portal_groups.getGroupById(group_id)
+                    if group:
+                        group.addMember(username)
+                    # Add user to all specified roles
+                    member._addRole(role)
+                    # If user is in LabManagers, add Owner local role on clients folder
+                    if role == 'LabManager':
+                        portal.clients.manage_setLocalRoles(username,
+                                                            ['Owner', ])
+                except ValueError:
+                    pass  # user exists
 
         # Force the test browser to show the site always in 'en'
         ltool = portal.portal_languages
-        ltool.manage_setLanguageSettings('en', ['en'], setUseCombinedLanguageCodes=False, startNeutral=True)
+        ltool.manage_setLanguageSettings('en', ['en'],
+                                         setUseCombinedLanguageCodes=False,
+                                         startNeutral=True)
 
         logout()
 
-def getBrowser(portal, loggedIn=True, username=TEST_USER_NAME, password=TEST_USER_PASSWORD):
+
+def getBrowser(portal, loggedIn=True, username=TEST_USER_NAME,
+               password=TEST_USER_PASSWORD):
     """Instantiate and return a testbrowser for convenience
     This is done weirdly because I could not figure out how else to
     pass the browser to the doctests"""
@@ -118,21 +133,35 @@ def getBrowser(portal, loggedIn=True, username=TEST_USER_NAME, password=TEST_USE
         browser.getControl('Login Name').value = username
         browser.getControl('Password').value = password
         browser.getControl('Log in').click()
-        assert('You are now logged in' in browser.contents)
+        assert ('You are now logged in' in browser.contents)
     return browser
 
-BIKA_TEST_FIXTURE = BikaTestLayer()
-BIKA_TEST_FIXTURE['getBrowser'] = getBrowser
 
-BIKA_FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(BIKA_TEST_FIXTURE,),
-    name="BikaTestingLayer:Functional"
+BIKA_SIMPLE_FIXTURE = SimpleTestLayer()
+BIKA_SIMPLE_FIXTURE['getBrowser'] = getBrowser
+BIKA_SIMPLE_TESTING = FunctionalTesting(
+    bases=(BIKA_SIMPLE_FIXTURE,),
+    name="SimpleTestingLayer:Functional"
 )
 
-BIKA_ROBOT_TESTING = FunctionalTesting(
-    bases=(BIKA_TEST_FIXTURE, z2.ZSERVER_FIXTURE),
-    name="BikaTestingLayer:Robot"
-)
+
+class BikaTestLayer(SimpleTestLayer):
+    def setUpZope(self, app, configurationContext):
+        super(BikaTestLayer, self).setUpZope(app, configurationContext)
+
+    def setUpPloneSite(self, portal):
+        super(BikaTestLayer, self).setUpPloneSite(portal)
+
+        login(portal.aq_parent, SITE_OWNER_NAME)  # again
+
+        # load test data
+        self.request = makerequest(portal.aq_parent).REQUEST
+        self.request.form['setupexisting'] = 1
+        self.request.form['existing'] = "bika.lims:test"
+        lsd = LoadSetupData(portal, self.request)
+        lsd()
+
+        logout()
 
 
 class Keywords(object):
@@ -140,42 +169,106 @@ class Keywords(object):
     """
 
     def resource_filename(self):
-        import pkg_resources
         res = pkg_resources.resource_filename("bika.lims", "tests")
         return res
 
-    def createObjectByType(self, login_name, portal_type, path, id, **kwargs):
-        """Create an object.
-        :param login_name: plone.app.testing needs to know who we want to be
-        :param portal_type: Create object of this type
-        :param path: Folder in which to place object (relative to site root)
-                         with or without the leading / is fine.
-        :param id: the id to give the new object.  Bika objects should be sent
-                   through renameAfterCreation regardless, and this may
-                   change the ID.
-        :param kwargs: Other arguments passed here, are used to populate the
-                       field values.   To set references, the same syntax
-                       is used as that in jsonapi.create.
 
-        Examples of robotframework syntax for using this:
+class RemoteKeywords(Keywords, RemoteLibrary):
 
-        # create Worksheet:
-        createObjectByType  Worksheet  /worksheets  'ws-tmp-id'
 
-        # create Worksheet, and set Batch field using only the Title.
-        createObjectByType  Worksheet  /worksheets  'ws-tmp-id'
-        \                   Batch=portal_type:SampleType|title:Apple Pulp
-        \                   Analyst=portal_type:Contact|getFullname:Rita Mohale
+    def write_at_field_values(self, obj_or_path, **kwargs):
+        """Write valid field values from kwargs into the object's AT fields.
+        obj_id_path could be an object or a path to an object, relative to the
+        portal root.  This makes the keyword much easier to use directly from
+        within a robot test.
         """
-        portal = getSite()
-        login(portal, login_name)
-        path = path[1:] if path.startswith("/") else path
-        location = portal.unrestrictedTraverse(str(path))
-        obj = _createObjectByType(portal_type, location, id, **kwargs)
-        obj.unmarkCreationFlag()
-        if hasattr(obj, '_renameAfterCreation'):
-            id = obj._renameAfterCreation()
-        set_fields_from_request(obj, kwargs)
-        transaction.commit()
-        return obj.id
+        portal = api.portal.get()
+        if isinstance(obj_or_path, basestring):
+            obj = portal.restrictedTraverse(obj_or_path)
+        else:
+            obj = obj_or_path
 
+        uc = getToolByName(obj, 'uid_catalog')
+        schema = obj.Schema()
+        # fields contains all schema-valid field values from the request.
+        fields = {}
+        for fieldname, value in kwargs.items():
+            if fieldname not in schema:
+                continue
+            field = schema.getField(fieldname)
+            fieldtype = field.getType()
+            mutator = field.getMutator(obj)
+            if schema[fieldname].type in ('reference'):
+                # Assume that the value is a UID
+                brains = uc(UID=value)
+                if not brains:
+                    logger.warn("Can't resolve: %s:%s" % (fieldname, value))
+                    continue
+                if schema[fieldname].multiValued:
+                    value = [b.UID for b in brains] if brains else []
+                else:
+                    value = brains[0].UID if brains else None
+            elif fieldtype == 'Products.Archetypes.Field.BooleanField':
+                if value.lower() in ('0', 'false', 'no') or not value:
+                    value = False
+                else:
+                    value = True
+            elif fieldtype in [
+                'Products.ATExtensions.field.records.RecordsField',
+                'Products.ATExtensions.field.records.RecordField',
+                'bika.lims.browser.fields.referenceresultsfield.ReferenceResultsField']:
+                value = eval(value)
+            if mutator:
+                mutator(value)
+            else:
+                field.set(obj, value)
+        obj.reindexObject()
+
+    def create_object(self, path, portal_type, id, **kwargs):
+        portal = api.portal.get()
+        container = portal.restrictedTraverse(path.strip('/').split('/'))
+        # create object
+        obj = _createObjectByType(portal_type, container, id)
+        obj.unmarkCreationFlag()
+        self.write_at_field_values(obj, **kwargs)
+        return obj.UID()
+
+    def get_uid(self, catalog_name, **query):
+        portal = api.portal.get()
+        catalog = getToolByName(portal, catalog_name)
+        # catalog call
+        brains = catalog(**query)
+        if brains:
+            return brains[0].UID
+        logger.warning("No brain in %s for %s" % (catalog_name, query))
+
+    def create_ar(self, path, analyses=[], **kwargs):
+        portal = api.portal.get()
+        container = portal.restrictedTraverse(path.strip('/').split('/'))
+        # create object
+        obj = create_analysisrequest(container, container.REQUEST,
+                                     kwargs, analyses)
+        return obj.UID()
+
+# BIKA_SIMPLE_FIXTURE = FunctionalTesting(
+#     bases=(BIKA_SIMPLE_FIXTURE,),
+#     name="BikaSimple:Functional")
+
+BIKA_FUNCTIONAL_FIXTURE = BikaTestLayer()
+BIKA_FUNCTIONAL_FIXTURE['getBrowser'] = getBrowser
+BIKA_FUNCTIONAL_TESTING = FunctionalTesting(
+    bases=(BIKA_FUNCTIONAL_FIXTURE,),
+    name="BikaTestingLayer:Functional"
+)
+
+REMOTE_FIXTURE = RemoteLibraryLayer(
+    libraries=(AutoLogin, Content, RemoteKeywords,),
+    name="RemoteLibrary:RobotRemote"
+)
+
+BIKA_ROBOT_TESTING = FunctionalTesting(
+    bases=(BIKA_FUNCTIONAL_FIXTURE,
+           REMOTE_FIXTURE,
+           z2.ZSERVER_FIXTURE),
+    name="BikaTestingLayer:Robot"
+)
