@@ -536,14 +536,14 @@ schema = BikaSchema.copy() + Schema((
     # - If InstrumentEntry not checked, populate dynamically with
     #   selected Methods, set the first method selected and non-readonly
     # See browser/js/bika.lims.analysisservice.edit.js
-    ReferenceField('_Method',
+    ReferenceField('DefaultMethod',
         schemata = "Method",
         required = 0,
         searchable = True,
         vocabulary_display_path_bound = sys.maxint,
         allowed_types = ('Method',),
         vocabulary = '_getAvailableMethodsDisplayList',
-        relationship = 'AnalysisServiceMethod',
+        relationship = 'AnalysisServiceDefaultMethod',
         referenceClass = HoldingReference,
         widget = SelectionWidget(
             format='select',
@@ -1172,27 +1172,14 @@ class AnalysisService(BaseContent, HistoryAwareMixin):
             to false, returns the Deferred Calculation (manually set)
         """
         if self.getUseDefaultCalculation():
-            return self.getMethod().getCalculation() \
-                if (self.getMethod() \
-                    and self.getMethod().getCalculation()) \
-                else None
+            defmethod = self.getDefaultMethod()
+            calculation = defmethod.getCalculation()
+            if calculation:
+                return calculation
+            else:
+                return None
         else:
             return self.getDeferredCalculation()
-
-    def getMethod(self):
-        """ Returns the method assigned by default to the AS.
-            If Instrument Entry Of Results selected, returns the method
-            from the Default Instrument or None.
-            If Instrument Entry of Results is not selected, returns the
-            method assigned directly by the user using the _Method Field
-        """
-        # TODO This function has been modified after enabling multiple methods
-        # for instruments. Make sure that returning the value of _Method field
-        # is correct.
-        method = None
-        if (self.getInstrumentEntryOfResults() is True):
-            method = self.get_Method()
-        return method
 
     def getAvailableMethods(self):
         """ Returns the methods available for this analysis.
