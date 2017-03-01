@@ -420,6 +420,15 @@ class Instrument(ATFolder):
         items.sort(lambda x, y: cmp(x[1], y[1]))
         return DisplayList(items)
 
+    security.declarePublic('getMethod')
+    @deprecated(comment="bika.lims.content.instrument.getMethod is \
+                deprecated and will be removed in Bika LIMS 3.3")
+
+    def getMethod(self):
+        """
+        """
+        return self.getDefaultMethod()
+
     def _getAvailableMethods(self):
         """ Returns the available (active) methods.
             One method can be done by multiple instruments, but one
