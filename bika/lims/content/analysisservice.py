@@ -29,7 +29,7 @@ from Products.CMFCore.utils import getToolByName
 from Products.validation import validation
 from Products.validation.validators.RegexValidator import RegexValidator
 from Products.CMFCore.WorkflowCore import WorkflowException
-from bika.lims import PMF, bikaMessageFactory as _
+from bika.lims import PMF, bikaMessageFactory as _, deprecated
 from bika.lims.utils import to_utf8 as _c
 from bika.lims.utils import to_unicode as _u
 from bika.lims.utils.analysis import get_significant_digits
@@ -527,8 +527,6 @@ schema = BikaSchema.copy() + Schema((
         )
     ),
     # Default method to be used. This field is used in Analysis Service
-    # Edit view, use getMethod() to retrieve the Method to be used in
-    # this Analysis Service.
     # Gets populated with the methods selected in the multiselection
     # box above or with the default instrument's method.
     # Behavior controlled by js depending on ManualEntry/Instrument/Methods:
@@ -1110,6 +1108,16 @@ class AnalysisService(BaseContent, HistoryAwareMixin):
         """
         price, vat = self.getPrice(), self.getVAT()
         return (float(price) * (float(vat) / 100))
+
+    security.declarePublic('getMethod')
+    @deprecated(comment="bika.lims.content.analyissservice.getMethod is \
+                deprecated and will be removed in Bika LIMS 3.3")
+
+    def getMethod(self):
+        """
+        """
+        return self.getDefaultMethod()
+
 
     def getAnalysisCategories(self):
         bsc = getToolByName(self, 'bika_setup_catalog')
