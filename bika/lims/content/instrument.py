@@ -112,14 +112,14 @@ schema = BikaFolderSchema.copy() + BikaSchema.copy() + Schema((
     ),
 
     HistoryAwareReferenceField(
-        'Method',
+        'DefaultMethod',
         vocabulary='_getAvailableMethods',
         allowed_types=('Method',),
-        relationship='InstrumentMethod',
+        relationship='InstrumentDefaultMethod',
         required=0,
         widget=SelectionWidget(
             format='select',
-            label=_("Method"),
+            label=_("Default Method"),
             visible=False,
         ),
     ),

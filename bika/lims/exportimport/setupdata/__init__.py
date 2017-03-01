@@ -772,7 +772,7 @@ class Instruments(WorksheetImporter):
             obj.setInstrumentType(instrumenttype)
             obj.setManufacturer(manufacturer)
             obj.setSupplier(supplier)
-            obj.setMethod([method])
+            obj.setDefaultMethod([method])
 
             # Attaching the instrument's photo
             if row.get('Photo', None):
@@ -1446,7 +1446,7 @@ class Analysis_Services(WorksheetImporter):
         """
         return self.get_relations(service_title,
                                 default_method,
-                                'Method',
+                                'DefaultMethod',
                                 'portal_catalog',
                                 'AnalysisService Methods',
                                 'Method_title')
