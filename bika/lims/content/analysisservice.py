@@ -1181,11 +1181,8 @@ class AnalysisService(BaseContent, HistoryAwareMixin):
         """
         if self.getUseDefaultCalculation():
             defmethod = self.getDefaultMethod()
-            calculation = defmethod.getCalculation()
-            if calculation:
-                return calculation
-            else:
-                return None
+            calculation = defmethod.getCalculation() if defmethod else None
+            return calculation
         else:
             return self.getDeferredCalculation()
 
