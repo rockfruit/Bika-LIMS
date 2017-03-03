@@ -21,8 +21,8 @@
 
         <div class="field">
             <label for="arimport_file" i18n:translate="label_import_ar_file">
-                <input id="arimport_file" type="file" name="csvfile" size="60"/>
-                Select CSV file
+                <input id="arimport_file" type="file" name="sourcefile" size="60"/>
+                Select source file
             </label>
             <br/>
         </div>
