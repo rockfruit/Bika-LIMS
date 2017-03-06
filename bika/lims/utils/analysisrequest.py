@@ -120,6 +120,8 @@ def create_analysisrequest(context, request, values, analyses=None,
             if partition_id in sample.objectIds():
                 partition['object'] = sample[partition_id]
             else:
+                # Create the new partition with all services inside.
+                partition['services'] = [a.UID() for a in analyses]
                 partition['object'] = create_samplepartition(
                     sample,
                     partition,
