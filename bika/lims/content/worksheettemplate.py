@@ -15,8 +15,8 @@ from bika.lims.browser.widgets import ServicesWidget
 from bika.lims.browser.widgets import WorksheetTemplateLayoutWidget
 from bika.lims.config import ANALYSIS_TYPES, PROJECTNAME
 from bika.lims.content.bikaschema import BikaSchema
-
 from bika.lims.interfaces import IBikaSetupType
+from zope.interface import implements
 
 schema = BikaSchema.copy() + Schema((
     RecordsField('Layout',
