@@ -205,9 +205,9 @@ class ClientARImportAddView(BrowserView):
 
         if self.request.form.get('submitted', False):
 
-            csvfile = self.request.form.get('csvfile')
-            rawdata = csvfile.read()
-            fullfilename = csvfile.filename
+            sourcefile = self.request.form.get('sourcefile')
+            rawdata = sourcefile.read()
+            fullfilename = sourcefile.filename
             fullfilename = fullfilename.split('/')[-1]
             filename = fullfilename.split('.')[0]
 
