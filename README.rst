@@ -4,7 +4,7 @@ Bika LIMS
 .. image:: https://travis-ci.org/bikalabs/bika.lims.svg?branch=master
     :target: https://travis-ci.org/bikalabs/bika.lims
 
-v3.3.1 (develop)
+v3.2.1 (develop)
 
 The meaning of Gaob
 -------------------
@@ -31,5 +31,4 @@ Feedback and support
 * Bika Developers List: `bika-developers <http://lists.sourceforge.net/lists/listinfo/bika-developers>`_
 * LIMS design List: `lims-design <https://groups.google.com/forum/?hl=en#%21forum/bika-design>`_
 * Issue Tracker: `http://jira.bikalabs.com/ <http://jira.bikalabs.com>`_
-* IRC: `irc://freenode.net/#bika <irc://freenode.net/#bika>`_
 * Slack: `bikalims.slack.com <http://slackin.bikalims.org>`_

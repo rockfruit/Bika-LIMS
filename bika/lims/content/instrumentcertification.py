@@ -208,11 +208,10 @@ schema['title'].widget.label = _("Certificate Code")
 class InstrumentCertification(BaseFolder):
     """Issued certification from an instrument calibration
     """
-    implements(IInstrumentCertification)
+    implements(IInstrumentCertification, IBikaSetupType)
     security = ClassSecurityInfo()
     schema = schema
     displayContentsTab = False
-    implements(IBikaSetupType)
     _at_rename_after_creation = True
 
     def _renameAfterCreation(self, check_auto_id=False):

@@ -6,7 +6,7 @@
 import os
 from setuptools import setup, find_packages
 
-version = '3.3.1'
+version = '3.2.1'
 
 
 def read(*rnames):
@@ -54,7 +54,7 @@ setup(name='bika.lims',
           'gpw',
           'jarn.jsi18n==0.3',
           'magnitude',
-          'openpyxl==1.5.8',
+          'openpyxl',
           'plone.api',
           'plone.app.dexterity',
           'plone.app.iterate',
@@ -69,7 +69,6 @@ setup(name='bika.lims',
           'Products.DataGridField',
           'Products.TinyMCE',
           'setuptools',
-          'openpyxl',
           'WeasyPrint==0.19.2',
           'z3c.jbot',
           'z3c.unconfigure==1.0.1',

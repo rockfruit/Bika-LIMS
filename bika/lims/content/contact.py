@@ -72,8 +72,9 @@ schema.moveField('CCContact', before='AttachmentsPermitted')
 
 
 class Contact(Person):
-    implements(IContact, IBikaSetupType)
     """
+    """
+    implements(IContact, IBikaSetupType)
 
     schema = schema
     displayContentsTab = False
