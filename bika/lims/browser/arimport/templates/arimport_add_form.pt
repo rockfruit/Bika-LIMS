@@ -12,7 +12,7 @@
 
     <h1>
         <img src="" tal:attributes="src string:++resource++bika.lims.images/analysisprofile_big.png"/>
-        <span i18n:translate="heading_import_ar">UW Import Analysis Request Data</span>
+        <span i18n:translate="">UW Import Analysis Request Data</span>
     </h1>
 
     <form method="post" name="import_analysisrequest" enctype="multipart/form-data">
@@ -20,9 +20,9 @@
         <input type="hidden" name="submitted" value="1"/>
 
         <div class="field">
-            <label for="arimport_file" i18n:translate="label_import_ar_file">
+            <label for="arimport_file" i18n:translate="">
                 <input id="arimport_file" type="file" name="sourcefile" size="60"/>
-                Select source file
+                Select source file (XLSX spreadsheet)
             </label>
             <br/>
         </div>
