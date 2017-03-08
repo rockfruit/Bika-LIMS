@@ -352,67 +352,6 @@ def isnumber(s):
     except ValueError:
         return False
 
-
-def createPdf(htmlreport, outfile=None, css=None, images={}):
-    """create a PDF from some HTML.
-    htmlreport: rendered html
-    outfile: pdf filename; if supplied, caller is responsible for creating
-             and removing it.
-    css: remote URL of css file to download
-    images: A dictionary containing possible URLs (keys) and local filenames
-            (values) with which they may to be replaced during rendering.
-    # WeasyPrint will attempt to retrieve images directly from the URL
-    # referenced in the HTML report, which may refer back to a single-threaded
-    # (and currently occupied) zeoclient, hanging it.  All image source
-    # URL's referenced in htmlreport should be local files.
-    """
-    # A list of files that should be removed after PDF is written
-    cleanup = []
-    css_def = ''
-    if css:
-        if css.startswith("http://") or css.startswith("https://"):
-            # Download css file in temp dir
-            u = urllib2.urlopen(css)
-            _cssfile = tempfile.mktemp(suffix='.css')
-            localFile = open(_cssfile, 'w')
-            localFile.write(u.read())
-            localFile.close()
-            cleanup.append(_cssfile)
-        else:
-            _cssfile = css
-        cssfile = open(_cssfile, 'r')
-        css_def = cssfile.read()
-
-    htmlreport = to_utf8(htmlreport)
-
-    for (key, val) in images.items():
-        htmlreport = htmlreport.replace(key, val)
-
-    # render
-    htmlreport = to_utf8(htmlreport)
-    renderer = HTML(string=htmlreport, encoding='utf-8')
-    pdf_fn = outfile if outfile else tempfile.mktemp(suffix=".pdf")
-    if css:
-        renderer.write_pdf(pdf_fn, stylesheets=[CSS(string=css_def)])
-    else:
-        renderer.write_pdf(pdf_fn)
-    # return file data
-    pdf_data = open(pdf_fn, "rb").read()
-    if outfile is None:
-        os.remove(pdf_fn)
-    for fn in cleanup:
-        os.remove(fn)
-    return pdf_data
-
-def attachPdf(mimemultipart, pdfreport, filename=None):
-    part = MIMEBase('application', "pdf")
-    part.add_header('Content-Disposition',
-                    'attachment; filename="%s.pdf"' % (filename or tmpID()))
-    part.set_payload(pdfreport)
-    Encoders.encode_base64(part)
-    mimemultipart.attach(part)
-
-
 def get_invoice_item_description(obj):
     if obj.portal_type == 'AnalysisRequest':
         sample = obj.getSample()

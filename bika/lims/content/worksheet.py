@@ -519,6 +519,64 @@ class Worksheet(BaseFolder, HistoryAwareMixin):
         if instr:
             self.setInstrument(instr, True)
 
+        # Trim trailing empty/blank/control/duplicate slots from the WS.
+        # This is required when the template specifies more slots than there
+        # are available analyses.
+        if wst.Schema().getField('RemoveTrailingEmptySlots').get(wst):
+            self.trim_trailing_empties()
+
+    def trim_trailing_empties(self):
+        """Compact the worksheet, removing any empty slots and
+        deleting reference/duplicate analyses which are no longer required.
+        """
+        # To begin, get and sort the layout
+        layout = self.getLayout()
+        layout.sort(
+            cmp=lambda x, y: cmp(int(x['position']), int(y['position'])))
+
+        # Find the last position that contains analysis of type a
+        last_a = 0
+        for slot in layout:
+            if slot['type'] == 'a' and int(slot['position']) > last_a:
+                last_a = int(slot['position'])
+
+        # a list of slot numbers that are not empty
+        used_positions = set([int(x['position']) for x in layout])
+
+        # Discover the "last" slot that will be left intact.
+        # This will be the bcd analysis before the next empty slot.
+        found_empty = False
+        found_bcd = False
+        last_slot = 0
+        for nr in range(last_a+1, max(used_positions)+1):
+            if found_empty and found_bcd and nr not in used_positions:
+                last_slot = nr-1
+                break
+            if nr not in used_positions:
+                found_empty = 1
+                continue
+            if nr in used_positions:
+                # now we must continue to count up through bcd slots, until
+                # another empty is found!  The last bcd will be the "end".
+                found_bcd = True
+                continue
+
+        # delete all References and Duplicates in slots numbered > last_slot
+        uc = getToolByName(self, 'uid_catalog')
+        analyses = self.getAnalyses()
+        for x in layout:
+            if int(x['position']) <= last_slot:
+                continue
+            analysis = uc(UID=x['analysis_uid'])[0].getObject()
+            analyses.remove(analysis)
+            analysis.aq_parent.manage_delObjects([analysis.id])
+        self.setAnalyses(analyses)
+
+        # cleanup the layout to remove deleted analyses
+        layout = [x for x in layout if int(x['position']) <= last_slot]
+        self.setLayout(layout)
+
+
     def exportAnalyses(self, REQUEST=None, RESPONSE=None):
         """ Export analyses from this worksheet """
         import bika.lims.InstrumentExport as InstrumentExport
@@ -1032,7 +1090,7 @@ class Worksheet(BaseFolder, HistoryAwareMixin):
                 continue
             if analysis.getPriority():
                 priorities.append(analysis.getPriority())
-        priorities = sorted(priorities, key = itemgetter('sortKey'))
+        priorities = sorted(priorities, key = itemgetter('SortKey'))
         if priorities:
             return priorities[-1]
 

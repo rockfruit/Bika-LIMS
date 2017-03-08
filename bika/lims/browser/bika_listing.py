@@ -920,7 +920,7 @@ class BikaListingView(BrowserView):
                 path,
                 to_utf8(description))
 
-            modified = self.ulocalized_time(obj.modified()),
+            modified = self.ulocalized_time(obj.modified())
 
             # element css classes
             type_class = 'contenttype-' + \

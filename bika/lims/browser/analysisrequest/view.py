@@ -87,8 +87,7 @@ class AnalysisRequestViewView(BrowserView):
                                                      {'id': 'verify'}]
                 t.show_workflow_action_buttons = True
                 t.show_select_column = True
-                if getSecurityManager().checkPermission(EditFieldResults, self.context) \
-                   and poc == 'field':
+                if poc == 'field':
                     t.review_states[0]['columns'].remove('DueDate')
                 self.tables[POINTS_OF_CAPTURE.getValue(poc)] = t.contents_table()
         # Create QC Analyses View for this AR

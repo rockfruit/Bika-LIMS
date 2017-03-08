@@ -257,7 +257,7 @@ class AnalysisRequestWorkflowAction(WorkflowAction):
         if trans and 'receive' in self.context.bika_setup.getAutoPrintStickers():
             transitioned = [item.id for item in items]
             tmpl = self.context.bika_setup.getAutoStickerTemplate()
-            q = "/sticker?autoprint=1&template=%s&items=" % tmpl
+            q = "/sticker?template=%s&items=" % tmpl
             q += ",".join(transitioned)
             self.request.response.redirect(self.context.absolute_url() + q)
         elif trans:
@@ -304,7 +304,8 @@ class AnalysisRequestWorkflowAction(WorkflowAction):
             if not analysis:
                 continue
             # Prevent saving data if the analysis is already transitioned
-            if not (checkPermission(EditResults, analysis) or checkPermission(EditFieldResults, analysis)):
+            if not (checkPermission(EditResults, analysis)
+                    or checkPermission(EditFieldResults, analysis)):
                 title = safe_unicode(analysis.getService().Title())
                 msgid = _('Result for ${analysis} could not be saved because '
                           'it was already submitted by another user.',
