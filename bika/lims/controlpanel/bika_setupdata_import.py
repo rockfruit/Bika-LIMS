@@ -3,7 +3,7 @@ import csv
 from Products.Archetypes import Field
 from Products.ATExtensions.ateapi import RecordField, RecordsField
 from Products.CMFCore.utils import getToolByName
-from zExceptions import Redirect
+from zExceptions import Redirect, BadRequest
 
 from bika.lims import bikaMessageFactory as _
 
@@ -60,6 +60,9 @@ class Import(BrowserView):
 
         # Resolve deferred/circular references
         self.solve_deferred()
+
+        # These aren't created, warn at the end
+        self.already_exists = {}
 
         # Rebuild catalogs
         # XXX do this incrementally; large imports it will take ages.
@@ -150,12 +153,14 @@ class Import(BrowserView):
     def import_portal_type(self, portal_type):
         """Convert rows in a CSV into objects in the database.
         """
+        print "importing %s"%portal_type
         fn = os.path.join(self.tempdir, portal_type + ".csv")
         with open(fn, 'rb') as f:
             reader = csv.DictReader(f)
             for row in reader:
                 self.create_instance(portal_type, row)
 
+    from bika.lims.api import create
     def create_instance(self, portal_type, rowvalues):
         """Create an object from a CSV row
         """
@@ -185,7 +190,12 @@ class Import(BrowserView):
             self.outstanding[portal_type].append(rowvalues)
             return
 
-        instance = fti.constructInstance(parent, instance_id, title=title)
+        try:
+            instance = fti.constructInstance(parent, instance_id, title=title)
+        except BadRequest:
+            self.already_exists.update({instance_id:title})
+            return
+
         instance.unmarkCreationFlag()
         instance.reindexObject()
         self.old2newuid[old_uid] = instance.UID()
@@ -339,6 +349,7 @@ class Import(BrowserView):
     def defer(self, instance, field, allowed_types, target_uid):
         if not target_uid:
             import pdb;pdb.set_trace()
+            print "No target UID provided help help"
         self.deferred.append({
             'instance': instance,
             'field': field,
