@@ -64,7 +64,7 @@
 
         <dt id="fieldsetlegend-export-lims-data">Export</dt>
         <dd id="fieldset-export-lims-data">
-            <form action="export-lims-data">
+            <form action="export-lims-data" method="POST">
                 <p>
                     <input type="checkbox"
                            id='bika_setup_types'
@@ -76,20 +76,23 @@
                 <p i18n:translate="">
                     Bika Setup types are all the items found in site-setup,
                     including the Bika Setup values, and Laboratory information.
+                    Reference Samples will be included, but Analyses on reference
+                    samples, instruments or elsewhere in the setup, will not be
+                    included.
                 </p>
-                <p>
-                    <input type="checkbox"
-                           id="bika_transactional_types"
-                           name="bika_transactional_types">
-                    <label for="bika_transactional_types" i18n:translate="">
-                        Export Transactional objects
-                    </label>
-                </p>
-                <p i18n:translate="">
-                    Transactional objects are those created during routine
-                    usage, like AnalysisRequests, Samples, Worksheets and
-                    Batches.
-                </p>
+                <!--<p>-->
+                    <!--<input type="checkbox"-->
+                           <!--id="bika_transactional_types"-->
+                           <!--name="bika_transactional_types">-->
+                    <!--<label for="bika_transactional_types" i18n:translate="">-->
+                        <!--Export Transactional objects-->
+                    <!--</label>-->
+                <!--</p>-->
+                <!--<p i18n:translate="">-->
+                    <!--Transactional objects are those created during routine-->
+                    <!--usage, like AnalysisRequests, Samples, Worksheets and-->
+                    <!--Batches.-->
+                <!--</p>-->
                 <input type="hidden" name="export_submitted"/>
                 <input type="submit"
                        value="Export"

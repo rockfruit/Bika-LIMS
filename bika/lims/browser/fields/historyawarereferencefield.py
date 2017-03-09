@@ -131,7 +131,7 @@ class HistoryAwareReferenceField(ReferenceField):
         try:
             uc = getToolByName(instance, "uid_catalog")
         except AttributeError as err:
-            logger.error("AttributeError: {0}".format(err))
+            # No proper context - field creation or initial state
             return []
 
         try:

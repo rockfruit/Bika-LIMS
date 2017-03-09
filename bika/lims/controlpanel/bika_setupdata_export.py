@@ -130,7 +130,8 @@ class Export(BrowserView):
         # then collect up schema field values
         fields = self.csvinfo[portal_type]['fields']
         for field in fields:
-            values.append(self.mutate(instance, field))
+            val = self.mutate(instance, field)
+            values.append(val)
         # and write them away.
         writer = self.csvinfo[portal_type]['writer']
         writer.writerow(values)
@@ -201,29 +202,33 @@ class Export(BrowserView):
             }
             writer.writerow(headers)
 
-    def reference_write_values(self, instance, field):
+    def reference_write_values(self, instance, field, relationship=None):
         """This is called when a multiValued reference field is
         passed through self.mutate().
         """
         values = field.get(instance)
+        rel = relationship if relationship else field.relationship
         # check that the csv and headers are initialised for this field
-        self.reference_init_csv(field)
-        writer = self.csvinfo[field.relationship]['writer']
+        self.reference_init_csv(field, relationship=rel)
+        writer = self.csvinfo[rel]['writer']
         for value in values:
             # ['source_uid', 'source_id', 'target_uid', 'target_id']
-            rowvalues = [instance.UID(), instance.id, value.UID(), value.id]
+            iuid = instance.UID() if callable(instance.UID) else instance.UID
+            vuid = value.UID() if callable(value.UID) else value.UID
+            rowvalues = [iuid, instance.id, vuid, value.id]
             writer.writerow(rowvalues)
 
-    def reference_init_csv(self, field):
+    def reference_init_csv(self, field, relationship=None):
         """Create the file descriptor and headers list for multiValued
         reference fields
         """
         headers = ['source_uid', 'source_id', 'target_uid', 'target_id']
-        if field.relationship not in self.csvinfo:
-            fn = os.path.join(self.tempdir, field.relationship + '.csv')
+        rel = relationship if relationship else field.relationship
+        if rel not in self.csvinfo:
+            fn = os.path.join(self.tempdir, rel + '.csv')
             fd = open(fn, mode='w')
             writer = csv.writer(fd)
-            self.csvinfo[field.relationship] = {
+            self.csvinfo[rel] = {
                 'file': fd,
                 'writer': writer,
                 'headers': headers,
@@ -268,6 +273,12 @@ class Export(BrowserView):
         return tmpfile
 
     def mutate(self, instance, field):
+        """Returns the mutated value (safe for use as csv value).
+        If the field value is a multi-Valued reference or a list of
+        dictionaries (Record(s)Field) then the values are written immediately
+        to the respective CSV output, and no "value" is returned from this
+        method
+        """
         value = field.get(instance)
         # Booleans are special; we'll return them as '1' or ''.
         if type(value) == bool:
@@ -315,10 +326,18 @@ class Export(BrowserView):
                 # singleValued references just take the uid for
                 # identification of the target
                 return value.UID()
+        # Special case for AnalysisRequest/Analyses field which is an
+        # IObjectField with a list of analyses inside.
+        elif instance.portal_type == 'AnalysisRequest' \
+                and field.getName() == 'Analyses':
+            # The value is a list of objects, so it's compatible with the
+            # reference_write_values method.
+            return self.reference_write_values(
+                instance, field, relationship='AnalysisRequestAnalyses')
         elif Field.ILinesField.providedBy(field):
             return "\\n".join(value)
-        # depend on value of field, to decide mutation.
         else:
+            ## depend on value of field, to decide mutation.
             value = field.get(instance)
             # Dictionaries or lists of dictionaries
             if type(value) == dict \

@@ -11,6 +11,7 @@ import os
 import pprint
 import shutil
 import tempfile
+import transaction
 import zipfile
 
 from bika.lims.browser import BrowserView
@@ -136,6 +137,7 @@ class Import(BrowserView):
             for portal_type, items in outstanding.items():
                 for rowvalues in items:
                     self.create_instance(portal_type, rowvalues)
+            transaction.savepoint()
 
     def list_portal_types(self):
         """List portal type names which have a corrosponding CSV file
@@ -214,7 +216,12 @@ class Import(BrowserView):
             # database as a unicode string causing catalog failure
             instance.id = outval
         else:
-            field.set(instance, outval)
+            try:
+                field.set(instance, outval)
+            except:
+                print "Failed to save %s.%s value = %s"%(instance, field.getName(), outval)
+                import pdb;pdb.set_trace()
+                field.set(instance, outval)
 
     def mutate(self, instance, field, value):
         # bools are transparent
@@ -370,6 +377,10 @@ class Import(BrowserView):
                 src_obj = d['instance']
                 src_field = d['field']
                 old_uid = d['target_uid']
+                if old_uid not in self.old2newuid:
+                    print "Cannot resolve {}.{}, uid={}".format(
+                        src_obj, src_field, old_uid)
+                    continue
                 target_uid = self.old2newuid[old_uid]
                 try:
                     proxies = uc(UID=target_uid)
