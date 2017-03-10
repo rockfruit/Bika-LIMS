@@ -7,6 +7,7 @@ import os
 import App
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import _createObjectByType
+from Products.CMFCore.WorkflowCore import WorkflowException
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from bika.lims import bikaMessageFactory as _
 from bika.lims.browser import BrowserView, ulocalized_time
@@ -221,8 +222,12 @@ class ClientARImportAddView(BrowserView):
                                       interface=IARImportHandler)
             handler.parse_raw_data()
             handler.validate()
-
             url = arimport.absolute_url()
+            try:
+                workflow = getToolByName(self.context, 'portal_workflow')
+                workflow.doActionFor(arimport, 'validate')
+            except WorkflowException:
+                pass
             return self.request.response.redirect(url)
         else:
             return self.template()
