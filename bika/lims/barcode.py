@@ -1,16 +1,18 @@
+# -*- coding: utf-8 -*-
+#
 # This file is part of Bika LIMS
 #
 # Copyright 2011-2016 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
 
-from Products.CMFCore.utils import getToolByName
+import json
+
+import plone.protect
 from Products.CMFCore.WorkflowCore import WorkflowException
+from Products.CMFCore.utils import getToolByName
 
 from bika.lims.browser import BrowserView
 from bika.lims.permissions import EditResults
-
-import json
-import plone.protect
 
 
 class barcode_entry(BrowserView):

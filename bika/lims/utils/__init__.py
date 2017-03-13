@@ -1,38 +1,37 @@
 # -*- coding: utf-8 -*-
-from AccessControl import getSecurityManager
+#
 # This file is part of Bika LIMS
 #
-# Copyright 2011-2016 by it's authors.
+# Copyright 2011-2017 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
 
-
-from AccessControl import ModuleSecurityInfo, allow_module
-
+import tempfile
+import urllib2
 from decimal import Decimal
 from decimal import InvalidOperation
-
-from bika.lims import api as api
-from bika.lims import logger
-from bika.lims.browser import BrowserView
-from DateTime import DateTime
 from email import Encoders
-from email.MIMEBase import MIMEBase
-from plone.memoize import ram
-from plone.registry.interfaces import IRegistry
+from time import time
+
+import os
+import re
+import types
+from AccessControl import ModuleSecurityInfo, allow_module
+from AccessControl import getSecurityManager
+from DateTime import DateTime
 from Products.Archetypes.public import DisplayList
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import safe_unicode
-from time import time
+from email.MIMEBase import MIMEBase
+from plone.memoize import ram
+from plone.registry.interfaces import IRegistry
 from weasyprint import HTML, CSS
 from zope.component import queryUtility
 from zope.i18n import translate
 from zope.i18n.locales import locales
 
-import os
-import re
-import tempfile
-import types
-import urllib2
+from bika.lims import api as api
+from bika.lims import logger
+from bika.lims.browser import BrowserView
 
 ModuleSecurityInfo('email.Utils').declarePublic('formataddr')
 allow_module('csv')

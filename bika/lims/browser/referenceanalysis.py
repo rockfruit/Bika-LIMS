@@ -1,33 +1,28 @@
-# coding=utf-8
-
+# -*- coding: utf-8 -*-
+#
 # This file is part of Bika LIMS
 #
-# Copyright 2011-2016 by it's authors.
+# Copyright 2011-2017 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
-from decimal import InvalidOperation
+
+from decimal import Decimal, InvalidOperation
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from email.utils import formataddr
 from smtplib import SMTPRecipientsRefused
 from smtplib import SMTPServerDisconnected
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-import tempfile
 
-from decimal import Decimal
+from Products.CMFCore.WorkflowCore import WorkflowException
+from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.utils import safe_unicode
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from zope.component import getAdapters
 
 from bika.lims import bikaMessageFactory as _
-from bika.lims.utils import t
-from bika.lims.interfaces import IResultOutOfRange
-from bika.lims.utils import to_utf8
 from bika.lims.browser import BrowserView
-from Products.CMFCore.utils import getToolByName
-from Products.CMFCore.WorkflowCore import WorkflowException
-from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from bika.lims.interfaces import IResultOutOfRange
 from bika.lims.utils import encode_header, createPdf
-from os.path import join
-from Products.CMFPlone.utils import safe_unicode
-from bika.lims.utils import tmpID
-import Globals
-from zope.component import getAdapters
+from bika.lims.utils import t
 
 
 class ResultOutOfRangeIcons(object):

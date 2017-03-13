@@ -1,14 +1,17 @@
+# -*- coding: utf-8 -*-
+#
 # This file is part of Bika LIMS
 #
 # Copyright 2011-2016 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
 
-import plone, json
+import json
 
-from bika.lims.adapters.referencewidgetvocabulary import \
-    DefaultReferenceWidgetVocabulary
-from bika.lims.browser import BrowserView
+import plone
 from Products.CMFCore.utils import getToolByName
+
+from bika.lims.adapters.referencewidgetvocabulary import DefaultReferenceWidgetVocabulary
+from bika.lims.browser import BrowserView
 
 
 class ReferenceWidgetVocabulary(DefaultReferenceWidgetVocabulary):

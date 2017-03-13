@@ -1,38 +1,33 @@
+# -*- coding: utf-8 -*-
+#
 # This file is part of Bika LIMS
 #
-# Copyright 2011-2016 by it's authors.
+# Copyright 2011-2017 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
 
-from Products.CMFPlone.utils import safe_unicode
+import json
 from decimal import Decimal, InvalidOperation
-
-from bika.lims import bikaMessageFactory as _, logger
-from bika.lims.utils import t
-from bika.lims.browser.bika_listing import BikaListingView
-from bika.lims.content.instrumentmaintenancetask import InstrumentMaintenanceTaskStatuses as mstatus
-from bika.lims.subscribers import doActionFor, skip
-from operator import itemgetter
-from plone.app.content.browser.interfaces import IFolderContentsView
-from plone.app.layout.globals.interfaces import IViewView
-from plone.app.layout.viewlets import ViewletBase
-from zope.interface import implements
-from bika.lims.browser.bika_listing import BikaListingView
-from bika.lims.config import QCANALYSIS_TYPES
-from bika.lims.utils import to_utf8
-from bika.lims.permissions import *
-from operator import itemgetter
-from bika.lims.browser import BrowserView
-from bika.lims.browser.analyses import AnalysesView
-from bika.lims.browser.multifile import MultifileView
-from bika.lims.browser.analyses import QCAnalysesView
-from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import safe_unicode
-from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from zExceptions import Forbidden
 from operator import itemgetter
 
 import plone
-import json
+from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.utils import safe_unicode
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from plone.app.content.browser.interfaces import IFolderContentsView
+from plone.app.layout.globals.interfaces import IViewView
+from plone.app.layout.viewlets import ViewletBase
+from zExceptions import Forbidden
+from zope.interface import implements
+
+from bika.lims import bikaMessageFactory as _, logger
+from bika.lims.browser import BrowserView
+from bika.lims.browser.analyses import AnalysesView
+from bika.lims.browser.bika_listing import BikaListingView
+from bika.lims.browser.multifile import MultifileView
+from bika.lims.config import QCANALYSIS_TYPES
+from bika.lims.content.instrumentmaintenancetask import InstrumentMaintenanceTaskStatuses as mstatus
+from bika.lims.utils import t
+
 
 class InstrumentMaintenanceView(BikaListingView):
     implements(IFolderContentsView, IViewView)

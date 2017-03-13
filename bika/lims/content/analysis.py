@@ -1,57 +1,55 @@
 # -*- coding: utf-8 -*-
-
+#
 # This file is part of Bika LIMS
 #
-# Copyright 2011-2016 by it's authors.
+# Copyright 2011-2017 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
 
 
 "DuplicateAnalysis uses this as it's base.  This accounts for much confusion."
 
+import cgi
+import math
+from decimal import Decimal, InvalidOperation
 from plone import api
-from AccessControl import getSecurityManager
+
 from AccessControl import ClassSecurityInfo
 from DateTime import DateTime
-from bika.lims import logger
-from bika.lims.utils.analysis import format_numeric_result
-from bika.lims.workflow import getTransitionActor
-from plone.indexer import indexer
-from Products.ATContentTypes.content import schemata
-from Products.ATExtensions.ateapi import DateTimeField, DateTimeWidget, RecordsField
+from Products.ATExtensions.ateapi import DateTimeField, DateTimeWidget
 from Products.Archetypes import atapi
 from Products.Archetypes.config import REFERENCE_CATALOG
 from Products.Archetypes.public import *
 from Products.Archetypes.references import HoldingReference
 from Products.CMFCore.WorkflowCore import WorkflowException
-from Products.CMFCore.permissions import View, ModifyPortalContent
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import safe_unicode, _createObjectByType
 from Products.CMFEditions.ArchivistTool import ArchivistRetrieveError
+from Products.CMFPlone.utils import safe_unicode, _createObjectByType
+from plone.indexer import indexer
+from zope.interface import implements
+
 from bika.lims import bikaMessageFactory as _
-from bika.lims.utils import t
 from bika.lims import logger
 from bika.lims.browser.fields import DurationField
 from bika.lims.browser.fields import HistoryAwareReferenceField
 from bika.lims.browser.fields import InterimFieldsField
-from bika.lims.permissions import *
-from bika.lims.permissions import Verify as VerifyPermission
 from bika.lims.browser.widgets import DurationWidget
-from bika.lims.browser.widgets import RecordsWidget as BikaRecordsWidget
+from bika.lims.browser.widgets import RecordsWidget
 from bika.lims.config import PROJECTNAME
 from bika.lims.content.bikaschema import BikaSchema
-from bika.lims.interfaces import IAnalysis, IDuplicateAnalysis, IReferenceAnalysis, \
-    IRoutineAnalysis, ISamplePrepWorkflow
+from bika.lims.interfaces import IAnalysis
+from bika.lims.interfaces import IDuplicateAnalysis
+from bika.lims.interfaces import IReferenceAnalysis
 from bika.lims.interfaces import IReferenceSample
+from bika.lims.interfaces import ISamplePrepWorkflow
+from bika.lims.permissions import *
+from bika.lims.permissions import Verify as VerifyPermission
 from bika.lims.utils import changeWorkflowState, formatDecimalMark
 from bika.lims.utils import drop_trailing_zeros_decimal
+from bika.lims.utils.analysis import format_numeric_result
 from bika.lims.utils.analysis import get_significant_digits
+from bika.lims.workflow import getTransitionActor
 from bika.lims.workflow import skip
-from bika.lims.workflow import doActionFor
-from decimal import Decimal, InvalidOperation
-from zope.interface import implements
-import cgi
-import datetime
-import math
+
 
 @indexer(IAnalysis)
 def Priority(instance):
@@ -94,7 +92,7 @@ schema = BikaSchema.copy() + Schema((
         relationship = 'AnalysisAttachment',
     ),
     InterimFieldsField('InterimFields',
-        widget = BikaRecordsWidget(
+        widget = RecordsWidget(
             label = _("Calculation Interim Fields"),
         )
     ),

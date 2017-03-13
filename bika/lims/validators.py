@@ -1,21 +1,23 @@
+# -*- coding: utf-8 -*-
+#
 # This file is part of Bika LIMS
 #
 # Copyright 2011-2016 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
 
-from Acquisition import aq_parent
-from Products.CMFPlone.utils import safe_unicode
+import string
 from decimal import Decimal, InvalidOperation
 
-from bika.lims import bikaMessageFactory as _
-from bika.lims.utils import to_utf8
+import re
+from Acquisition import aq_parent
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.utils import safe_unicode
 from Products.validation import validation
 from Products.validation.interfaces.IValidator import IValidator
 from zope.interface import implements
-from datetime import datetime
-import string
-import re
+
+from bika.lims import bikaMessageFactory as _
+from bika.lims.utils import to_utf8
 
 
 class IdentifierTypeAttributesValidator:

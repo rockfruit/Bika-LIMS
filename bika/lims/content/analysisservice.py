@@ -1,53 +1,40 @@
 # -*- coding: utf-8 -*-
-
+#
 # This file is part of Bika LIMS
 #
-# Copyright 2011-2016 by it's authors.
+# Copyright 2011-2017 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
 
-
 import sys
-
-from AccessControl import ClassSecurityInfo
-from DateTime import DateTime
 from decimal import Decimal, InvalidOperation
-from plone.indexer import indexer
+
+import transaction
+from AccessControl import ClassSecurityInfo
 from Products.ATContentTypes.lib.historyaware import HistoryAwareMixin
-from Products.ATExtensions.Extensions.utils import makeDisplayList
-from Products.ATExtensions.ateapi import RecordField, RecordsField
+from Products.ATExtensions.ateapi import RecordsField
 from Products.Archetypes.Registry import registerField
-from Products.Archetypes.public import DisplayList, ReferenceField, \
-    ComputedField, ComputedWidget, BooleanField, \
-    BooleanWidget, StringField, SelectionWidget, \
-    FixedPointField, DecimalWidget, IntegerField, \
-    IntegerWidget, StringWidget, BaseContent, \
-    Schema, registerType, MultiSelectionWidget, \
-    FloatField
-from Products.Archetypes.utils import IntDisplayList
+from Products.Archetypes.public import *
 from Products.Archetypes.references import HoldingReference
-from Products.CMFCore.permissions import View, ModifyPortalContent
-from Products.CMFCore.utils import getToolByName
-from Products.validation import validation
-from Products.validation.validators.RegexValidator import RegexValidator
+from Products.Archetypes.utils import IntDisplayList
 from Products.CMFCore.WorkflowCore import WorkflowException
+from Products.CMFCore.utils import getToolByName
+from magnitude import mg
+from plone.indexer import indexer
+from zope.interface import implements
+
 from bika.lims import PMF, bikaMessageFactory as _
-from bika.lims.utils import to_utf8 as _c
-from bika.lims.utils import to_unicode as _u
-from bika.lims.utils.analysis import get_significant_digits
+from bika.lims.browser.fields import *
 from bika.lims.browser.widgets.durationwidget import DurationWidget
 from bika.lims.browser.widgets.partitionsetupwidget import PartitionSetupWidget
 from bika.lims.browser.widgets.recordswidget import RecordsWidget
 from bika.lims.browser.widgets.referencewidget import ReferenceWidget
-from bika.lims.browser.fields import *
-from bika.lims.config import ATTACHMENT_OPTIONS, PROJECTNAME, \
-    SERVICE_POINT_OF_CAPTURE
+from bika.lims.config import ATTACHMENT_OPTIONS
+from bika.lims.config import PROJECTNAME
+from bika.lims.config import SERVICE_POINT_OF_CAPTURE
 from bika.lims.content.bikaschema import BikaSchema
 from bika.lims.interfaces import IAnalysisService, IHaveIdentifiers
-from magnitude import mg, MagnitudeError
-from zope import i18n
-from zope.interface import implements
-import transaction
-import math
+from bika.lims.utils import to_utf8 as _c
+from bika.lims.utils.analysis import get_significant_digits
 
 
 def getContainers(instance,

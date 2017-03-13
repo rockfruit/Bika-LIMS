@@ -1,28 +1,24 @@
+# -*- coding: utf-8 -*-
+#
 # This file is part of Bika LIMS
 #
-# Copyright 2011-2016 by it's authors.
+# Copyright 2011-2017 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
-
-from AccessControl import ClassSecurityInfo
 
 from decimal import Decimal
 
+from AccessControl import ClassSecurityInfo
+from DateTime import DateTime
+from Products.Archetypes.public import *
+from Products.CMFCore import permissions
+from persistent.mapping import PersistentMapping
+from plone.app.folder import folder
+from zope.interface import implements
+
 from bika.lims import bikaMessageFactory as _
-from bika.lims.utils import t
-from bika.lims.browser.widgets.datetimewidget import DateTimeWidget
 from bika.lims.config import PRICELIST_TYPES, PROJECTNAME
 from bika.lims.content.bikaschema import BikaFolderSchema
 from bika.lims.interfaces import IPricelist
-from DateTime import DateTime
-from persistent.mapping import PersistentMapping
-from plone.app.folder import folder
-from Products.Archetypes.public import *
-from Products.CMFCore import permissions
-from zope.interface import implements
-from Products.CMFCore.utils import getToolByName
-from Products.CMFCore import permissions
-
-
 
 schema = BikaFolderSchema.copy() + Schema((
     StringField('Type',

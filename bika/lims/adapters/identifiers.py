@@ -1,21 +1,20 @@
-import re
-from operator import itemgetter
 import json
+from operator import itemgetter
 
+import plone
+from ZODB.POSException import ConflictError
 from archetypes.schemaextender.interfaces import IOrderableSchemaExtender
 from archetypes.schemaextender.interfaces import ISchemaModifier
 from plone.indexer import indexer
+from zope.component import adapts
+from zope.interface import implements
 
 from bika.lims import bikaMessageFactory as _, safe_unicode
 from bika.lims.browser import BrowserView
 from bika.lims.browser.widgets import RecordsWidget
 from bika.lims.fields import ExtRecordsField
 from bika.lims.interfaces import IHaveIdentifiers
-from zope.component import adapts
-import plone
-from zope.interface import implements
 
-from ZODB.POSException import ConflictError
 
 @indexer(IHaveIdentifiers)
 def IdentifiersIndexer(instance):

@@ -1,27 +1,24 @@
-# coding=utf-8
-
+# -*- coding: utf-8 -*-
 # This file is part of Bika LIMS
 #
-# Copyright 2011-2016 by it's authors.
+# Copyright 2011-2017 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
-from decimal import InvalidOperation
 
-from Products.CMFCore.utils import getToolByName
-from decimal import Decimal
-
-from bika.lims.jsonapi import get_include_fields
-from bika.lims import bikaMessageFactory as _
-from bika.lims.browser import BrowserView
-from bika.lims.utils import t, dicts_to_dict
-from bika.lims.utils.analysis import get_method_instrument_constraints
-from bika.lims.interfaces import IAnalysis, IResultOutOfRange, IJSONReadExtender
-from bika.lims.interfaces import IFieldIcons
-from bika.lims.utils import to_utf8
-from bika.lims.utils import dicts_to_dict
 import json
+from decimal import Decimal, InvalidOperation
+
 import plone
+from Products.CMFCore.utils import getToolByName
 from zope.component import adapts, getAdapters
 from zope.interface import implements
+
+from bika.lims import bikaMessageFactory as _
+from bika.lims.browser import BrowserView
+from bika.lims.interfaces import IAnalysis, IResultOutOfRange, IJSONReadExtender
+from bika.lims.jsonapi import get_include_fields
+from bika.lims.utils import dicts_to_dict
+from bika.lims.utils import t
+from bika.lims.utils.analysis import get_method_instrument_constraints
 
 
 class ResultOutOfRangeIcons(object):

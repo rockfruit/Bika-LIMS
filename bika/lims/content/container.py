@@ -1,27 +1,26 @@
+# -*- coding: utf-8 -*-
+#
 # This file is part of Bika LIMS
 #
-# Copyright 2011-2016 by it's authors.
+# Copyright 2011-2017 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
 
-from AccessControl import ClassSecurityInfo
-
+import json
+import sys
 from decimal import Decimal
 from decimal import InvalidOperation
+from operator import itemgetter
 
-from bika.lims import bikaMessageFactory as _
-from bika.lims.utils import t
-from bika.lims.config import PROJECTNAME
-from bika.lims.content.bikaschema import BikaSchema
-from bika.lims.vocabularies import CatalogVocabulary
-from magnitude import mg, MagnitudeError
-from Missing import Value
+import plone.protect
+from AccessControl import ClassSecurityInfo
 from Products.Archetypes.public import *
 from Products.Archetypes.references import HoldingReference
 from Products.CMFCore.utils import getToolByName
-from operator import itemgetter
-import json
-import plone.protect
-import sys
+from magnitude import mg
+
+from bika.lims import bikaMessageFactory as _
+from bika.lims.config import PROJECTNAME
+from bika.lims.content.bikaschema import BikaSchema
 
 schema = BikaSchema.copy() + Schema((
     ReferenceField('ContainerType',

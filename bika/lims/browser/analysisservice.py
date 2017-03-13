@@ -1,28 +1,31 @@
+# -*- coding: utf-8 -*-
+#
 # This file is part of Bika LIMS
 #
-# Copyright 2011-2016 by it's authors.
+# Copyright 2011-2017 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
-from decimal import Decimal
 
-from bika.lims.browser import BrowserView
-from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from bika.lims import bikaMessageFactory as _
-from bika.lims.jsonapi import load_field_values, get_include_fields
-from bika.lims.utils import t
-from bika.lims.config import POINTS_OF_CAPTURE
-from bika.lims.browser.log import LogView
-from bika.lims.content.analysisservice import getContainers
-from bika.lims.browser.bika_listing import BikaListingView
-from bika.lims.interfaces import IAnalysisService
-from bika.lims.interfaces import IJSONReadExtender
+import json
+from decimal import Decimal, InvalidOperation
+
 from Products.CMFCore.utils import getToolByName
-from magnitude import mg, MagnitudeError
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from magnitude import mg
+from plone.protect.authenticator import check as CheckAuthenticator
+from plone.protect.postonly import check as PostOnly
 from zope.component import adapts
 from zope.interface import implements
-import json, plone
-import plone.protect
-import re
+
+from bika.lims import bikaMessageFactory as _
+from bika.lims.browser import BrowserView
+from bika.lims.browser.log import LogView
+from bika.lims.config import POINTS_OF_CAPTURE
+from bika.lims.content.analysisservice import getContainers
+from bika.lims.interfaces import IAnalysisService
+from bika.lims.interfaces import IJSONReadExtender
+from bika.lims.jsonapi import load_field_values, get_include_fields
 from bika.lims.utils import to_unicode
+
 
 ### AJAX methods for AnalysisService context
 
@@ -34,8 +37,14 @@ class ajaxGetContainers(BrowserView):
     - show_containers
     - minvol: magnitude (string).
     """
+
+    def __init__(self, context, request):
+        BrowserView.__init__(self, context, request)
+        self.context = context
+        self.request = request
+
     def __call__(self):
-        plone.protect.CheckAuthenticator(self.request)
+        CheckAuthenticator(self.request)
         uc = getToolByName(self, 'uid_catalog')
 
         allow_blank = self.request.get('allow_blank', False) == 'true'
@@ -63,11 +72,13 @@ class ajaxServicePopup(BrowserView):
     template = ViewPageTemplateFile("templates/analysisservice_popup.pt")
 
     def __init__(self, context, request):
-        super(ajaxServicePopup, self).__init__(context, request)
+        BrowserView.__init__(self, context, request)
+        self.context = context
+        self.request = request
         self.icon = self.portal_url + "/++resource++bika.lims.images/analysisservice_big.png"
 
     def __call__(self):
-        plone.protect.CheckAuthenticator(self.request)
+        CheckAuthenticator(self.request)
         bsc = getToolByName(self.context, 'bika_setup_catalog')
         uc = getToolByName(self.context, 'uid_catalog')
 
@@ -143,8 +154,8 @@ class ajaxGetServiceInterimFields:
         self.request = request
 
     def __call__(self):
-        plone.protect.CheckAuthenticator(self.request)
-        plone.protect.PostOnly(self.request)
+        CheckAuthenticator(self.request)
+        PostOnly(self.request)
         bsc = getToolByName(self.context, 'bika_setup_catalog')
         service_url = self.request['service_url']
         service_id = service_url.split('/')[-1]

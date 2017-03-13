@@ -1,27 +1,28 @@
+# -*- coding: utf-8 -*-
+#
 # This file is part of Bika LIMS
 #
-# Copyright 2011-2016 by it's authors.
+# Copyright 2011-2017 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
+
+import json
+import math
 from decimal import Decimal, InvalidOperation
 
-from bika.lims.browser import BrowserView
-from bika.lims.interfaces import IAnalysis
-from bika.lims.interfaces import IFieldIcons
-from bika.lims import bikaMessageFactory as _
-from bika.lims.utils import t, isnumber
-from bika.lims import logger
-from bika.lims.utils import to_utf8
+import plone
 from Products.Archetypes.config import REFERENCE_CATALOG
 from Products.CMFCore.utils import getToolByName
 from Products.PythonScripts.standard import html_quote
-from bika.lims.utils.analysis import format_numeric_result
 from zope.component import adapts
 from zope.component import getAdapters
 from zope.interface import implements
 
-import json
-import math
-import plone
+from bika.lims import bikaMessageFactory as _
+from bika.lims.browser import BrowserView
+from bika.lims.interfaces import IAnalysis
+from bika.lims.interfaces import IFieldIcons
+from bika.lims.utils import t, isnumber
+from bika.lims.utils.analysis import format_numeric_result
 
 
 class CalculationResultAlerts(object):

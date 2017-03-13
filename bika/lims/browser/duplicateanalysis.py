@@ -1,19 +1,18 @@
-# coding=utf-8
-
+# -*- coding: utf-8 -*-
+#
 # This file is part of Bika LIMS
 #
-# Copyright 2011-2016 by it's authors.
+# Copyright 2011-2017 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
-from decimal import InvalidOperation
+
+from decimal import Decimal, InvalidOperation
 
 from Products.CMFCore.utils import getToolByName
-from decimal import Decimal
+from zope.component import getAdapters
 
 from bika.lims import bikaMessageFactory as _
-from bika.lims.utils import t
 from bika.lims.interfaces import IResultOutOfRange
-from bika.lims.utils import to_utf8
-from zope.component import getAdapters
+from bika.lims.utils import t
 
 
 class ResultOutOfRangeIcons(object):

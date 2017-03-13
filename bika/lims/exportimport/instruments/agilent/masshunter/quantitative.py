@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+#
 # This file is part of Bika LIMS
 #
 # Copyright 2011-2016 by it's authors.
@@ -5,34 +7,16 @@
 
 """ Agilent's 'Masshunter Quant'
 """
+import json
+import traceback
+from datetime import datetime
+from decimal import Decimal
 from decimal import InvalidOperation
 
-from DateTime import DateTime
-from Products.Archetypes.event import ObjectInitializedEvent
-from Products.CMFCore.utils import getToolByName
-from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from decimal import Decimal
-
 from bika.lims import bikaMessageFactory as _
-from bika.lims.utils import t
-from bika.lims import logger
-from bika.lims.browser import BrowserView
-from bika.lims.idserver import renameAfterCreation
-from bika.lims.utils import changeWorkflowState
-from bika.lims.utils import tmpID
-from cStringIO import StringIO
-from datetime import datetime
-from operator import itemgetter
-from plone.i18n.normalizer.interfaces import IIDNormalizer
-from zope.component import getUtility
-import csv
-import json
-import plone
-import zope
-import zope.event
 from bika.lims.exportimport.instruments.resultsimport import InstrumentCSVResultsFileParser,\
     AnalysisResultsImporter
-import traceback
+from bika.lims.utils import t
 
 title = "Agilent - Masshunter Quantitative"
 

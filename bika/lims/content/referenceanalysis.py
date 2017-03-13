@@ -1,43 +1,43 @@
 # -*- coding: utf-8 -*-
-
+#
 # This file is part of Bika LIMS
 #
-# Copyright 2011-2016 by it's authors.
+# Copyright 2011-2017 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
 
 
 """ReferenceAnalysis
 """
-from decimal import InvalidOperation
 
-from Products.CMFCore.WorkflowCore import WorkflowException
 from decimal import Decimal
-
-from bika.lims.workflow import getTransitionActor
+from decimal import InvalidOperation
 from plone import api
+
 from AccessControl import ClassSecurityInfo
+from DateTime import DateTime
+from Products.ATExtensions.ateapi import DateTimeField
+from Products.Archetypes.config import REFERENCE_CATALOG
+from Products.Archetypes.public import *
+from Products.Archetypes.references import HoldingReference
+from Products.CMFCore.WorkflowCore import WorkflowException
+from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.utils import safe_unicode
+from plone.app.blob.field import BlobField
+from zope.interface import implements
+
 from bika.lims import bikaMessageFactory as _
-from bika.lims.utils import t, formatDecimalMark
-from bika.lims.utils.analysis import format_numeric_result
 from bika.lims.browser.fields import HistoryAwareReferenceField
 from bika.lims.browser.fields import InterimFieldsField
-from bika.lims.browser.widgets import RecordsWidget as BikaRecordsWidget
+from bika.lims.browser.widgets import RecordsWidget
 from bika.lims.config import STD_TYPES, PROJECTNAME
 from bika.lims.content.bikaschema import BikaSchema
 from bika.lims.interfaces import IReferenceAnalysis
 from bika.lims.permissions import Verify as VerifyPermission
-from bika.lims.subscribers import skip
+from bika.lims.utils import formatDecimalMark
+from bika.lims.utils.analysis import format_numeric_result
 from bika.lims.utils.analysis import get_significant_digits
-from DateTime import DateTime
-from plone.app.blob.field import BlobField
-from Products.Archetypes.config import REFERENCE_CATALOG
-from Products.Archetypes.public import *
-from Products.Archetypes.references import HoldingReference
-from Products.ATExtensions.ateapi import DateTimeField
-from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import safe_unicode
-from zope.interface import implements
-
+from bika.lims.workflow import getTransitionActor
+from bika.lims.workflow import skip
 
 schema = BikaSchema.copy() + Schema((
     StringField('ReferenceType',
@@ -57,7 +57,7 @@ schema = BikaSchema.copy() + Schema((
         )
     ),
     InterimFieldsField('InterimFields',
-        widget=BikaRecordsWidget(
+        widget=RecordsWidget(
             label=_("Calculation Interim Fields"),
         )
     ),

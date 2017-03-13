@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
-
+#
 # This file is part of Bika LIMS
 #
 # Copyright 2011-2016 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
 
-
 import math
-import zope.event
 from decimal import Decimal, InvalidOperation
+
+import zope.event
+from Products.Archetypes.event import ObjectInitializedEvent
+from Products.CMFCore.WorkflowCore import WorkflowException
+from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.utils import _createObjectByType
 
 from bika.lims import bikaMessageFactory as _
 from bika.lims.utils import formatDecimalMark
-from Products.Archetypes.event import ObjectInitializedEvent
-from Products.CMFCore.WorkflowCore import WorkflowException
-from Products.CMFPlone.utils import _createObjectByType
-from Products.CMFCore.utils import getToolByName
 
 
 def create_analysis(context, service, keyword, interim_fields):

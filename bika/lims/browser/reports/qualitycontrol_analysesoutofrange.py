@@ -1,20 +1,23 @@
+# -*- coding: utf-8 -*-
+#
 # This file is part of Bika LIMS
 #
 # Copyright 2011-2016 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
-from decimal import InvalidOperation
+
+from decimal import Decimal, InvalidOperation
 
 from Products.CMFCore.utils import getToolByName
-from decimal import Decimal
-
-from bika.lims.browser import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from bika.lims import bikaMessageFactory as _
-from bika.lims.utils import t, dicts_to_dict
-from bika.lims.utils \
-    import formatDateQuery, formatDateParms, isAttributeHidden
 from plone.app.layout.globals.interfaces import IViewView
 from zope.interface import implements
+
+from bika.lims import bikaMessageFactory as _
+from bika.lims.browser import BrowserView
+from bika.lims.utils import formatDateParms
+from bika.lims.utils import formatDateQuery
+from bika.lims.utils import isAttributeHidden
+from bika.lims.utils import t, dicts_to_dict
 
 
 class Report(BrowserView):

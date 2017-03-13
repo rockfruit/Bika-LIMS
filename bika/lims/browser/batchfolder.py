@@ -1,19 +1,21 @@
+# -*- coding: utf-8 -*-
+#
 # This file is part of Bika LIMS
 #
-# Copyright 2011-2016 by it's authors.
+# Copyright 2011-2017 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
 
-from bika.lims.permissions import AddBatch
-from bika.lims.browser.bika_listing import BikaListingView
-from bika.lims import bikaMessageFactory as _
-from bika.lims.config import ManageInvoices
-from bika.lims.utils import t
-from operator import itemgetter
-from plone.app.content.browser.interfaces import IFolderContentsView
-from bika.lims.browser import BrowserView
-from zope.interface import implements
-import plone
 import json
+from operator import itemgetter
+
+import plone
+from plone.app.content.browser.interfaces import IFolderContentsView
+from zope.interface import implements
+
+from bika.lims import bikaMessageFactory as _
+from bika.lims.browser import BrowserView
+from bika.lims.browser.bika_listing import BikaListingView
+from bika.lims.permissions import AddBatch
 
 
 class BatchFolderContentsView(BikaListingView):

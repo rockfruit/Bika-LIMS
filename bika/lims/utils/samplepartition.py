@@ -1,10 +1,12 @@
+# -*- coding: utf-8 -*-
+#
 # This file is part of Bika LIMS
 #
 # Copyright 2011-2016 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
+
 from decimal import Decimal
 
-from bika.lims.utils import tmpID
 from Products.CMFPlone.utils import _createObjectByType
 from magnitude import mg
 

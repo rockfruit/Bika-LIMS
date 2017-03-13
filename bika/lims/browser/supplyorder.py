@@ -1,20 +1,18 @@
+# -*- coding: utf-8 -*-
+#
 # This file is part of Bika LIMS
 #
-# Copyright 2011-2016 by it's authors.
+# Copyright 2011-2017 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
 
-from Products.CMFPlone.utils import _createObjectByType
-from zope import event
+from decimal import Decimal
+from operator import itemgetter, methodcaller
 
 from Products.CMFCore.utils import getToolByName
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from operator import itemgetter, methodcaller
-
-from decimal import Decimal
 
 from bika.lims import bikaMessageFactory as _
 from bika.lims.browser import BrowserView
-from bika.lims.utils import t
 
 
 class View(BrowserView):
