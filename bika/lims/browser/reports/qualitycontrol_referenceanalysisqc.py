@@ -7,9 +7,13 @@ import json
 import tempfile
 
 from AccessControl import getSecurityManager
+from decimal import InvalidOperation
+
 from DateTime import DateTime
 from Products.CMFCore.utils import getToolByName
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from decimal import Decimal
+
 from bika.lims import bikaMessageFactory as _
 from bika.lims.utils import t, isAttributeHidden
 from bika.lims.browser import BrowserView
@@ -108,14 +112,14 @@ class Report(BrowserView):
             [x for x in sample.getReferenceResults() if x['uid'] == service_uid][
                 0]
             try:
-                result = float(analysis.getResult())
+                result = Decimal(analysis.getResult())
                 results.append(result)
-            except:
+            except (TypeError, ValueError, InvalidOperation):
                 result = analysis.getResult()
             capture_dates.append(analysis.getResultCaptureDate())
 
-            if result < float(resultsrange['min']) or result > float(
-                    resultsrange['max']):
+            if result < Decimal(resultsrange['min']) \
+                    or result > Decimal(resultsrange['max']):
                 out_of_range_count += 1
 
             try:

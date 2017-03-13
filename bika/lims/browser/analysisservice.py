@@ -2,6 +2,7 @@
 #
 # Copyright 2011-2016 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
+from decimal import Decimal
 
 from bika.lims.browser import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
@@ -43,8 +44,8 @@ class ajaxGetContainers(BrowserView):
         minvol = self.request.get("minvol", "0")
         try:
             minvol =  minvol.split()
-            minvol = mg(float(minvol[0]), " ".join(minvol[1:]))
-        except:
+            minvol = mg(Decimal(minvol[0]), " ".join(minvol[1:]))
+        except (TypeError, ValueError, InvalidOperation):
             minvol = mg(0)
 
         containers = getContainers(

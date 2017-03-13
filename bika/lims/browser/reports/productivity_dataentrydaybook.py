@@ -2,6 +2,8 @@
 #
 # Copyright 2011-2016 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
+from decimal import Decimal
+
 from bika.lims.workflow import getTransitionDate
 
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
@@ -88,12 +90,13 @@ class Report(BrowserView):
             totalpublicationlag += publicationlag
 
         # Footer total data
-        totalreceivedcreated_ratio = float(totalreceivedcount) / float(
-            totalcreatedcount)
-        totalpublishedcreated_ratio = float(totalpublishedcount) / float(
-            totalcreatedcount)
-        totalpublishedreceived_ratio = totalreceivedcount and float(
-            totalpublishedcount) / float(totalreceivedcount) or 0
+        totalreceivedcreated_ratio = \
+            Decimal(totalreceivedcount) / Decimal(totalcreatedcount)
+        totalpublishedcreated_ratio = \
+            Decimal(totalpublishedcount) / Decimal(totalcreatedcount)
+        totalpublishedreceived_ratio = \
+            Decimal(totalpublishedcount) / Decimal(totalreceivedcount) \
+                if totalreceivedcount else 0
 
         footline = {'Created': totalcreatedcount,
                     'Received': totalreceivedcount,

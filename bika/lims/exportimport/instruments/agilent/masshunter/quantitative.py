@@ -5,10 +5,14 @@
 
 """ Agilent's 'Masshunter Quant'
 """
+from decimal import InvalidOperation
+
 from DateTime import DateTime
 from Products.Archetypes.event import ObjectInitializedEvent
 from Products.CMFCore.utils import getToolByName
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from decimal import Decimal
+
 from bika.lims import bikaMessageFactory as _
 from bika.lims.utils import t
 from bika.lims import logger
@@ -347,8 +351,8 @@ class MasshunterQuantCSVParser(InstrumentCSVResultsFileParser):
                 colname = self._sequencesheader[i]
                 if token and colname in self.SEQUENCETABLE_NUMERICHEADERS:
                     try:
-                        sequence[colname] = float(token)
-                    except ValueError:
+                        sequence[colname] = Decimal(token)
+                    except (TypeError, ValueError, InvalidOperation):
                         self.warn(
                             "No valid number ${token} in column ${index} (${column_name})",
                             mapping={"token": token,
@@ -436,8 +440,8 @@ class MasshunterQuantCSVParser(InstrumentCSVResultsFileParser):
                 colname = self._quantitationresultsheader[i]
                 if token and colname in self.QUANTITATIONRESULTS_NUMERICHEADERS:
                     try:
-                        quantitation[colname] = float(token)
-                    except ValueError:
+                        quantitation[colname] = Decimal(token)
+                    except (TypeError, ValueError, InvalidOperation):
                         self.warn(
                             "No valid number ${token} in column ${index} (${column_name})",
                             mapping={"token": token,

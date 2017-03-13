@@ -2,6 +2,7 @@
 #
 # Copyright 2011-2016 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
+from decimal import Decimal
 
 from bika.lims import logger
 from bika.lims.content.analysis import Analysis
@@ -341,7 +342,7 @@ class TestLimitDetections(BikaFunctionalTestCase):
             self.assertEqual(an.isAboveUpperDetectionLimit(), case['isaboveudl'])
             self.assertEqual(an.isLowerDetectionLimit(), case['isldl'])
             self.assertEqual(an.isUpperDetectionLimit(), case['isudl'])
-            self.assertEqual(float(an.getResult()), case['expresult'])
+            self.assertEqual(Decimal(an.getResult()), case['expresult'])
             #import pdb; pdb.set_trace()
             self.assertEqual(an.getFormattedResult(html=False), case['expformattedresult'])
             expres = case['expformattedresult']
@@ -373,8 +374,8 @@ class TestLimitDetections(BikaFunctionalTestCase):
         for a in ar.getAnalyses():
             an = a.getObject()
             idx = asidxs[an.getService().id]
-            self.assertEqual(an.getLowerDetectionLimit(), float(self.lds[idx]['min']))
-            self.assertEqual(an.getUpperDetectionLimit(), float(self.lds[idx]['max']))
+            self.assertEqual(an.getLowerDetectionLimit(), Decimal(self.lds[idx]['min']))
+            self.assertEqual(an.getUpperDetectionLimit(), Decimal(self.lds[idx]['max']))
             self.assertEqual(an.getService().getAllowManualDetectionLimit(), self.lds[idx]['manual'])
 
             # Empty result
@@ -384,7 +385,7 @@ class TestLimitDetections(BikaFunctionalTestCase):
 
             # Set a result
             an.setResult('15')
-            self.assertEqual(float(an.getResult()), 15)
+            self.assertEqual(Decimal(an.getResult()), 15)
             self.assertFalse(an.isBelowLowerDetectionLimit())
             self.assertFalse(an.isAboveUpperDetectionLimit())
             self.assertFalse(an.getDetectionLimitOperand())
@@ -392,7 +393,7 @@ class TestLimitDetections(BikaFunctionalTestCase):
             self.assertEqual(an.getFormattedResult(html=True), '15.00')
             self.assertEqual(an.getFormattedResult(html=False), '15.00')
             an.setResult('-1')
-            self.assertEqual(float(an.getResult()), -1)
+            self.assertEqual(Decimal(an.getResult()), -1)
             self.assertTrue(an.isBelowLowerDetectionLimit())
             self.assertFalse(an.isAboveUpperDetectionLimit())
             self.assertFalse(an.getDetectionLimitOperand())
@@ -400,7 +401,7 @@ class TestLimitDetections(BikaFunctionalTestCase):
             self.assertEqual(an.getFormattedResult(html=True), '&lt; %s' % (self.lds[idx]['min']))
             self.assertEqual(an.getFormattedResult(), '&lt; %s' % (self.lds[idx]['min']))
             an.setResult('2000')
-            self.assertEqual(float(an.getResult()), 2000)
+            self.assertEqual(Decimal(an.getResult()), 2000)
             self.assertFalse(an.isBelowLowerDetectionLimit())
             self.assertTrue(an.isAboveUpperDetectionLimit())
             self.assertFalse(an.getDetectionLimitOperand())
@@ -410,7 +411,7 @@ class TestLimitDetections(BikaFunctionalTestCase):
 
             # Set a DL result
             an.setResult('<15')
-            self.assertEqual(float(an.getResult()), 15)
+            self.assertEqual(Decimal(an.getResult()), 15)
             if self.lds[idx]['manual']:
                 self.assertTrue(an.isBelowLowerDetectionLimit())
                 self.assertFalse(an.isAboveUpperDetectionLimit())
@@ -427,7 +428,7 @@ class TestLimitDetections(BikaFunctionalTestCase):
                 self.assertEqual(an.getFormattedResult(), '15.00')
 
             an.setResult('>15')
-            self.assertEqual(float(an.getResult()), 15)
+            self.assertEqual(Decimal(an.getResult()), 15)
             if self.lds[idx]['manual']:
                 self.assertFalse(an.isBelowLowerDetectionLimit())
                 self.assertTrue(an.isAboveUpperDetectionLimit())
@@ -446,7 +447,7 @@ class TestLimitDetections(BikaFunctionalTestCase):
             # Set a DL result explicitely
             an.setDetectionLimitOperand('<')
             an.setResult('15')
-            self.assertEqual(float(an.getResult()), 15)
+            self.assertEqual(Decimal(an.getResult()), 15)
             if self.lds[idx]['manual']:
                 self.assertTrue(an.isBelowLowerDetectionLimit())
                 self.assertFalse(an.isAboveUpperDetectionLimit())
@@ -464,7 +465,7 @@ class TestLimitDetections(BikaFunctionalTestCase):
 
             an.setDetectionLimitOperand('>')
             an.setResult('15')
-            self.assertEqual(float(an.getResult()), 15)
+            self.assertEqual(Decimal(an.getResult()), 15)
             if self.lds[idx]['manual']:
                 self.assertFalse(an.isBelowLowerDetectionLimit())
                 self.assertTrue(an.isAboveUpperDetectionLimit())

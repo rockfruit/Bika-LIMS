@@ -10,6 +10,8 @@ from Products.CMFCore.utils import getToolByName
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from operator import itemgetter, methodcaller
 
+from decimal import Decimal
+
 from bika.lims import bikaMessageFactory as _
 from bika.lims.browser import BrowserView
 from bika.lims.utils import t
@@ -43,9 +45,9 @@ class View(BrowserView):
         for item in items:
             prodid = item['Product']
             product = setup.bika_labproducts[prodid]
-            price = float(item['Price'])
-            vat = float(item['VAT'])
-            qty = float(item['Quantity'])
+            price = Decimal(item['Price'])
+            vat = Decimal(item['VAT'])
+            qty = Decimal(item['Quantity'])
             self.items.append({
                 'title': product.Title(),
                 'description': product.Description(),
@@ -87,7 +89,7 @@ class EditView(BrowserView):
             context.supplyorder_lineitems = []
             # Process the order item data
             for prodid, qty in request.form.items():
-                if prodid.startswith('product_') and qty and float(qty) > 0:
+                if prodid.startswith('product_') and qty and Decimal(qty) > 0:
                     prodid = prodid.replace('product_', '')
                     product = setup.bika_labproducts[prodid]
                     context.supplyorder_lineitems.append(
@@ -122,7 +124,7 @@ class EditView(BrowserView):
                     'price': product.getPrice(),
                     'vat': '%s%%' % product.getVAT(),
                     'quantity': quantity,
-                    'total': (float(product.getPrice()) * float(quantity)),
+                    'total': (Decimal(product.getPrice()) * Decimal(quantity)),
                 })
             # Render the template
             return self.template()

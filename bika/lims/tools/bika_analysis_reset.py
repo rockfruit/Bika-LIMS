@@ -4,6 +4,8 @@
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
 
 from AccessControl import ClassSecurityInfo
+from decimal import InvalidOperation, Decimal
+
 from App.class_init import InitializeClass
 from OFS.SimpleItem import SimpleItem
 from Products.CMFCore import permissions
@@ -71,8 +73,8 @@ class bika_analysis_reset(UniqueObject, SimpleItem):
                 new_cprice = new_cprice.strip('$')
                 if new_cprice:
                     try:
-                        price = float(new_cprice)
-                    except:
+                        price = Decimal(new_cprice)
+                    except (TypeError, ValueError, InvalidOperation):
                         invalid_counter += 1
                         msgs.append('%s %s %s: bulk discount %s is not numeric - not updated' % (counter, cat, service, new_cprice))
                         continue
@@ -85,8 +87,8 @@ class bika_analysis_reset(UniqueObject, SimpleItem):
                 new_price = new_price.strip('$')
                 if new_price:
                     try:
-                        price = float(new_price)
-                    except:
+                        price = Decimal(new_price)
+                    except (TypeError, ValueError, InvalidOperation):
                         invalid_counter += 1
                         msgs.append('%s %s %s: price %s is not numeric - not updated' % (counter, cat, service, new_price))
                         continue

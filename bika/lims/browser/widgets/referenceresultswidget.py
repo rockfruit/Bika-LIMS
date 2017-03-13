@@ -197,7 +197,7 @@ class ReferenceResultsWidget(TypesWidget):
     def process_form(self, instance, field, form,
                      empty_marker=None, emptyReturnsMarker=False):
         """ Return a list of dictionaries fit for ReferenceResultsField
-            consumption.  Only services which have float()able entries in
+            consumption.  Only services which have Numerical entries in
             result,min and max field will be included.
             If any of min, max, or result fields are blank, the row value
             is ignored here.

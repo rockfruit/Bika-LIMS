@@ -4,6 +4,10 @@
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
 
 from AccessControl import ClassSecurityInfo
+
+from decimal import Decimal
+from decimal import InvalidOperation
+
 from bika.lims import bikaMessageFactory as _
 from bika.lims.utils import t
 from bika.lims.config import PROJECTNAME
@@ -93,8 +97,8 @@ class Container(BaseContent):
         default = self.Schema()['Capacity'].get(self)
         try:
             mgdefault = default.split(' ', 1)
-            mgdefault = mg(float(mgdefault[0]), mgdefault[1])
-        except:
+            mgdefault = mg(Decimal(mgdefault[0]), mgdefault[1])
+        except (TypeError, ValueError, InvalidOperation):
             mgdefault = mg(0, 'ml')
         try:
             return str(mgdefault.ounit('ml'))

@@ -4,6 +4,8 @@
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
 
 from Products.CMFPlone.utils import safe_unicode
+from decimal import Decimal, InvalidOperation
+
 from bika.lims import bikaMessageFactory as _, logger
 from bika.lims.utils import t
 from bika.lims.browser.bika_listing import BikaListingView
@@ -463,11 +465,11 @@ class InstrumentReferenceAnalysesView(AnalysesView):
             if uid in rr:
                 specs = rr[uid];
                 try:
-                    smin  = float(specs.get('min', 0))
-                    smax = float(specs.get('max', 0))
-                    error  = float(specs.get('error', 0))
-                    target = float(specs.get('result', 0))
-                    result = float(items[i]['Result'])
+                    smin  = Decimal(specs.get('min', 0))
+                    smax = Decimal(specs.get('max', 0))
+                    error  = Decimal(specs.get('error', 0))
+                    target = Decimal(specs.get('result', 0))
+                    result = Decimal(items[i]['Result'])
                     error_amount = ((target / 100) * error) if target > 0 else 0
                     upper  = smax + error_amount
                     lower   = smin - error_amount
@@ -486,7 +488,7 @@ class InstrumentReferenceAnalysesView(AnalysesView):
                     anrows.append(anrow);
                     trows[qcid] = anrows;
                     self.anjson[serviceref] = trows
-                except:
+                except (TypeError, ValueError, InvalidOperation):
                     pass
 
         return items

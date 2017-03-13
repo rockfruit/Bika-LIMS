@@ -8,6 +8,9 @@ from AccessControl import getSecurityManager
 
 from AccessControl import ModuleSecurityInfo, allow_module
 
+from decimal import Decimal
+from decimal import InvalidOperation
+
 from bika.lims import api as api
 from bika.lims import logger
 from bika.lims.browser import BrowserView
@@ -185,11 +188,11 @@ def formatDecimalMark(value, decimalmark='.'):
         ::return:: is a string with the decimal mark if needed
     """
     # We have to consider the possibility of working with decimals such as
-    # X.000 where those decimals are important because of the precission
+    # X.000 where those decimals are important because of the precision
     # and significant digits matters
-    # Using 'float' the system delete the extre desimals with 0 as a value
+    # Using 'Decimal' the system delete the extre decimals with 0 as a value
     # Example: float(2.00) -> 2.0
-    # So we have to save the decimal length, this is one reason we are usnig
+    # So we have to save the decimal length, this is one reason we are using
     # strings for results
     rawval = str(value)
     try:
@@ -347,9 +350,9 @@ def tmpID():
 
 def isnumber(s):
     try:
-        float(s)
+        Decimal(s)
         return True
-    except ValueError:
+    except (TypeError, ValueError, InvalidOperation):
         return False
 
 

@@ -121,7 +121,7 @@ class Invoice(BaseFolder):
 
     def getSubtotal(self):
         """ Compute Subtotal """
-        return sum([float(obj['Subtotal']) for obj in self.invoice_lineitems])
+        return sum([Decimal(obj['Subtotal']) for obj in self.invoice_lineitems])
 
     security.declareProtected(View, 'getVATAmount')
 
@@ -133,7 +133,7 @@ class Invoice(BaseFolder):
 
     def getTotal(self):
         """ Compute Total """
-        return sum([float(obj['Total']) for obj in self.invoice_lineitems])
+        return sum([Decimal(obj['Total']) for obj in self.invoice_lineitems])
 
     security.declareProtected(View, 'getInvoiceSearchableText')
 

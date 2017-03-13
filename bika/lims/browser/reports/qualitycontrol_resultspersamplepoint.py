@@ -4,8 +4,11 @@
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
 
 import tempfile
+from decimal import InvalidOperation
 
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from decimal import Decimal
+
 from bika.lims import bikaMessageFactory as _
 from bika.lims.interfaces import IResultOutOfRange
 from bika.lims.utils import t, dicts_to_dict
@@ -138,8 +141,8 @@ class Report(BrowserView):
             if service_title not in analyses.keys():
                 analyses[service_title] = []
             try:
-                result = float(analysis.getResult())
-            except:
+                result = Decimal(analysis.getResult())
+            except (TypeError, ValueError, InvalidOperation):
                 # XXX Unfloatable analysis results should be indicated
                 continue
             analyses[service_title].append({

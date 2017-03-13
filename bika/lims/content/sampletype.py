@@ -4,12 +4,16 @@
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
 
 from AccessControl import ClassSecurityInfo
+from decimal import InvalidOperation
+
 from Products.ATContentTypes.lib.historyaware import HistoryAwareMixin
 from Products.Archetypes.public import *
 from Products.Archetypes.references import HoldingReference
 from Products.CMFCore.permissions import View, ModifyPortalContent
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import safe_unicode
+from decimal import Decimal
+
 from bika.lims.browser import BrowserView
 from bika.lims import bikaMessageFactory as _
 from bika.lims.utils import t
@@ -129,8 +133,8 @@ class SampleType(BaseContent, HistoryAwareMixin):
         default = self.Schema()['MinimumVolume'].get(self)
         try:
             mgdefault = default.split(' ', 1)
-            mgdefault = mg(float(mgdefault[0]), mgdefault[1])
-        except:
+            mgdefault = mg(Decimal(mgdefault[0]), mgdefault[1])
+        except (TypeError, ValueError, InvalidOperation):
             mgdefault = mg(0, 'ml')
         try:
             return str(mgdefault.ounit('ml'))

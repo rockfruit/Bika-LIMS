@@ -4,6 +4,9 @@
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
 
 from AccessControl import getSecurityManager
+
+from decimal import Decimal
+
 from bika.lims.browser import BrowserView
 from bika.lims import bikaMessageFactory as _
 from bika.lims.utils import t
@@ -183,11 +186,11 @@ class ReferenceAnalysesView(AnalysesView):
         uid = service.UID()
         if uid in rr:
             specs = rr.get(uid, None)
-            smin = float(specs.get('min', 0))
-            smax = float(specs.get('max', 0))
-            error = float(specs.get('error', 0))
-            target = float(specs.get('result', 0))
-            result = float(item['Result'])
+            smin = Decimal(specs.get('min', 0))
+            smax = Decimal(specs.get('max', 0))
+            error = Decimal(specs.get('error', 0))
+            target = Decimal(specs.get('result', 0))
+            result = Decimal(item['Result'])
             error_amount = ((target / 100) * error) if target > 0 else 0
             upper = smax + error_amount
             lower = smin - error_amount

@@ -9,6 +9,9 @@
 """
 
 from AccessControl import ClassSecurityInfo
+
+from decimal import Decimal
+
 from bika.lims import PMF, bikaMessageFactory as _
 from bika.lims.browser.widgets import AnalysisProfileAnalysesWidget
 from bika.lims.browser.widgets import ServicesWidget
@@ -179,16 +182,16 @@ class AnalysisProfile(BaseContent):
         return sets.get('hidden', False)
 
     def getVATAmount(self):
-        """ Compute AnalysisProfileVATAmount
+        """ Compute AnalysisProfileVATAmount and return as Decimal number
         """
         price, vat = self.getAnalysisProfilePrice(), self.getAnalysisProfileVAT()
-        return float(price) * float(vat) / 100
+        return Decimal(price) * Decimal(vat) / 100
 
     def getTotalPrice(self):
         """
         Computes the final price using the VATAmount and the subtotal price
         """
         price, vat = self.getAnalysisProfilePrice(), self.getVATAmount()
-        return float(price) + float(vat)
+        return Decimal(price) + Decimal(vat)
 
 registerType(AnalysisProfile, PROJECTNAME)

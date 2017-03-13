@@ -2,8 +2,11 @@
 #
 # Copyright 2011-2016 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
+from decimal import InvalidOperation
 
 from Products.CMFCore.utils import getToolByName
+from decimal import Decimal
+
 from bika.lims.browser import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from bika.lims import bikaMessageFactory as _
@@ -122,8 +125,8 @@ class Report(BrowserView):
             analysis = a_proxy.getObject()
             if analysis.getResult():
                 try:
-                    result = float(analysis.getResult())
-                except:
+                    result = Decimal(analysis.getResult())
+                except (TypeError, ValueError, InvalidOperation):
                     continue
             else:
                 continue
@@ -149,9 +152,9 @@ class Report(BrowserView):
             if not spec_dict:
                 continue
             try:
-                spec_min = float(spec_dict['min'])
-                spec_max = float(spec_dict['max'])
-            except ValueError:
+                spec_min = Decimal(spec_dict['min'])
+                spec_max = Decimal(spec_dict['max'])
+            except (TypeError, ValueError, InvalidOperation):
                 continue
             if spec_min <= result <= spec_max:
                 continue
@@ -161,8 +164,8 @@ class Report(BrowserView):
             shoulder = False
             error = 0
             try:
-                error = float(spec_dict.get('error', '0'))
-            except:
+                error = Decimal(spec_dict.get('error', '0'))
+            except (TypeError, ValueError, InvalidOperation):
                 error = 0
                 pass
             error_amount = (result / 100) * error

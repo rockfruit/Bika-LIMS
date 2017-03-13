@@ -8,11 +8,13 @@
 from datetime import date
 
 from AccessControl import ClassSecurityInfo
+from decimal import InvalidOperation
 
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import safe_unicode
 from Products.Archetypes.atapi import DisplayList, PicklistWidget
 from Products.Archetypes.atapi import registerType
+from decimal import Decimal
 
 from zope.interface import implements
 from plone.app.folder.folder import ATFolder
@@ -543,17 +545,17 @@ class Instrument(ATFolder):
 
             specs = rr[uid]
             try:
-                smin = float(specs.get('min', 0))
-                smax = float(specs.get('max', 0))
-                error = float(specs.get('error', 0))
-                target = float(specs.get('result', 0))
-                result = float(last.getResult())
+                smin = Decimal(specs.get('min', 0))
+                smax = Decimal(specs.get('max', 0))
+                error = Decimal(specs.get('error', 0))
+                target = Decimal(specs.get('result', 0))
+                result = Decimal(last.getResult())
                 error_amount = ((target / 100) * error) if target > 0 else 0
                 upper = smax + error_amount
                 lower = smin - error_amount
                 if result < lower or result > upper:
                     return False
-            except:
+            except (TypeError, ValueError, InvalidOperation):
                 # This should never happen.
                 # All Reference Analysis Results and QC Samples specs
                 # must be floatable

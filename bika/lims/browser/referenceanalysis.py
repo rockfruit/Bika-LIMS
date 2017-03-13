@@ -4,13 +4,15 @@
 #
 # Copyright 2011-2016 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
-
+from decimal import InvalidOperation
 from email.utils import formataddr
 from smtplib import SMTPRecipientsRefused
 from smtplib import SMTPServerDisconnected
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import tempfile
+
+from decimal import Decimal
 
 from bika.lims import bikaMessageFactory as _
 from bika.lims.utils import t
@@ -94,8 +96,8 @@ class ResultOutOfRange(object):
         # We don't care about analyses with no results
         result = str(result) if result is not None else self.context.getResult()
         try:
-            result = float(str(result))
-        except ValueError:
+            result = Decimal(str(result))
+        except (TypeError, ValueError, InvalidOperation):
             return None
         service_uid = self.context.getService().UID()
         specification = self.context.aq_parent.getResultsRangeDict()
@@ -114,12 +116,12 @@ class ResultOutOfRange(object):
 
     def isOutOfRange(self, result=None, specification=None):
         try:
-            spec_min = float(specification['min'])
-        except ValueError:
+            spec_min = Decimal(specification['min'])
+        except (TypeError, ValueError, InvalidOperation):
             spec_min = None
         try:
-            spec_max = float(specification['max'])
-        except ValueError:
+            spec_max = Decimal(specification['max'])
+        except (TypeError, ValueError, InvalidOperation):
             spec_max = None
         if spec_min == 0 and spec_max == 0 and result != 0:
             # Value has to be zero
@@ -144,8 +146,8 @@ class ResultOutOfRange(object):
                 but in acceptable error """
             error = 0
             try:
-                error = float(specification.get('error', '0'))
-            except:
+                error = Decimal(specification.get('error', '0'))
+            except (TypeError, ValueError, InvalidOperation):
                 error = 0
                 pass
             error_amount = (result / 100) * error

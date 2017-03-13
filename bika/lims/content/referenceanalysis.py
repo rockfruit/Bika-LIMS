@@ -8,7 +8,11 @@
 
 """ReferenceAnalysis
 """
+from decimal import InvalidOperation
+
 from Products.CMFCore.WorkflowCore import WorkflowException
+from decimal import Decimal
+
 from bika.lims.workflow import getTransitionActor
 from plone import api
 from AccessControl import ClassSecurityInfo
@@ -211,9 +215,9 @@ class ReferenceAnalysis(BaseContent):
         schu = self.Schema().getField('Uncertainty').get(self)
         if schu and serv.getAllowManualUncertainty() == True:
             try:
-                schu = float(schu)
+                schu = Decimal(schu)
                 return schu
-            except ValueError:
+            except (TypeError, ValueError, InvalidOperation):
                 # if uncertainty is not a number, return default value
                 return self.getDefaultUncertainty(result)
         return self.getDefaultUncertainty(result)
@@ -360,8 +364,8 @@ class ReferenceAnalysis(BaseContent):
 
         # 1. If the result is not floatable, return it without being formatted
         try:
-            result = float(result)
-        except:
+            result = Decimal(result)
+        except (TypeError, ValueError, InvalidOperation):
             return result
 
         # 2. If the analysis specs has enabled hidemin or hidemax and the
@@ -374,13 +378,13 @@ class ReferenceAnalysis(BaseContent):
         hidemin = specs.get('hidemin', '')
         hidemax = specs.get('hidemax', '')
         try:
-            belowmin = hidemin and result < float(hidemin) or False
-        except:
+            belowmin = hidemin and result < Decimal(hidemin) or False
+        except (TypeError, ValueError, InvalidOperation):
             belowmin = False
             pass
         try:
-            abovemax = hidemax and result > float(hidemax) or False
-        except:
+            abovemax = hidemax and result > Decimal(hidemax) or False
+        except (TypeError, ValueError, InvalidOperation):
             abovemax = False
             pass
 

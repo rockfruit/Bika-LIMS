@@ -182,7 +182,7 @@ class AnalysisSpecificationWidget(TypesWidget):
     def process_form(self, instance, field, form, empty_marker = None, emptyReturnsMarker = False):
         """ Return a list of dictionaries fit for AnalysisSpecsResultsField
             consumption. If neither hidemin nor hidemax are specified, only
-            services which have float()able entries in result,min and max field
+            services which have Numerical entries in result,min and max field
             will be included. If hidemin and/or hidemax specified, results
             might contain empty min and/or max fields.
         """

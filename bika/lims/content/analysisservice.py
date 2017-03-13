@@ -10,6 +10,7 @@ import sys
 
 from AccessControl import ClassSecurityInfo
 from DateTime import DateTime
+from decimal import Decimal, InvalidOperation
 from plone.indexer import indexer
 from Products.ATContentTypes.lib.historyaware import HistoryAwareMixin
 from Products.ATExtensions.Extensions.utils import makeDisplayList
@@ -84,10 +85,10 @@ x
             capacity = container.getCapacity()
             try:
                 capacity = capacity.split(' ', 1)
-                capacity = mg(float(capacity[0]), capacity[1])
+                capacity = mg(Decimal(capacity[0]), capacity[1])
                 if capacity < minvol:
                     continue
-            except:
+            except (TypeError, ValueError, InvalidOperation):
                 # if there's a unit conversion error, allow the container
                 # to be displayed.
                 pass
@@ -1051,7 +1052,7 @@ class AnalysisService(BaseContent, HistoryAwareMixin):
         price = price and price or 0
         discount = self.bika_setup.getMemberDiscount()
         discount = discount and discount or 0
-        return float(price) - (float(price) * float(discount)) / 100
+        return Decimal(price) - (Decimal(price) * Decimal(discount)) / 100
 
     security.declarePublic('getDiscountedBulkPrice')
 
@@ -1061,7 +1062,7 @@ class AnalysisService(BaseContent, HistoryAwareMixin):
         price = price and price or 0
         discount = self.bika_setup.getMemberDiscount()
         discount = discount and discount or 0
-        return float(price) - (float(price) * float(discount)) / 100
+        return Decimal(price) - (Decimal(price) * Decimal(discount)) / 100
 
     def getTotalPrice(self):
         """ compute total price """
@@ -1069,7 +1070,7 @@ class AnalysisService(BaseContent, HistoryAwareMixin):
         vat = self.getVAT()
         price = price and price or 0
         vat = vat and vat or 0
-        return float(price) + (float(price) * float(vat)) / 100
+        return Decimal(price) + (Decimal(price) * Decimal(vat)) / 100
 
     def getTotalBulkPrice(self):
         """ compute total price """
@@ -1077,7 +1078,7 @@ class AnalysisService(BaseContent, HistoryAwareMixin):
         vat = self.getVAT()
         price = price and price or 0
         vat = vat and vat or 0
-        return float(price) + (float(price) * float(vat)) / 100
+        return Decimal(price) + (Decimal(price) * Decimal(vat)) / 100
 
     security.declarePublic('getTotalDiscountedPrice')
 
@@ -1087,7 +1088,7 @@ class AnalysisService(BaseContent, HistoryAwareMixin):
         vat = self.getVAT()
         price = price and price or 0
         vat = vat and vat or 0
-        return float(price) + (float(price) * float(vat)) / 100
+        return Decimal(price) + (Decimal(price) * Decimal(vat)) / 100
 
     security.declarePublic('getTotalDiscountedCorporatePrice')
 
@@ -1097,7 +1098,7 @@ class AnalysisService(BaseContent, HistoryAwareMixin):
         vat = self.getVAT()
         price = price and price or 0
         vat = vat and vat or 0
-        return float(price) + (float(price) * float(vat)) / 100
+        return Decimal(price) + (Decimal(price) * Decimal(vat)) / 100
 
     def getDefaultVAT(self):
         """ return default VAT from bika_setup """
@@ -1113,7 +1114,7 @@ class AnalysisService(BaseContent, HistoryAwareMixin):
         """ Compute VATAmount
         """
         price, vat = self.getPrice(), self.getVAT()
-        return (float(price) * (float(vat) / 100))
+        return (Decimal(price) * (Decimal(vat) / 100))
 
     def getAnalysisCategories(self):
         bsc = getToolByName(self, 'bika_setup_catalog')
@@ -1270,23 +1271,24 @@ class AnalysisService(BaseContent, HistoryAwareMixin):
         uncertainties = self.getUncertainties()
         if uncertainties:
             try:
-                result = float(result)
-            except ValueError:
+                result = Decimal(result)
+            except (TypeError, ValueError, InvalidOperation):
                 # if analysis result is not a number, then we assume in range
                 return None
 
             for d in uncertainties:
-                if float(d['intercept_min']) <= result <= float(
-                        d['intercept_max']):
+                if Decimal(d['intercept_min']) \
+                        <= result \
+                        <= Decimal(d['intercept_max']):
                     unc = 0
                     if str(d['errorvalue']).strip().endswith('%'):
                         try:
-                            percvalue = float(d['errorvalue'].replace('%', ''))
-                        except ValueError:
+                            percvalue = Decimal(d['errorvalue'].replace('%', ''))
+                        except (TypeError, ValueError, InvalidOperation):
                             return None
                         unc = result / 100 * percvalue
                     else:
-                        unc = float(d['errorvalue'])
+                        unc = Decimal(d['errorvalue'])
 
                     return unc
         return None
@@ -1297,8 +1299,8 @@ class AnalysisService(BaseContent, HistoryAwareMixin):
         """
         ldl = self.Schema().getField('LowerDetectionLimit').get(self)
         try:
-            return float(ldl)
-        except ValueError:
+            return Decimal(ldl)
+        except (TypeError, ValueError, InvalidOperation):
             return 0
 
     def getUpperDetectionLimit(self):
@@ -1307,8 +1309,8 @@ class AnalysisService(BaseContent, HistoryAwareMixin):
         """
         udl = self.Schema().getField('UpperDetectionLimit').get(self)
         try:
-            return float(udl)
-        except ValueError:
+            return Decimal(udl)
+        except (TypeError, ValueError, InvalidOperation):
             return 0
 
     def getPrecision(self, result=None):
@@ -1402,8 +1404,8 @@ class AnalysisService(BaseContent, HistoryAwareMixin):
                 return self.Schema().getField('ExponentialFormatPrecision').get(self);
 
             try:
-                result = float(result)
-            except ValueError:
+                result = Decimal(result)
+            except (TypeError, ValueError, InvalidOperation):
                 # if analysis result is not a number, then we assume in range
                 return self.Schema().getField('ExponentialFormatPrecision').get(self)
 

@@ -4,6 +4,8 @@
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
 
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from decimal import Decimal
+
 from bika.lims import bikaMessageFactory as _
 from bika.lims.browser import BrowserView
 from bika.lims.browser.reports.selection_macros import SelectionMacrosView
@@ -85,7 +87,8 @@ class Report(BrowserView):
                         'UnpublishedCount': received - publishedcnt,
                         'Ratio': ratio,
                         'RatioPercentage': '%02d' % (
-                        100 * (float(publishedcnt) / float(received))) + '%'}
+                        100 * (Decimal(publishedcnt) /
+                               Decimal(received))) + '%'}
             datalines[monthyear] = dataline
 
             total_received_count += 1
@@ -98,8 +101,8 @@ class Report(BrowserView):
                     'UnpublishedCount': total_received_count - total_published_count,
                     'Ratio': ratio,
                     'RatioPercentage': '%02d' % (100 * (
-                    float(total_published_count) / float(
-                        total_received_count))) + '%'
+                    Decimal(total_published_count) /
+                    Decimal(total_received_count))) + '%'
         }
         footlines['Total'] = footline
 

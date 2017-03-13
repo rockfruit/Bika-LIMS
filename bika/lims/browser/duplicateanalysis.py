@@ -4,8 +4,11 @@
 #
 # Copyright 2011-2016 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
+from decimal import InvalidOperation
 
 from Products.CMFCore.utils import getToolByName
+from decimal import Decimal
+
 from bika.lims import bikaMessageFactory as _
 from bika.lims.utils import t
 from bika.lims.interfaces import IResultOutOfRange
@@ -72,20 +75,20 @@ class ResultOutOfRange(object):
         else:
             orig = self.context.getAnalysis().getResult()
         try:
-            result = float(str(result))
-            orig = float(str(orig))
-            variation = float(
+            result = Decimal(str(result))
+            orig = Decimal(str(orig))
+            variation = Decimal(
                 str(self.context.getService().getDuplicateVariation()))
-        except ValueError:
+        except (TypeError, ValueError, InvalidOperation):
             return None
-        duplicates_average = float((orig+result)/2)
-        duplicates_diff = float(abs(orig-result))
+        duplicates_average = Decimal((orig+result)/2)
+        duplicates_diff = Decimal(abs(orig-result))
         try:
-            variation_here = float((duplicates_diff/duplicates_average)*100)
+            variation_here = Decimal((duplicates_diff/duplicates_average)*100)
         except ZeroDivisionError:
-            variation_here = float(0)
-        variation_qty = float(duplicates_diff/2)
-        tolerance_allowed = float(((duplicates_average * variation) / 100) / 2)
+            variation_here = Decimal(0)
+        variation_qty = Decimal(duplicates_diff/2)
+        tolerance_allowed = Decimal(((duplicates_average * variation) / 100) / 2)
         # range_min = orig - (orig * variation / 100)
         # range_max = orig + (orig * variation / 100)
         range_min = duplicates_average - tolerance_allowed

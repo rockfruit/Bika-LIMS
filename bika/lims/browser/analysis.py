@@ -4,8 +4,11 @@
 #
 # Copyright 2011-2016 by it's authors.
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
+from decimal import InvalidOperation
 
 from Products.CMFCore.utils import getToolByName
+from decimal import Decimal
+
 from bika.lims.jsonapi import get_include_fields
 from bika.lims import bikaMessageFactory as _
 from bika.lims.browser import BrowserView
@@ -82,8 +85,8 @@ class ResultOutOfRange(object):
             return None
         # if analysis result is not a number, then we assume in range:
         try:
-            result = float(str(result))
-        except ValueError:
+            result = Decimal(str(result))
+        except (TypeError, ValueError, InvalidOperation):
             return None
         # The spec is found in the parent AR's ResultsRange field.
         if not specification:
@@ -110,20 +113,20 @@ class ResultOutOfRange(object):
         spec_min = None
         spec_max = None
         try:
-            result = float(result)
-        except:
+            result = Decimal(result)
+        except (TypeError, ValueError, InvalidOperation):
             return False, None
         try:
-            spec_min = float(Min)
-        except:
+            spec_min = Decimal(Min)
+        except (TypeError, ValueError, InvalidOperation):
             spec_min = None
         try:
-            error = float(error)
-        except:
+            error = Decimal(error)
+        except (TypeError, ValueError, InvalidOperation):
             error = 0
         try:
-            spec_max = float(Max)
-        except:
+            spec_max = Decimal(Max)
+        except (TypeError, ValueError, InvalidOperation):
             spec_max = None
         error_amount = (result / 100) * error
         error_min = result - error_amount
@@ -139,20 +142,20 @@ class ResultOutOfRange(object):
         spec_min = None
         spec_max = None
         try:
-            result = float(result)
-        except:
+            result = Decimal(result)
+        except (TypeError, ValueError, InvalidOperation):
             return False, False
         try:
-            spec_min = float(Min)
-        except:
+            spec_min = Decimal(Min)
+        except (TypeError, ValueError, InvalidOperation):
             spec_min = None
         try:
-            error = float(error)
-        except:
+            error = Decimal(error)
+        except (TypeError, ValueError, InvalidOperation):
             error = 0
         try:
-            spec_max = float(Max)
-        except:
+            spec_max = Decimal(Max)
+        except (TypeError, ValueError, InvalidOperation):
             spec_max = None
         if (spec_min is None and spec_max is None):
             if self.isOutOfShoulderRange(result, Min, Max, error):
