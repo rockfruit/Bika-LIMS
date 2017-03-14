@@ -22,7 +22,7 @@ from bika.lims.browser.reports.selection_macros import SelectionMacrosView
 from bika.lims.interfaces import IAdministrationReport
 from bika.lims.interfaces import IProductivityReport
 from bika.lims.interfaces import IQualityControlReport
-from bika.lims.utils import createPdf
+from bika.lims.utils import createPdf, JSONEncoder
 from bika.lims.utils import getUsers, logged_in_client
 from bika.lims.utils import isAttributeHidden
 from bika.lims.utils import to_unicode as _u

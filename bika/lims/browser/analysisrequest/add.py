@@ -22,7 +22,7 @@ from bika.lims.browser.analysisrequest.view import AnalysisRequestViewView
 from bika.lims.content.analysisrequest import schema as AnalysisRequestSchema
 from bika.lims.controlpanel.bika_analysisservices import AnalysisServicesView as ASV
 from bika.lims.interfaces import IAnalysisRequestAddView
-from bika.lims.utils import t
+from bika.lims.utils import t, JSONEncoder
 from bika.lims.utils.analysisrequest import create_analysisrequest as crar
 
 
@@ -245,12 +245,12 @@ class AnalysisRequestAddView(AnalysisRequestViewView):
             new_rr = []
             for i, r in enumerate(rr):
                 s_uid = self.bika_setup_catalog(portal_type='AnalysisService',
-                                              getKeyword=r['keyword'])[0].UID
+                                                getKeyword=r['keyword'])[0].UID
                 r['uid'] = s_uid
                 new_rr.append(r)
             specs[n] = new_rr
             n += 1
-        return json.dumps(specs)
+        return json.dumps(specs, cls=JSONEncoder)
 
     def getContacts(self):
         adapter = getAdapter(self.context.aq_parent, name='getContacts')
@@ -347,7 +347,7 @@ class SecondaryARSampleInfo(BrowserView):
             else:
                 fieldvalue = ''
             ret.append([fieldname, fieldvalue])
-        return json.dumps(ret)
+        return json.dumps(ret, cls=JSONEncoder)
 
 def ajax_form_error(errors, field=None, arnum=None, message=None):
     if not message:
@@ -468,7 +468,8 @@ class ajaxAnalysisRequestSubmit():
             return json.dumps({
                 'success': message,
                 'stickers': new_ars,
-                'stickertemplate': self.context.bika_setup.getAutoStickerTemplate()
+                'stickertemplate': \
+                    self.context.bika_setup.getAutoStickerTemplate()
             })
         else:
             return json.dumps({'success': message})

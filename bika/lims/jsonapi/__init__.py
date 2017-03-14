@@ -14,7 +14,7 @@ from Products.Archetypes.config import TOOL_NAME
 from Products.CMFCore.utils import getToolByName
 from zExceptions import BadRequest
 
-from bika.lims.utils import safe_unicode
+from bika.lims.utils import safe_unicode, JSONEncoder
 
 
 def handle_errors(f):
@@ -59,7 +59,7 @@ def load_brain_metadata(proxy, include_fields):
         val = getattr(proxy, index)
         if val != Missing.Value:
             try:
-                json.dumps(val)
+                json.dumps(val, cls=JSONEncoder)
             except:
                 continue
             ret[index] = val
@@ -100,7 +100,7 @@ def load_field_values(instance, include_fields):
                 val = safe_unicode(val)
 
         try:
-            json.dumps(val)
+            json.dumps(val, cls=JSONEncoder)
         except:
             val = str(val)
         ret[fieldname] = val

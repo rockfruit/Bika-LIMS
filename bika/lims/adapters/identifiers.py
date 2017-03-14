@@ -14,6 +14,7 @@ from bika.lims.browser import BrowserView
 from bika.lims.browser.widgets import RecordsWidget
 from bika.lims.fields import ExtRecordsField
 from bika.lims.interfaces import IHaveIdentifiers
+from bika.lims.utils import JSONEncoder
 
 
 @indexer(IHaveIdentifiers)
@@ -193,5 +194,5 @@ class ajaxGetIdentifierTypes(BrowserView):
                'records': len(rows),
                'rows': rows[(int(page) - 1) * int(nr_rows): int(page) * int(
                    nr_rows)]}
-        return json.dumps(ret)
+        return json.dumps(ret, cls=JSONEncoder)
 

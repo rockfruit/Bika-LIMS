@@ -24,7 +24,7 @@ from bika.lims import bikaMessageFactory as _
 from bika.lims import logger
 from bika.lims.browser import BrowserView
 from bika.lims.interfaces import IFieldIcons
-from bika.lims.utils import getFromString
+from bika.lims.utils import getFromString, JSONEncoder
 from bika.lims.utils import isActive, getHiddenAttributesForClass
 from bika.lims.utils import t
 from bika.lims.utils import to_utf8
@@ -180,7 +180,7 @@ class WorkflowAction:
             filter_val = \
                 [[k, v] for k, v in form.items()
                     if k.startswith('bika_listing_filter_bar_')]
-            filter_val = json.dumps(filter_val)
+            filter_val = json.dumps(filter_val, cls=JSONEncoder)
             # Adding the filter parameters to cookue
             self.request.response.setCookie(
                 'bika_listing_filter_bar', filter_val, path='/', max_age=10)

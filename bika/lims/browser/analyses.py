@@ -22,7 +22,7 @@ from bika.lims.config import QCANALYSIS_TYPES
 from bika.lims.interfaces import IResultOutOfRange
 from bika.lims.permissions import *
 from bika.lims.permissions import Verify as VerifyPermission
-from bika.lims.utils import formatDecimalMark
+from bika.lims.utils import formatDecimalMark, JSONEncoder
 from bika.lims.utils import getUsers
 from bika.lims.utils import isActive
 from bika.lims.utils import t, dicts_to_dict, format_supsub
@@ -653,8 +653,10 @@ class AnalysesView(BikaListingView):
                     defdls = {'min':srv.getLowerDetectionLimit(),
                               'max':srv.getUpperDetectionLimit(),
                               'manual':srv.getAllowManualDetectionLimit()}
-                    defin = '<input type="hidden" id="DefaultDLS.%s" value=\'%s\'/>'
-                    defin = defin % (obj.UID(), json.dumps(defdls))
+                    defin = \
+                        '<input type="hidden" id="DefaultDLS.%s" value="%s"/>'
+                    json_str = json.dumps(defdls, cls=JSONEncoder)
+                    defin = defin % (obj.UID(), json_str)
                     item['after']['DetectionLimit'] = defin
 
                 # LIMS-1769. Allow to use LDL and UDL in calculations.
@@ -678,10 +680,14 @@ class AnalysesView(BikaListingView):
                         dls['is_udl'] = obj.isUpperDetectionLimit()
                         dls['default_ldl'] = service.getLowerDetectionLimit()
                         dls['default_udl'] = service.getUpperDetectionLimit()
-                        dls['manual_allowed'] = service.getAllowManualDetectionLimit()
-                        dls['dlselect_allowed'] = service.getDetectionLimitSelector()
-                    dlsin = '<input type="hidden" id="AnalysisDLS.%s" value=\'%s\'/>'
-                    dlsin = dlsin % (obj.UID(), json.dumps(dls))
+                        dls['manual_allowed'] = \
+                            service.getAllowManualDetectionLimit()
+                        dls['dlselect_allowed'] = \
+                            service.getDetectionLimitSelector()
+                    dlsin = \
+                        '<input type="hidden" id="AnalysisDLS.%s" value="%s"/>'
+                    json_str = json.dumps(dls, cls=JSONEncoder)
+                    dlsin = dlsin % (obj.UID(), json_str)
                     item['after']['Result'] = dlsin
 
             else:
@@ -872,8 +878,9 @@ class AnalysesView(BikaListingView):
         else:
             self.categories.sort()
 
-        # self.json_specs = json.dumps(self.specs)
-        self.json_interim_fields = json.dumps(self.interim_fields)
+        # self.json_specs = json.dumps(self.specs, cls=JSONEncoder)
+        json_str = json.dumps(self.interim_fields, cls=JSONEncoder)
+        self.json_interim_fields = json_str
         self.items = items
 
         # Method and Instrument columns must be shown or hidden at the

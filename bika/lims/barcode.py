@@ -13,6 +13,7 @@ from Products.CMFCore.utils import getToolByName
 
 from bika.lims.browser import BrowserView
 from bika.lims.permissions import EditResults
+from bika.lims.utils import JSONEncoder
 
 
 class barcode_entry(BrowserView):
@@ -68,7 +69,7 @@ class barcode_entry(BrowserView):
     def return_json(self, value):
         output = json.dumps(value)
         self.request.RESPONSE.setHeader('Content-Type', 'application/json')
-        self.request.RESPONSE.write(json.dumps(output))
+        self.request.RESPONSE.write(json.dumps(output, cls=JSONEncoder))
         return output
 
     def handle_AnalysisRequest(self, instance):

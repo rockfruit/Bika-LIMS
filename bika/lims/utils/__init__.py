@@ -15,15 +15,17 @@ from time import time
 import os
 import re
 import types
-from AccessControl import ModuleSecurityInfo, allow_module
+
 from AccessControl import getSecurityManager
+from AccessControl import ModuleSecurityInfo, allow_module
 from DateTime import DateTime
+from email.MIMEBase import MIMEBase
+from json import JSONEncoder as _baseJSONEncoder
+from plone.memoize import ram
+from plone.registry.interfaces import IRegistry
 from Products.Archetypes.public import DisplayList
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import safe_unicode
-from email.MIMEBase import MIMEBase
-from plone.memoize import ram
-from plone.registry.interfaces import IRegistry
 from weasyprint import HTML, CSS
 from zope.component import queryUtility
 from zope.i18n import translate
@@ -584,3 +586,25 @@ def getFromString(obj, string):
             attrobj = None
             break
     return attrobj if attrobj else None
+
+class JSONEncoder(_baseJSONEncoder):
+    """Extensible JSON <http://json.org> encoder for Python data structures.
+    Here we modify the input value to accomodate some types that Bika uses
+    which the default encoder does not support.
+
+    This encoder supports encoding of:
+
+    - Decimals
+    - Decimals as List values
+    - Decimals as Dict values
+    """
+
+    def default(self, o):
+        strdecimal = lambda x: str(x) if isinstance(x, Decimal) else x
+        if type(o) in (list, tuple):
+            o = [self.default(x) for x in o]
+        elif isinstance(o, dict):
+            o = {k: self.default(v) for k, v in o.items()}
+        else:
+            o = strdecimal(o)
+        return o

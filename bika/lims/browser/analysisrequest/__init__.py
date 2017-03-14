@@ -20,6 +20,7 @@ from bika.lims.interfaces import IJSONReadExtender
 from bika.lims.jsonapi import get_include_fields
 from bika.lims.jsonapi import load_brain_metadata
 from bika.lims.jsonapi import load_field_values
+from bika.lims.utils import JSONEncoder
 from bika.lims.vocabularies import CatalogVocabulary
 from bika.lims.workflow import get_workflow_actions
 from invoice import InvoiceCreate
@@ -90,7 +91,8 @@ class ReferenceWidgetVocabulary(DefaultReferenceWidgetVocabulary):
             client_uid = self.get_client_uid()
             if client_uid:
                 base_query['getClientUID'] = client_uid
-                self.request['base_query'] = json.dumps(base_query)
+                self.request['base_query'] = \
+                    json.dumps(base_query, cls=JSONEncoder)
         return DefaultReferenceWidgetVocabulary.__call__(self)
 
     def get_client_uid(self):

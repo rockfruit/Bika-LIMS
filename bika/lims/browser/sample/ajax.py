@@ -12,7 +12,7 @@ from Products.CMFCore.utils import getToolByName
 from Products.ZCTextIndex.ParseTree import ParseError
 
 from bika.lims.browser import BrowserView
-from bika.lims.utils import to_unicode
+from bika.lims.utils import to_unicode, JSONEncoder
 
 
 class ajaxGetSampleTypeInfo(BrowserView):
@@ -67,4 +67,4 @@ class ajaxGetSampleTypeInfo(BrowserView):
                'StorageLocations': dict((sp.UID(),sp.Title()) for sp in st.getStorageLocations()),
                }
 
-        return json.dumps(ret)
+        return json.dumps(ret, cls=JSONEncoder)

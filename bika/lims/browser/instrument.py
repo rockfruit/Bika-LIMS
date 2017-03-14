@@ -26,7 +26,7 @@ from bika.lims.browser.bika_listing import BikaListingView
 from bika.lims.browser.multifile import MultifileView
 from bika.lims.config import QCANALYSIS_TYPES
 from bika.lims.content.instrumentmaintenancetask import InstrumentMaintenanceTaskStatuses as mstatus
-from bika.lims.utils import t
+from bika.lims.utils import t, JSONEncoder
 
 
 class InstrumentMaintenanceView(BikaListingView):
@@ -489,7 +489,7 @@ class InstrumentReferenceAnalysesView(AnalysesView):
         return items
 
     def get_analyses_json(self):
-        return json.dumps(self.anjson)
+        return json.dumps(self.anjson, cls=JSONEncoder)
 
 
 class InstrumentCertificationsViewView(BrowserView):
@@ -647,7 +647,7 @@ class ajaxGetInstrumentMethods(BrowserView):
                     "uid": method.UID(),
                     "title": method.Title(),
                 })
-        return json.dumps(out)
+        return json.dumps(out, cls=JSONEncoder)
 
 
 class InstrumentQCFailuresViewlet(ViewletBase):

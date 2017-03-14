@@ -12,6 +12,7 @@ from Products.CMFCore.utils import getToolByName
 from zExceptions import Forbidden
 
 from bika.lims.browser import BrowserView
+from bika.lims.utils import JSONEncoder
 
 
 class ajaxGetInstruments(BrowserView):
@@ -43,7 +44,7 @@ class ajaxGetInstruments(BrowserView):
                                'qcfail': not i.isQCValid(),
                                'isvalid': i.isValid()}
                 instruments.append(instrument)
-        return json.dumps(instruments)
+        return json.dumps(instruments, cls=JSONEncoder)
 
 class ajaxGetMethodServiceInstruments(BrowserView):
     """ Returns a json list with the instruments assigned to the method

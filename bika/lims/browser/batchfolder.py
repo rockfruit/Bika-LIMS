@@ -16,6 +16,7 @@ from bika.lims import bikaMessageFactory as _
 from bika.lims.browser import BrowserView
 from bika.lims.browser.bika_listing import BikaListingView
 from bika.lims.permissions import AddBatch
+from bika.lims.utils import JSONEncoder
 
 
 class BatchFolderContentsView(BikaListingView):
@@ -202,4 +203,4 @@ class ajaxGetBatches(BrowserView):
                'records': len(rows),
                'rows': rows[(int(page) - 1) * int(nr_rows): int(page) * int(nr_rows)]}
 
-        return json.dumps(ret)
+        return json.dumps(ret, cls=JSONEncoder)

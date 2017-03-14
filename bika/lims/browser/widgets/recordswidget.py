@@ -11,6 +11,8 @@ from AccessControl import ClassSecurityInfo
 from Products.ATExtensions.widget import RecordsWidget as ATRecordsWidget
 from Products.Archetypes.Registry import registerWidget
 
+from bika.lims.utils import JSONEncoder
+
 
 class RecordsWidget(ATRecordsWidget):
     security = ClassSecurityInfo()
@@ -68,7 +70,7 @@ class RecordsWidget(ATRecordsWidget):
         return value, {}
 
     def jsondumps(self, val):
-        return json.dumps(val)
+        return json.dumps(val, cls=JSONEncoder)
 
 registerWidget(RecordsWidget,
                title = 'RecordsWidget',

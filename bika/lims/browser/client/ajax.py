@@ -12,6 +12,7 @@ from Products.CMFCore.utils import getToolByName
 
 from bika.lims.adapters.referencewidgetvocabulary import DefaultReferenceWidgetVocabulary
 from bika.lims.browser import BrowserView
+from bika.lims.utils import JSONEncoder
 
 
 class ReferenceWidgetVocabulary(DefaultReferenceWidgetVocabulary):
@@ -20,7 +21,7 @@ class ReferenceWidgetVocabulary(DefaultReferenceWidgetVocabulary):
         portal_type = base_query.get('portal_type', [])
         if 'Contact' in portal_type:
             base_query['getParentUID'] = [self.context.UID(), ]
-        self.request['base_query'] = json.dumps(base_query)
+        self.request['base_query'] = json.dumps(base_query, cls=JSONEncoder)
         return DefaultReferenceWidgetVocabulary.__call__(self)
 
 

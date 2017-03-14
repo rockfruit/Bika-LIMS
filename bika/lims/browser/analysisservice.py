@@ -24,7 +24,7 @@ from bika.lims.content.analysisservice import getContainers
 from bika.lims.interfaces import IAnalysisService
 from bika.lims.interfaces import IJSONReadExtender
 from bika.lims.jsonapi import load_field_values, get_include_fields
-from bika.lims.utils import to_unicode
+from bika.lims.utils import to_unicode, JSONEncoder
 
 
 ### AJAX methods for AnalysisService context
@@ -65,7 +65,7 @@ class ajaxGetContainers(BrowserView):
             show_container_types=show_container_types,
         )
 
-        return json.dumps(containers)
+        return json.dumps(containers, cls=JSONEncoder)
 
 class ajaxServicePopup(BrowserView):
 
@@ -186,7 +186,7 @@ class ajaxGetServiceInterimFields:
             # otherwise, create new ones (last)
             calc_interims.append(s_i)
 
-        return json.dumps(calc_interims)
+        return json.dumps(calc_interims, cls=JSONEncoder)
 
 
 class JSONReadExtender(object):

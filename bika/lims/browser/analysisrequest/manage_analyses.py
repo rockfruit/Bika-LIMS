@@ -18,7 +18,7 @@ from zope.interface import implements
 from bika.lims import bikaMessageFactory as _
 from bika.lims.browser.bika_listing import BikaListingView
 from bika.lims.browser.sample import SamplePartitionsView
-from bika.lims.utils import logged_in_client
+from bika.lims.utils import logged_in_client, JSONEncoder
 from bika.lims.utils import t, dicts_to_dict
 
 
@@ -132,7 +132,7 @@ class AnalysisRequestAnalysesView(BikaListingView):
                         "Related: LIMS-1614"
                 logger.exception(error, keyword)
 
-        return json.dumps(rr_dict_by_service_uid)
+        return json.dumps(rr_dict_by_service_uid, cls=JSONEncoder)
 
     def get_spec_from_ar(self, ar, keyword):
         empty = {'min': '', 'max': '', 'error': '', 'keyword':keyword}

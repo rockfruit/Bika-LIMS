@@ -21,6 +21,7 @@ from bika.lims.browser.bika_listing import BikaListingView
 from bika.lims.permissions import AddClient
 from bika.lims.permissions import ManageAnalysisRequests
 from bika.lims.permissions import ManageClients
+from bika.lims.utils import JSONEncoder
 
 
 class ClientFolderContentsView(BikaListingView):
@@ -183,4 +184,4 @@ class ajaxGetClients(BrowserView):
                'records': len(rows),
                'rows': rows[(int(page) - 1) * int(nr_rows): int(page) * int(nr_rows)]}
 
-        return json.dumps(ret)
+        return json.dumps(ret, cls=JSONEncoder)

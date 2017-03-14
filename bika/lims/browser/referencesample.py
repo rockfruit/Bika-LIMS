@@ -21,7 +21,7 @@ from bika.lims import bikaMessageFactory as _
 from bika.lims.browser import BrowserView
 from bika.lims.browser.analyses import AnalysesView
 from bika.lims.browser.bika_listing import BikaListingView
-from bika.lims.utils import t
+from bika.lims.utils import t, JSONEncoder
 
 
 class ViewView(BrowserView):
@@ -211,7 +211,7 @@ class ReferenceAnalysesView(AnalysesView):
             self.anjson[serviceref] = trows
 
     def get_analyses_json(self):
-        return json.dumps(self.anjson)
+        return json.dumps(self.anjson, cls=JSONEncoder)
 
 
 class ReferenceResultsView(BikaListingView):

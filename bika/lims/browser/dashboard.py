@@ -15,6 +15,7 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
 from bika.lims import bikaMessageFactory as _
 from bika.lims.browser import BrowserView
+from bika.lims.utils import JSONEncoder
 
 
 class DashboardView(BrowserView):
@@ -342,7 +343,7 @@ class DashboardView(BrowserView):
                     'name':         _('Evolution of Analysis Requests'),
                     'class':        'informative',
                     'description':  _('Evolution of Analysis Requests'),
-                    'data':         json.dumps(outevo)})
+                    'data':         json.dumps(outevo, cls=JSONEncoder)})
 
         return {'id': 'analysisrequests',
                 'title': _('Analysis Requests'),
@@ -455,7 +456,7 @@ class DashboardView(BrowserView):
                     'name':         _('Evolution of Worksheets'),
                     'class':        'informative',
                     'description':  _('Evolution of Worksheets'),
-                    'data':         json.dumps(outevo)})
+                    'data':         json.dumps(outevo, cls=JSONEncoder)})
 
         return {'id': 'worksheets',
                 'title': _('Worksheets'),
@@ -581,7 +582,7 @@ class DashboardView(BrowserView):
                     'name':         _('Evolution of Analyses'),
                     'class':        'informative',
                     'description':  _('Evolution of Analyses'),
-                    'data':         json.dumps(outevo)})
+                    'data':         json.dumps(outevo, cls=JSONEncoder)})
         return {'id': 'analyses',
                 'title': _('Analyses'),
                 'panels': out}

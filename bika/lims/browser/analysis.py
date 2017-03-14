@@ -16,7 +16,7 @@ from bika.lims import bikaMessageFactory as _
 from bika.lims.browser import BrowserView
 from bika.lims.interfaces import IAnalysis, IResultOutOfRange, IJSONReadExtender
 from bika.lims.jsonapi import get_include_fields
-from bika.lims.utils import dicts_to_dict
+from bika.lims.utils import dicts_to_dict, JSONEncoder
 from bika.lims.utils import t
 from bika.lims.utils.analysis import get_method_instrument_constraints
 
@@ -221,4 +221,4 @@ class ajaxGetMethodInstrumentConstraints(BrowserView):
         rowuids = self.request.get('uids', '[]')
         rowuids = json.loads(rowuids)
         constraints = get_method_instrument_constraints(self, rowuids)
-        return json.dumps(constraints)
+        return json.dumps(constraints, cls=JSONEncoder)

@@ -21,7 +21,7 @@ from bika.lims import bikaMessageFactory as _
 from bika.lims.browser import BrowserView
 from bika.lims.interfaces import IAnalysis
 from bika.lims.interfaces import IFieldIcons
-from bika.lims.utils import t, isnumber
+from bika.lims.utils import t, isnumber, JSONEncoder
 from bika.lims.utils.analysis import format_numeric_result
 
 
@@ -404,7 +404,7 @@ class ajaxCalculateAnalysisEntry(BrowserView):
 
         return json.dumps({'alerts': self.alerts,
                            'uncertainties': self.uncertainties,
-                           'results': results})
+                           'results': results}, cls=JSONEncoder)
 
 
 class ajaxGetMethodCalculation(BrowserView):
@@ -421,4 +421,4 @@ class ajaxGetMethodCalculation(BrowserView):
             if calc:
                 calcdict = {'uid': calc.UID(),
                             'title': calc.Title()}
-        return json.dumps(calcdict)
+        return json.dumps(calcdict, cls=JSONEncoder)
