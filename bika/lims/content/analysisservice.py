@@ -37,7 +37,8 @@ from bika.lims.browser.widgets.durationwidget import DurationWidget
 from bika.lims.browser.widgets.partitionsetupwidget import PartitionSetupWidget
 from bika.lims.browser.widgets.recordswidget import RecordsWidget
 from bika.lims.browser.widgets.referencewidget import ReferenceWidget
-from bika.lims.browser.fields import HistoryAwareReferenceField
+from bika.lims.browser.fields import HistoryAwareReferenceField, \
+    UIDReferenceField
 from bika.lims.browser.fields import InterimFieldsField
 from bika.lims.browser.fields import DurationField
 from bika.lims.config import ATTACHMENT_OPTIONS
@@ -996,7 +997,7 @@ schema = BikaSchema.copy() + Schema((
         ),
     ),
 
-    ReferenceField(
+    UIDReferenceField(
         'Preservation',
         schemata='Container and Preservation',
         allowed_types=('Preservation',),
@@ -1015,12 +1016,10 @@ schema = BikaSchema.copy() + Schema((
         )
     ),
 
-    ReferenceField(
+    UIDReferenceField(
         'Container',
         schemata='Container and Preservation',
         allowed_types=('Container', 'ContainerType'),
-        relationship='AnalysisServiceContainer',
-        referenceClass=HoldingReference,
         vocabulary='getContainers',
         required=0,
         multiValued=0,
