@@ -1000,21 +1000,19 @@ schema = BikaSchema.copy() + Schema((
         'Preservation',
         schemata='Container and Preservation',
         allowed_types=('Preservation',),
-        relationship='AnalysisServicePreservation',
-        referenceClass=HoldingReference,
         vocabulary='getPreservations',
         required=0,
         multiValued=0,
         widget=ReferenceWidget(
             checkbox_bound=0,
             label=_("Default Preservation"),
-            description=_("Select a default preservation for this " + \
-                          "analysis service. If the preservation depends on " + \
-                          "the sample type combination, specify a preservation " + \
-                          "per sample type in the table below"),
+            description=_(
+                "Select a default preservation for this analysis service. If "
+                "the preservation depends on the sample type combination, "
+                "specify a preservation per sample type in the table below"),
             catalog_name='bika_setup_catalog',
             base_query={'inactive_state': 'active'},
-        ),
+        )
     ),
 
     ReferenceField(
