@@ -2,6 +2,7 @@
 ------------------
 
 - Added UIDReferenceField, and removed some AT References from Analysis.
+- BC-147: Default empty WS view should list on due date
 - Issue-2103: WS Templates not offered for selection
 - Instrument selection for creating WSs does not work
 - Issue-2215: Added extra param portal_type on the function generateUniqueId so that it's not used for objects only
@@ -24,6 +25,7 @@
 3.3.0 (unreleased)
 ------------------
 
+- Issue-2245: AR View: Asyncronous update of proxy fields fails
 - Issue-2218: Cache Key does not invalidate if proxied Sample values of ARs change
 - Issue-2204: Notification Emails on AR retract
 - Issue-2173: Publishing multiple ARs fails
@@ -38,9 +40,14 @@
 
 
 3.2.1rc3 (unreleased)
+3.2.1rc3 (2017-10-02)
 ---------------------
 
-- no changes yet
+- Issue-2229: Traceback if the title contains braces "()" on content creation
+- Issue-2237: New AR Add Form: Include and display pricing information
+- Issue-2241: New AR Add Form: Server Error when the Sample Type contains German Umlauts (unicode characters)
+- Issue-2244: New AR Add Form: Sample field does not filter by Client
+- Issue-2242: New AR Add Form: Local Samplepoints with the same Sampletype from other clients get displayed
 
 
 3.2.1rc2 (2017-09-15)
