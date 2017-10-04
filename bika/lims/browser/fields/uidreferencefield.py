@@ -6,13 +6,11 @@
 # Some rights reserved. See LICENSE.txt, AUTHORS.txt.
 
 from AccessControl import ClassSecurityInfo
-
 from Products.Archetypes.BaseContent import BaseContent
-from Products.Archetypes.BaseObject import BaseObject
 from Products.Archetypes.Field import Field, StringField
 from Products.CMFCore.utils import getToolByName
-from Products.ZCatalog.interfaces import ICatalogBrain
 from bika.lims import logger
+from bika.lims.api import is_at_content, is_brain
 from bika.lims.interfaces.field import IUIDReferenceField
 from plone.api.portal import get_tool
 from zope.interface import implements
@@ -35,28 +33,6 @@ def is_uid(context, value):
     uc = getToolByName(context, 'uid_catalog')
     brains = uc(UID=value)
     return brains and True or False
-
-
-def is_brain(brain_or_object):
-    """Checks if the passed in object is a portal catalog brain
-
-    :param brain_or_object: Any object; probably a content object or a brain.
-    :type brain_or_object: Any
-    :return: True if the object is a brain
-    :rtype: bool
-    """
-    return ICatalogBrain.providedBy(brain_or_object)
-
-
-def is_at_content(brain_or_object):
-    """Checks if the passed in object is an AT content type
-
-    :param brain_or_object: Any object; probably a content object or a brain.
-    :type brain_or_object: Any
-    :return: True if object is an AT Content Type (instance of BaseObject).
-    :rtype: bool
-    """
-    return isinstance(brain_or_object, BaseObject)
 
 
 class UIDReferenceField(StringField):
