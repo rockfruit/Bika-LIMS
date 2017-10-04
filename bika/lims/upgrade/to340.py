@@ -8,11 +8,13 @@
 from Acquisition import aq_inner
 from Acquisition import aq_parent
 from bika.lims import logger
+from bika.lims.api import get_uid
 from bika.lims.idserver import generateUniqueId
 from bika.lims.numbergenerator import INumberGenerator
 from DateTime import DateTime
 from Products.ATContentTypes.utils import DT2dt
 from Products.CMFPlone.utils import _createObjectByType
+from plone.api.portal import get_tool
 from zope.component import getUtility
 
 
